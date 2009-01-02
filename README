@@ -1,0 +1,7 @@
+2009, Jacob Andresen <jacob.andresen@gmail.com>
+
+Yase lets you crawl webpages and put them into a database where you can search them.
+
+Currently this is done by using mysql.
+
+released under GPL3 . Commercial licenses are available upon request.
