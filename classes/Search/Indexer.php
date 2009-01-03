@@ -83,7 +83,9 @@ class Indexer {
    }
 
    //don't index same url twice
-   $res= mysql_query("SELECT id from document where url='$url' and user_id='".$this->iCustomerId."'") or die(mysql_error());
+   
+   //TODO : http 1.1 spec 3.2.3
+    $res= mysql_query("SELECT id from document where url='$url' and user_id='".$this->iCustomerId."'") or die(mysql_error());
    if($row=mysql_fetch_array($res)){
       print "duplicate: $url <br> \r\n"; 
       return false;

@@ -118,17 +118,9 @@ class Crawler {
   }
 
   public function getUrl ($sParent) {
-     //grab contents of url
-    $sResponse="";
-    if($fp = fopen($sParent, "r")){
-      while ($buf= fread($fp, 8192))
-        $sResponse.= $buf;
-      fclose($fp);
-    }else{
-      print("could not retrieve $sParent <br>");
-    }
-    return($sResponse);
-  } 
+     $c=new HttpClient();
+     return($c->get($sParent)); 
+   } 
 
   public function bCrawl($sUrl, $iLevel, $sParent) {
     print "crawl [$iLevel] - $sUrl \r\n";    
