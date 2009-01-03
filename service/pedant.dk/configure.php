@@ -1,5 +1,6 @@
 <?php
  require_once('../../classes/Global.php'); 
+ require_once('../../classes/HTTPClient.php'); 
  require_once('../../classes/Search/Framework.php');
 
  print "configure pedant.dk\r\n";
