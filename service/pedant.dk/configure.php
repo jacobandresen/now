@@ -4,7 +4,7 @@
  require_once('../../classes/Search/Framework.php');
 
  print "configure pedant.dk\r\n";
- mysql_query("INSERT INTO user(login,password,level_limit,crawl_limit) values('pedant_dk', 'test', 200, 100000)");
+ mysql_query("INSERT INTO user(login,password,level_limit,crawl_limit) values('pedant_dk', 'test', 200, 10000)");
 
  //setup
  $s=new Yas("pedant_dk");

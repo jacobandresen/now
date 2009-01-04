@@ -1,5 +1,6 @@
 <?php
-
+//2009, Jacob Andresen <jacob.andresen@gmail.com>
+//2009, Johan Bäckstrom <johbac@gmail.com>
 class Indexer { 
 
   protected $iCustomerId;       //customer number in database
@@ -77,14 +78,11 @@ class Indexer {
   *  add a document to the index 
   */
   public function add($url, $body ) {
-   print "INDEX ADD:".$url."\r\n";  
    if(preg_match("/pdf/i", $url)){
      die("pdf!");
    }
 
    //don't index same url twice
-   
-   //TODO : http 1.1 spec 3.2.3
     $res= mysql_query("SELECT id from document where url='$url' and user_id='".$this->iCustomerId."'") or die(mysql_error());
    if($row=mysql_fetch_array($res)){
       print "duplicate: $url <br> \r\n"; 

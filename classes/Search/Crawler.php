@@ -1,8 +1,9 @@
 <?php
-
+//2009, Jacob Andresen <jacob.andresen@gmail.com>
+//2009, Johan Bächström <johbac@gmail.colm>
 class Crawler {
        
- protected $iMaxFileSize        = 16700;
+ protected $iMaxFileSize        = 167000;
  protected $pdftmp              = "/tmp";
  
  public    $aFound;             //urls found so far
@@ -86,9 +87,6 @@ class Crawler {
     $this->delSkipFilters();  
   }
 
-  // 
-  //debian: sudo apt-get install xpdf 
-  // 
   public function pdftotext($content){
     $myFile = "/tmp/pdftmp";
     $fh = fopen($myFile, 'w') or die("can't open file");
@@ -102,7 +100,7 @@ class Crawler {
   }
 
   public function add ( $url, $html, $level ){
-   print "  add [$level] - $url \r\n";  
+   print "  add [$level] - $url \r\n";
  //  if (preg_match("/\.pdf/i", $url)){
  //    $html=$this->pdftotext($html);  
  //  }
@@ -117,12 +115,17 @@ class Crawler {
    return; 
   }
 
-  public function getUrl ($sParent) {
+  public function getUrl ($sUrl) {
      $c=new HttpClient();
-     return($c->get($sParent)); 
+     $sHost = $c->extractHost($sUrl);
+     if($sHost!=""){
+       $c->connect($sHost);
+     }
+     return($c->get($sUrl)); 
    } 
 
   public function bCrawl($sUrl, $iLevel, $sParent) {
+    
     print "crawl [$iLevel] - $sUrl \r\n";    
     array_push( ($this->aCrawled), $sUrl); 
     $this->iLevel=$iLevel; 
@@ -143,7 +146,6 @@ class Crawler {
         $sContent=$this->getUrl($sFullUrl); 
         $this->add($sFullUrl, $sContent, $iLevel);
       }
-    
     }
     $this->iCrawled++;
 

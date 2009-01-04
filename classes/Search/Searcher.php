@@ -1,5 +1,5 @@
 <?php
-
+//2009, Jacob Andresen <jacob.andresen@gmail.com>
 class Searcher {
   protected $iCustomerId;
 
