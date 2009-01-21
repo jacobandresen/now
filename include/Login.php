@@ -1,5 +1,9 @@
 <?php
- if(!($yas->LoggedIn())){
+$yas =new Yas();
+$yas->login($yas->sLogin, $yas->sPassword);
+
+$yas->setup();
+if(!($yas->LoggedIn())){
 ?>
 <form action="index.php" method="post">
 <table>

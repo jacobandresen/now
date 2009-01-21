@@ -4,6 +4,7 @@ drop table if exists indexskip;
 drop table if exists crawlskip;
 drop table if exists filter;
 drop table if exists domain;
+drop table if exists ticket;
 drop table if exists user;
 
 create table user (
@@ -12,6 +13,12 @@ create table user (
  password 	varchar(256),
  level_limit	int, 
  crawl_limit 	int
+);
+
+create table ticket ( 
+ user_id        int,
+ ticket         varchar(256),
+ foreign key(user_id) references user(id)
 );
 
 create table domain (

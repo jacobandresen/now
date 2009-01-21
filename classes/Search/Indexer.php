@@ -17,6 +17,7 @@ class Indexer {
   }
 
 //BEGIN: skip filters
+  
   public function updateSkipFilters() {
     $res = mysql_query("select filter from indexskip where user_id='".$this->iCustomerId."'");
     $this->aFilterSkip=array();
@@ -162,7 +163,6 @@ class Indexer {
       return false;
     }
   
-
    //add documents with content
    $blength=strlen($body);
    if($blength>5 && strlen($url)>0 ){ 
@@ -172,7 +172,6 @@ class Indexer {
    }else{
       print "empty doc \r\n";
     }
-
   } 
 
   public function reset() {
@@ -212,7 +211,6 @@ class Indexer {
   //extract text from html here
   // 
   function sHtmlToRawText($sWord, $bNewLines=false, $bCleanHtml=false){
-
    //translate html entities to their corresponding chars
    $sWord = html_entity_decode($sWord);  
   

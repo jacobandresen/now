@@ -3,8 +3,4 @@
 
 Yase lets you crawl webpages and put them into a database where you can search them.
 
-Currently this is done by using mysql and php. (hint: LAMP for linux, WAMP: for windows, MAMP: for macosx)
- 
- 
-
 released under GPL3 . Commercial licenses are available upon request.
