@@ -3,47 +3,77 @@
  require_once('Crawler.php');
  require_once('Searcher.php');
 
-function login($sUserName, $sPassword) {
-  $res = mysql_query("SELECT id from user where login='".$sUserName."' and password='".$sPassword."' ");
-  if($row=mysql_fetch_array($res)){ 
-    return($row['id']);
-  }else{
-    return(-1); 
-  }
-}
-
-function reset_customer_state () {
-  mysql_query("DELETE FROM user");
-  mysql_query("DELETE from domain");
-  mysql_query("DELETE from crawlskip");
-  mysql_query("DELETE from indexskip");
-}
-
 
 class Yas{ 
+ 
+ protected $bLoggedIn; 
  protected $iCustomerId; 
  
+ public $sAction;
+ public $sLogin;
+ public $sName;
+
+
+ public $sPassword;
  public $oIndexer;
  public $oCrawler;
- 
- public function __construct($sLogin){
-  $res = mysql_query("select id from user where login='".$sLogin."'") or die(mysql_error());
-  
-  if($row=mysql_fetch_array($res)){
-   $this->iCustomerId    = $row['id'] ; 
+
+ public function loggedIn(){
+   return($this->bLoggedIn);
+ }
+
+ public function __construct(){
+   $this->getParameters();
+ }
+
+ public function setup(){
+  if($this->bLoggedIn){  
    $this->oIndexer       = new Indexer($this->iCustomerId);
    $this->oCrawler       = new Crawler($this->iCustomerId); 
-   }else{
-    die("failed to construct Administrator \r\n");
   }
  }
+
+ public function getParameters(){
+   $this->sLogin        =$_POST['login'];
+   $this->sPassword     =$_POST['password'];
+   $this->sAction       =$_POST['action'];
+   $this->sTicket       =$_POST['ticket'];
+   $this->sName         =$_POST['name'];
+ 
+   $_SESSION['login']   =$this->sLogin;
+   $_SESSION['action']  =$this->sAction;
+ }
+ 
+ public function login($sLogin,$sPassword){
+  $this->bLoggedIn=false; 
+   $res = mysql_query("select id from user where login='".$sLogin."' and password='".$sPassword."'");
+   if($row=mysql_fetch_array($res)){
+     $this->iCustomerId    = $row['id'] ; 
+     $this->bLoggedIn=true; 
+     $_SESSION['login']=$sLogin;
+   } 
+ }
+
+ public function ticketLogin($sTicket){
+   $this->getParameters();
+   $this->bLoggedIn = true;
+   $res = mysql_query("select user_id from ticket where ticket='".$sTicket."'");
+   if($row=mysql_fetch_array($res)){
+     $this->iCustomerId=$row['user_id']; 
+   }
+   $this->setup();
+ }
+
+
 
  public function addDomain($sDomain){
    $sql="insert into domain(user_id, base) values('".$this->iCustomerId."','".$sDomain."')";
    mysql_query($sql);
  }
+
+//---index skips --
  public function getIndexSkip() {
-   return ($this->oIndexer->getSkipFilters());
+   return ($this->oIndexer->updateSkipFilters());
  }
  public function addIndexSkip($filter){
    $this->oIndexer->addSkipFilter($filter);
@@ -52,6 +82,8 @@ class Yas{
    $this->oIndexer->delSkipIndexFilters();
   }
 
+
+//--crawl skips --
  public function addCrawlSkip($filter){
    $this->oCrawler->addSkipFilter($filter);
  }
@@ -67,7 +99,6 @@ class Yas{
  }
 
  public function crawl(){
-
    $this->oCrawler->clear(); 
    $res = mysql_query("SELECT base from domain where user_id='".$this->iCustomerId."'"); 
  while($row=mysql_fetch_array($res) ) { 
