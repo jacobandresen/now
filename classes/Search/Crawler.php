@@ -107,6 +107,11 @@ class Crawler {
 
    //avoid sql injection attacks 
    $url = urlencode($url); 
+   
+   if(sizeof($html)>20000000){
+     print "FILE TOO BIG\r\n"; 
+     return; 
+   } 
    $html = urlencode($html);
  
    if (strlen($html) < $this->iMaxFileSize) {
@@ -125,7 +130,6 @@ class Crawler {
    } 
 
   public function bCrawl($sUrl, $iLevel, $sParent) {
-    
     print "crawl [$iLevel] - $sUrl \r\n";    
     array_push( ($this->aCrawled), $sUrl); 
     $this->iLevel=$iLevel; 

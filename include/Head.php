@@ -1,0 +1,11 @@
+<?php
+require_once('classes/Search/Framework.php');
+require_once('classes/Global.php');
+?>
+<html>
+ <head>
+ </head>
+<body>
+<?php
+ include("Login.php");
+?>

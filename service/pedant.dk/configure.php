@@ -3,11 +3,12 @@
  require_once('../../classes/HTTPClient.php'); 
  require_once('../../classes/Search/Framework.php');
 
- print "configure pedant.dk\r\n";
- mysql_query("INSERT INTO user(login,password,level_limit,crawl_limit) values('pedant_dk', 'test', 200, 10000)");
+ //mysql_query("INSERT INTO user(login,password,level_limit,crawl_limit) values('pedant_dk', 'test', 200, 10000)");
 
  //setup
- $s=new Yas("pedant_dk");
+ $s=new Yas();
+ $s->login("pedant_dk", "test");
+ $s->setup();
  
  $s->addDomain("www.pedant.dk");
  $s->addCrawlSkip("feed"); 
