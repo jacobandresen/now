@@ -5,9 +5,7 @@ class Indexer {
   protected $iCustomerId;       //customer number in database
   protected $iDomainId;         //current domain being processed 
   
-  
   protected $skipStore;		//skip filters
-
 
   public function setDomain($sDomain) {
     $res = mysql_query("SELECT id from domain where user_id='".$this->iCustomerId."' and base='".$sDomain."'") or die(mysql_error());
@@ -17,7 +15,6 @@ class Indexer {
      $this->iDomainId=-1;
     }
   }
-
 
   public function addBodyFilter ($bodyfilter ) {
     $bodyfilter=urlencode($bodyfilter); 
@@ -31,16 +28,10 @@ class Indexer {
    $this->iCustomerId=$iCustomerId; 
  }
 
- /**
-  * clear index
-  */ 
   public function clear(){
     mysql_query("DELETE FROM document where user_id='".$this->iCustomerId."'");
   }
 
- /**
-  * index dump
-  */
   public function index(){
     $this->clear(); 
 
@@ -53,9 +44,6 @@ class Indexer {
     }
   }
 
- /** 
-  *  add a document to the index 
-  */
   public function add($url, $body ) {
 
   $title="";
@@ -161,9 +149,6 @@ class Indexer {
     mysql_query( $sSQL ) or die(mysql_error());
   } 
 
-  //
-  //try to guess if the string is in UTF8
-  // 
   function isUTF8($str) {
     $c=0; $b=0;
     $bits=0;
@@ -189,9 +174,7 @@ class Indexer {
     }
     return true;
   }
-  //
-  //extract text from html here
-  // 
+  
   function sHtmlToRawText($sWord, $bNewLines=false, $bCleanHtml=false){
    //translate html entities to their corresponding chars
    $sWord = html_entity_decode($sWord);  

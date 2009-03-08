@@ -6,16 +6,8 @@ class Searcher {
   protected $iCustomerId;
   public $iLimit = 5;
 
-  public function __construct($sLogin) {
-    if (!(isset($sLogin))){
-      die("search:invalid login \r\n");
-    }
-    $res = mysql_query("select id from user where login='".$sLogin."'") or die(mysql_error()); 
-    if($row=mysql_fetch_array($res)){
-     $this->iCustomerId=$row['id'];
-    }else{
-     $this->iCustomerId=-1;
-    }
+  public function __construct($iCustomerId) {
+    $this->iCustomerId=$iCustomerId;
   }
 
   function search_OLD ($query) {

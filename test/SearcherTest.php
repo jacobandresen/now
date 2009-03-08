@@ -1,10 +1,11 @@
 <?php
 require_once ('../classes/Global.php');
 require_once ('../classes/UserManagement.php');
-require_once ('../classes/HttpClient.php');
-require_once ('../classes/search/Searcher.php');
+require_once ('../classes/HTTPClient.php');
+require_once ('../classes/Searcher.php');
 
-
-$s=new Searcher("pedant.dk");
+$u=new UserManagement();
+$iUserId=$u->getUserId("pedant.dk");
+$s=new Searcher($iUserId);
 $s->search_OLD("test");
 ?>

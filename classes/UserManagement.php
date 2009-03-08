@@ -2,7 +2,6 @@
 
 //NOTE:access to this class should be protected
 // (E.g: urls using this should have at least have BASIC authentication)
-//
 class UserManagement {
 
  function getUserId($sUser){
@@ -10,7 +9,6 @@ class UserManagement {
     $row=mysql_fetch_row($res);
     return($row[0]);
  }
-
 
  function getDomains($iUserId){
   $aDomain=array();	 

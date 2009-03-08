@@ -96,7 +96,7 @@ class Crawler {
      return($c->get($sUrl)); 
    } 
 
-  public function bCrawl($sUrl, $iLevel, $sParent) {
+  public function crawl($sUrl, $iLevel, $sParent) {
     print "crawl [$iLevel] - $sUrl \r\n";    
     array_push( ($this->aCrawled), $sUrl); 
     $this->iLevel=$iLevel; 
@@ -109,7 +109,7 @@ class Crawler {
     //get links from url 
     preg_match_all("|href=\"([^\"]*?)\"|i", $sResponse, $aMatches);
     foreach($aMatches[1] as $sItem){
-      $sFullUrl = $this->sGetFullUrl($sItem, $sUrl);
+      $sFullUrl = $this->expandUrl($sItem, $sUrl);
       if (!in_array($sFullUrl, $this->aFound) and $this->bValidUrl($sFullUrl)){
         array_push($this->aFound, $sFullUrl);
         array_push($this->aProcess, $sFullUrl);
@@ -126,14 +126,13 @@ class Crawler {
         if(!in_array($sChildUrl, ($this->aCrawled))){  
           print "connect [$iLevel] $sUrl -> $sChildUrl \r\n"; 
           array_push($this->aCrawled, $sChildUrl); 
-          $this->bCrawl($sChildUrl, ($iLevel+1), $sUrl);
+          $this->crawl($sChildUrl, ($iLevel+1), $sUrl);
         }   
       } 
     }
   }
 
-  //expand url
-  public function sGetFullUrl($sItem, $sParent){
+  public function expandUrl($sItem, $sParent){
    $sPage="";	  
    if ($sItem == './'){
       $sItem = '/';
