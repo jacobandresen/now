@@ -7,5 +7,5 @@ require_once ('../classes/Searcher.php');
 $u=new UserManagement();
 $iUserId=$u->getUserId("pedant.dk");
 $s=new Searcher($iUserId);
-$s->search_OLD("test");
+$s->search("test");
 ?>
