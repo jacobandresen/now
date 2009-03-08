@@ -12,7 +12,7 @@ class Store {
 	  $this->sTable=$sTable;
   }
 
-  function GetAll(){
+  function getAll(){
     $results=array();  
     $res = mysql_query("select id,name,value from store where storename='".$this->sTable."' and owner='".$this->iOwner."'") or  die (mysql_error());
     while ($row = mysql_fetch_array($res) ){
@@ -24,15 +24,13 @@ class Store {
     return($results);
   } 
   
-  function Get($iID){
+  function get($iID){
    $f=new Field();
    $res = mysql_query("select id,name,value from ".$this->sTable." where storename='".$this->sTable." and owner='".$this->iOwnerId."'");
     if($row=mysql_fetch_array($res)){
-
        $f 		= new Field();
        $f->name 	= $row['name'];
        $f->value 	= $row['value'];
-   //    $f->type 	= $row['type']; 
     }
     return($f); 
    }
