@@ -4,6 +4,7 @@
  require_once('Searcher.php');
 
 
+//engine facade
 class Yas{ 
  
  protected $bLoggedIn; 
@@ -27,10 +28,8 @@ class Yas{
  }
 
  public function setup(){
-  if($this->bLoggedIn){  
-   $this->oIndexer       = new Indexer($this->iCustomerId);
-   $this->oCrawler       = new Crawler($this->iCustomerId); 
-  }
+  $this->oIndexer       = new Indexer($this->iCustomerId);
+  $this->oCrawler       = new Crawler($this->iCustomerId); 
  }
 
  public function getParameters(){
@@ -44,27 +43,6 @@ class Yas{
    $_SESSION['action']  =$this->sAction;
  }
  
- public function login($sLogin,$sPassword){
-  $this->bLoggedIn=false; 
-   $res = mysql_query("select id from user where login='".$sLogin."' and password='".$sPassword."'");
-   if($row=mysql_fetch_array($res)){
-     $this->iCustomerId    = $row['id'] ; 
-     $this->bLoggedIn=true; 
-     $_SESSION['login']=$sLogin;
-   } 
- }
-
- public function ticketLogin($sTicket){
-   $this->getParameters();
-   $this->bLoggedIn = true;
-   $res = mysql_query("select user_id from ticket where ticket='".$sTicket."'");
-   if($row=mysql_fetch_array($res)){
-     $this->iCustomerId=$row['user_id']; 
-   }
-   $this->setup();
- }
-
-
 
  public function addDomain($sDomain){
    $sql="insert into domain(user_id, base) values('".$this->iCustomerId."','".$sDomain."')";
@@ -101,15 +79,15 @@ class Yas{
  public function crawl(){
    $this->oCrawler->clear(); 
    $res = mysql_query("SELECT base from domain where user_id='".$this->iCustomerId."'"); 
- while($row=mysql_fetch_array($res) ) { 
-    $this->oCrawler->addFilter($row['base']); 
+   while($row=mysql_fetch_array($res) ) { 
+      $this->oCrawler->addFilter($row['base']); 
   
-    //startup crawler 
-    $sUrl="http://".$row['base'];
-    $this->oCrawler->add($sUrl, $this->oCrawler->getUrl($sUrl), 0);
-    array_push($this->oCrawler->aFound, $sUrl); 
-    $this->oCrawler->bCrawl($sUrl, 0, $sUrl);
-  } 
+      //startup crawler 
+      $sUrl="http://".$row['base'];
+      $this->oCrawler->add($sUrl, $this->oCrawler->getUrl($sUrl), 0);
+      array_push($this->oCrawler->aFound, $sUrl); 
+      $this->oCrawler->bCrawl($sUrl, 0, $sUrl);
+    } 
  }
  
  public function index(){

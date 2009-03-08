@@ -3,7 +3,12 @@
  include("../classes/UserManagement.php");
 
  $u = new UserManagement();
- $u->addUser("pedant.dk","test", "http://pedant.dk");
- print $u->getUserId("pedant.dk");
- print $u->getDomainId("pedant.dk", "http://pedant.dk");
+ $u->addUser("pedant.dk","test", "pedant.dk");
+
+ $aDomain = $u->getDomains($u->getUserId("pedant.dk"));
+ for ($i=0;$i<sizeof($aDomain);$i++){
+  print $aDomain[$i];
+
+ } 
+
 ?>

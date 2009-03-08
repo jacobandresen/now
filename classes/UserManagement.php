@@ -12,6 +12,15 @@ class UserManagement {
  }
 
 
+ function getDomains($iUserId){
+  $aDomain=array();	 
+  $res = mysql_query("SELECT urlbase from domain where user_id='".$iUserId."'");
+  while($row = mysql_fetch_array($res)){
+     array_push($aDomain, $row['urlbase'] );
+  }
+  return($aDomain);
+ }
+
  function getDomainId($sUser, $sDomain){ 
    $userid=$this->getUserId($sUser);
    $res=mysql_query("SELECT id from domain where user_id='".$userid."' and urlbase='".$sDomain."'") or die(mysql_error());
@@ -31,11 +40,10 @@ class UserManagement {
 
  //should require admin rights 
   function addUser($sUser, $sPassword, $sDomain){
-    mysql_query("INSERT INTO user(login,password,level_limit,crawl_limit) values('".$sUser."','".$sPassword."','20','500')") or die(mysql_error());
+    mysql_query("INSERT INTO user(login,password,level_limit,crawl_limit) values('".$sUser."','".$sPassword."','100','5000')") or die(mysql_error());
 
    $this->addDomain($sUser, $sDomain); 
   }
-
 };
 
 ?>

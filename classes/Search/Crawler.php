@@ -1,11 +1,7 @@
 <?php
-//2009, Jacob Andresen <jacob.andresen@gmail.com>
-//2009, Johan Bächström <johbac@gmail.colm>
+
 class Crawler {
        
- protected $iMaxFileSize        = 167000;
- protected $pdftmp              = "/tmp";
- 
  public    $aFound;             //urls found so far
  protected $iLevel;             //distance from front page
  protected $iCrawled;           //urls crawled so far
@@ -15,41 +11,15 @@ class Crawler {
  protected $iCustomerId;        //customer number in database
  protected $iMaxLevel;          //maximum distance from front page
  protected $iCrawlLimit;        //maximum number of urls to be crawled
- protected $aFilterAdd;         //which domains to be crawled
- protected $aFilterSkip;        //url patterns to be skipped in crawl
 
- public function getSkipFilters() {
-   return($this->updateSkipFilters());
- }
 
- public function updateSkipFilters() {
-    $res = mysql_query("select filter from crawlskip where user_id='".$this->iCustomerId."'");
-    $this->aFilterSkip=array();   
-    while ($row = mysql_fetch_array($res) ){
-      array_push($this->aFilterSkip, $row['filter']);
-    }
-   return $this->aFilterSkip;
- }
+ protected $aFilterAdd;		//domains to be crawled
+ protected $aFilterSkip;	//skip filters for urls
 
- public function addSkipFilter( $filter ) { 
-   mysql_query("INSERT into crawlskip(user_id,filter) values('".$this->iCustomerId."','".$filter."')") ; 
-   $this->updateSkipFilters(); 
- } 
- 
- public function delSkipFilter ( $filter ){
-   mysql_query("DELETE from crawlskip where user_id='".$this->iCustomerId."' and filter='".$filter."'") or die(mysql_error()); 
- }
-
- public function delSkipFilters ( ){
-   mysql_query("DELETE from crawlskip where user_id='".$this->iCustomerId."'") or die(mysql_error());
- }
 
  public function __construct($iCustomerId){
-    if ((!(isset($iCustomerId))) ||  $iCustomerId<0){
-      die("crawl:invalid customer id \r\n"); 
-     }
+	 
     $this->iCustomerId = $iCustomerId;
-    //crawl state
     $this->iCrawled = 0;
     $this->iSeen=0 ;
 
@@ -71,52 +41,49 @@ class Crawler {
       $this->iCrawlLimit=500;   
     }
 
-    $this->updateSkipFilters();
+    //fetch domains to be crawled
+    $u=new UserManagement();
+    $aDomain= $u->getDomains($iCustomerId);
+    $aFilterAdd = array(); 
+    for ($i=0;$i<sizeof($aDomain);$i++){
+     array_push( $aFilterAdd, $aDomain[$i]);
+    }
+    $this->aFilterAdd = $aFilterAdd;
+
+    print "crawllimit:".$this->iCrawlLimit."\r\n";
+    print "max level:".$this->iMaxLevel."\r\n"; 
 
     $this->aFound=array();
     $this->aCrawled=array();
     $this->aProcess=array();
   }
 
-  public function addFilter($sFilter){
-    $this->aFilterAdd=array($sFilter);
-  }
 
   public function clear () {
     mysql_query ("DELETE from dump where user_id='".$this->iCustomerId."'") or die(mysql_error());
     $this->delSkipFilters();  
   }
 
-  public function pdftotext($content){
-    $myFile = "/tmp/pdftmp";
-    $fh = fopen($myFile, 'w') or die("can't open file");
-    fwrite($fh, $content);
-    fclose($fh);
-    exec("pdftotext /tmp/pdftmp");// or die("cannot execute pdftotext");  
-    $fh = fopen($myFiler, 'r') or die("can't open file");
-    $txt = fread($fh, filesize($myFile));
-    fclose($fh);
-    return($txt);
-  }
-
   public function add ( $url, $html, $level ){
    print "  add [$level] - $url \r\n";
- //  if (preg_match("/\.pdf/i", $url)){
- //    $html=$this->pdftotext($html);  
- //  }
-
    //avoid sql injection attacks 
    $url = urlencode($url); 
+
+
+   //print "URL(".strlen($url)."):$url\r\n";
+   if(strlen($url)>256){
+    print "URL too long \r\n";
+    return;
+   } 
    
-   if(sizeof($html)>20000000){
+   if(strlen($html)>200000){
      print "FILE TOO BIG\r\n"; 
      return; 
    } 
    $html = urlencode($html);
- 
-   if (strlen($html) < $this->iMaxFileSize) {
-    mysql_query("INSERT into dump(user_id, url, html) values('".$this->iCustomerId."','$url', '$html')") or die (mysql_error());
-   } 
+
+
+    mysql_query("INSERT IGNORE into dump(user_id, url, html) values('".$this->iCustomerId."','$url', '$html')") or die (" failed to insert into dump:".mysql_error());
    return; 
   }
 
@@ -138,7 +105,7 @@ class Crawler {
 
     //grab contents of url
     $sResponse= $this->getUrl($sUrl);
-   
+
     //get links from url 
     preg_match_all("|href=\"([^\"]*?)\"|i", $sResponse, $aMatches);
     foreach($aMatches[1] as $sItem){
@@ -165,8 +132,10 @@ class Crawler {
     }
   }
 
+  //expand url
   public function sGetFullUrl($sItem, $sParent){
-    if ($sItem == './'){
+   $sPage="";	  
+   if ($sItem == './'){
       $sItem = '/';
     }
     preg_match("@(http\s?\://[^\/].*?)(\/|$)@", $sParent, $aMatch);
@@ -181,43 +150,45 @@ class Crawler {
     if ( count($aMatch) > 0 ){
       return $sItem;
     }
-    preg_match("|^\/$sPage|", $sItem, $aMatch);
-    if ( count($aMatch) > 0 ){
-      return $sBase.$sItem;
-    }
-    preg_match("|^$sPage|", $sItem, $aMatch);
-    if ( count($aMatch) > 0 ){
-      return $sBase.'/'.$sItem;
-    }
+    
+    if($sPage){ 
+      preg_match("|^\/$sPage|", $sItem, $aMatch);
+      if ( count($aMatch) > 0 ){
+        return $sBase.$sItem;
+      }
+      preg_match("|^$sPage|", $sItem, $aMatch);
+      if ( count($aMatch) > 0 ){
+        return $sBase.'/'.$sItem;
+      }
+    } 
+   
     preg_match("|^\?|", $sItem, $aMatch);
     if ( count($aMatch) > 0 ){
       return $sBase.'/'.$sPage.$sItem;
     }
     $sUrl = $sBase.'/'.$sItem;
+    
     return $sUrl;
   }
 
-  /**
-   *Make sure that we want to crawl the url
-   */
+  //Make sure that we want to crawl the url
   public function bValidUrl($sUrl){
     preg_match("|\@|",$sUrl, $aMatch);
     if ( count($aMatch) > 0 ){
       return false;
     }
-    foreach ($this->aFilterSkip as $oItem){
-      preg_match("|$oItem|",$sUrl, $aMatch);
-      if ( count($aMatch) > 0 ){
-     	return false;
-      }
-    }
+   
+    //TODO: crawlskip 
+   
     foreach ($this->aFilterAdd as $oItem){
       preg_match("|$oItem|",$sUrl, $aMatch);
       if ( count($aMatch) > 0 ){
      	return true;
       }
     }
-  return false;
+
+  
+    return false;
   }
 };
 ?>

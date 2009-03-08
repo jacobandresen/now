@@ -4,7 +4,6 @@ drop table if exists indexskip;
 drop table if exists crawlskip;
 drop table if exists filter;
 drop table if exists domain;
-drop table if exists ticket;
 drop table if exists user;
 
 create table user (
@@ -19,38 +18,34 @@ create table user (
 create table domain (
  id             int NOT NULL primary key auto_increment, 
  user_id        int,
- base   	varchar(256),
+ urlbase   	varchar(256),
  foreign key(user_id) references user(id),
- UNIQUE(user_id,base)
+ UNIQUE(user_id,urlbase)
 );
 
 create table filter (
  id                     int NOT NULL primary key auto_increment,
- user_id                int,
- domain_id              int,
+ domain_id                int,
  name                   varchar(256),
  value                  TEXT, 
- foreign key(user_id)   references user(id),
  foreign key(domain_id) references domain(id),
  UNIQUE(domain_id, name)
 );
 
 create table crawlskip (
  id             int NOT NULL primary key auto_increment, 
- user_id        int,
- domain_id      int,
- filter         varchar(256) NOT NULL,
- foreign key(user_id) references user(id),
- UNIQUE(user_id,filter)
+ owner          int,
+ name		varchar(256) NOT NULL, 
+ value         varchar(256) NOT NULL, 
+ foreign key(owner) references domain(id)
 );
 
 create table indexskip (
  id             int NOT NULL primary key auto_increment, 
- user_id        int,
- domain_id      int,
- filter         varchar(256),
- foreign key(user_id) references user(id),
- UNIQUE(user_id,filter)
+ owner          int,
+ name		varchar(256) NOT NULL, 
+ value         varchar(256) NOT NULL, 
+ foreign key(owner) references domain(id)
 );
 
 create table dump (

@@ -1,11 +1,13 @@
 <?php
-//2009, Jacob Andresen <jacob.andresen@gmail.com>
-//2009, Johan Bäckstrom <johbac@gmail.com>
+
 class Indexer { 
 
   protected $iCustomerId;       //customer number in database
   protected $iDomainId;         //current domain being processed 
-  protected $aFilterSkip;       //url patterns to be skipped in index
+  
+  
+  protected $skipStore;		//skip filters
+
 
   public function setDomain($sDomain) {
     $res = mysql_query("SELECT id from domain where user_id='".$this->iCustomerId."' and base='".$sDomain."'") or die(mysql_error());
@@ -16,28 +18,6 @@ class Indexer {
     }
   }
 
-//BEGIN: skip filters
-  
-  public function updateSkipFilters() {
-    $res = mysql_query("select filter from indexskip where user_id='".$this->iCustomerId."'");
-    $this->aFilterSkip=array();
-    while ($row = mysql_fetch_array($res) ){
-      array_push($this->aFilterSkip, $row['filter']);
-    }
-   return $this->aFilterSkip;
- }
-
-  public function addSkipFilter ( $filter ) {
-    mysql_query("INSERT into indexskip(user_id,filter) values('".$this->iCustomerId."','".$filter."')");
-    $this->updateSkipFilters();
-  }
-  public function delSkipFilter ( $filter ) {
-    mysql_query("DELETE from indexskip where user_id='".$this->iCustomerId."','".$filter."')");
-  }
-  public function delSkipFilters () {
-    mysql_query("DELETE from indexskip where user_id='".$this->iCustomerId."'") or die(mysql_error());
-  }
-//END: skip filters
 
   public function addBodyFilter ($bodyfilter ) {
     $bodyfilter=urlencode($bodyfilter); 
@@ -49,7 +29,6 @@ class Indexer {
      die("index:invalid customer id \r\n");
    }
    $this->iCustomerId=$iCustomerId; 
-   $this->updateSkipFilters(); 
  }
 
  /**
@@ -57,7 +36,6 @@ class Indexer {
   */ 
   public function clear(){
     mysql_query("DELETE FROM document where user_id='".$this->iCustomerId."'");
-    $this->delSkipFilters(); 
   }
 
  /**
@@ -79,9 +57,8 @@ class Indexer {
   *  add a document to the index 
   */
   public function add($url, $body ) {
-   if(preg_match("/pdf/i", $url)){
-     die("pdf!");
-   }
+
+  $title="";
 
    //don't index same url twice
     $res= mysql_query("SELECT id from document where url='$url' and user_id='".$this->iCustomerId."'") or die(mysql_error());
@@ -91,19 +68,19 @@ class Indexer {
    }
   
    //process skip filters
-   foreach ($this->aFilterSkip as $oItem){
-     preg_match("|$oItem|", $url, $aMatch);
-     if ( count($aMatch) > 0){
-       return false;
-     }
-   }
+   //foreach ($this->aFilterSkip as $oItem){
+   //  preg_match("|$oItem|", $url, $aMatch);
+   //  if ( count($aMatch) > 0){
+   //    return false;
+   //  }
+   // }
 
    //process content
    $orig=$body;
  
-   if ($this->isUTF8($body)){
-     $body = iconv("UTF-8", "ISO-8859-1", $body);
-   }
+   //if ($this->isUTF8($body)){
+   //  $body = iconv("UTF-8", "ISO-8859-1", $body);
+   //}
 
    $timestmp=time();
    $sFound='';
@@ -123,26 +100,31 @@ class Indexer {
    
    if ($title == ''){
      preg_match("|<h2>(.*?)<\/h2>|is", $body, $aMatches);
-     $title = $aMatches[1];
-     $sFound = 'h2';
+     if(sizeof($aMatches)){ 
+      $title = $aMatches[1];
+      $sFound = 'h2';
+     }
    }
    if ($title == ''){
      preg_match("|<h3>(.*?)<\/h3>|is", $body, $aMatches);
-     $title = $aMatches[1];
-     $sFound = 'h3';
+     if(sizeof($aMatches)){ 
+      $title = $aMatches[1];
+      $sFound = 'h3';
+     }
    }
+
    //clean body
-   $res=mysql_query("SELECT value from filter where user_id='".$this->iCustomerId."' and domain_id='".$this->iDomainId."' ") or die("BODY FILTER ERROR:".mysql_error());
-   if($row=mysql_fetch_array($res)){
-    $bodyfilter=$row['value']; 
-    if($bodyfilter!=""){
-      $bodyfilter=urldecode($bodyfilter);
-      preg_match($bodyfilter, $body, $aMatches); 
-      if (strlen($aMatches[0])>0){
-       $body = $aMatches[1];
-      }
-    } 
-   }   
+   //$res=mysql_query("SELECT value from filter where domain_id='".$this->iDomainId."' ") or die("BODY FILTER ERROR:".mysql_error());
+   //if($row=mysql_fetch_array($res)){
+   // $bodyfilter=$row['value']; 
+   // if($bodyfilter!=""){
+   //   $bodyfilter=urldecode($bodyfilter);
+   //   preg_match($bodyfilter, $body, $aMatches); 
+   //   if (strlen($aMatches[0])>0){
+   //    $body = $aMatches[1];
+   //   }
+   // } 
+   //}   
   //remove title:
   $body = str_replace($title, "", $body);  
   $title = strip_tags($title);	
@@ -159,7 +141,7 @@ class Indexer {
   $result=mysql_query("SELECT * from document where md5='$md5'") or die(mysql_error());
     $row=mysql_fetch_row($result); 
     if($row) {
-      echo "duplicate found"; 
+      print "\r\nduplicate found\r\n"; 
       return false;
     }
   

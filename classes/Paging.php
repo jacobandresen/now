@@ -11,8 +11,8 @@ class Paging{
   public $aTitles      = array();
   public $aColumns     = array();
   
-	function __construct( ){
-	}
+  function __construct( ){
+  }
   
   public function sNavigationFloat($iPage, $iPages, $sParams="", $iLimit=15 ){
     if ($iPages < 2){
@@ -92,10 +92,10 @@ class Paging{
     	$sNavigation .= '...';
     }
 
-	  if($iPage > 1) $sNavigation = ' | <a href="?page=' . ($iPage-1) . '&' . $sParams . '" class="nav">&lt;</a> ' . $sNavigation;
-	  else $sNavigation = ' | <b>&lt;</b> ' . $sNavigation;
+    if($iPage > 1) $sNavigation = ' | <a href="?page=' . ($iPage-1) . '&' . $sParams . '" class="nav">&lt;</a> ' . $sNavigation;
+      else $sNavigation = ' | <b>&lt;</b> ' . $sNavigation;
 
-	  if($iPage != 1) $sNavigation = '<a href="?page=1&' . $sParams . '" class="nav">&lt;&lt;</a> ' . $sNavigation;
+     if($iPage != 1) $sNavigation = '<a href="?page=1&' . $sParams . '" class="nav">&lt;&lt;</a> ' . $sNavigation;
 	  else $sNavigation = '<b>&lt;&lt;</b> ' . $sNavigation;
 
 	  if($iPage < $iPages) $sNavigation = $sNavigation . ' | <a href="?page=' . ($iPage+1) . '&' . $sParams . '" class="nav">&gt;</a>';
@@ -104,7 +104,7 @@ class Paging{
 	  if($iPage != $iPages) $sNavigation = $sNavigation . ' | <a href="?page=' . ($iPages) . '&' . $sParams . '" class="nav">&gt;&gt;</a>';
 	  else $sNavigation = $sNavigation . ' | <b>&gt;&gt;</b>';
 
-		print $sNavigation;
+    print $sNavigation;
   }
 
 }

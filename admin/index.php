@@ -9,8 +9,14 @@
 
 <script type="text/javascript">
  $(document).ready(function() {
-	 	$("#tabs").tabs();
+ 	$("#tabs").tabs( { deselectable: true});
+ 	$("#tabs").tabs('option','disabled',[1,2,3,4]);
+ 	$("#loginButton").click(function(){
+ 	  $("#tabs").tabs('option','disabled',[]);
+	
+	});
    });
+
 </script>
 
 </head>
@@ -29,24 +35,18 @@
 
 
  <div id="fragment-1" style="height:600px; width:400px">
-
- <button id="loginButton"> click this button to login</button>
-
+  <input type="submit" id="loginButton" value="click this button to login"></input>
  </div>
-<div id="fragment-2" style="height:600px; width:400px">
-add domain
-</div>
+ <div id="fragment-2" style="height:600px; width:400px">
+  add domain
+ </div>
 
-
-<div id="fragment-3" style="height:600px; width:400px">
-
- crawling
-</div>
-
-
-<div id="fragment-4" style="height:600px; width:400px">
+ <div id="fragment-3" style="height:600px; width:400px">
+  crawling
+  </div>
+ <div id="fragment-4" style="height:600px; width:400px">
  indexing
-</div>
+ </div>
 
 </div>
 

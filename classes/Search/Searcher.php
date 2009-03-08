@@ -1,5 +1,6 @@
 <?php
-//2009, Jacob Andresen <jacob.andresen@gmail.com>
+
+include("Result.php");
 
 class Searcher {
   protected $iCustomerId;
@@ -69,9 +70,4 @@ class Searcher {
   }
 }
 
-class Result {
-  public $sUrl;
-  public $sTitle;
-  public $sContent;
-}
 ?>
