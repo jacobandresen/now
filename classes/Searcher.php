@@ -10,7 +10,7 @@ class Searcher {
     $this->iCustomerId=$iCustomerId;
   }
 
-  function search_OLD ($query) {
+  function search($query) {
     if($query!=""){
       $result = mysql_query("SELECT *, MATCH(content) AGAINST('$query') AS score FROM document WHERE MATCH(content) AGAINST('$query') and user_id='".$this->iCustomerId."' ORDER BY score DESC"); 
       print "<ul>\r\n";     

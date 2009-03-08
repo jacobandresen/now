@@ -3,3 +3,27 @@ p#edit {
  margin-top:20px;
  margin-left:20px;
 }
+
+#title a{
+  font-weight: bold;
+  color: #990000;
+  padding : 5px;
+}
+#navigation{
+  text-align: center;
+  padding: 5px;
+}
+.nav{
+  color: #990000;
+}
+.nav a{
+  color: #990000;
+}
+#search_box{
+  padding: 5px;
+}
+#search_result{
+  padding-top: 20px;
+  padding: 5px;
+}
+

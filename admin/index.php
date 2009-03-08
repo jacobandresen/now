@@ -43,11 +43,13 @@
 
  <div id="fragment-3" style="height:600px; width:400px">
   crawling
+  TODO: admin crawlskip table here
   </div>
  <div id="fragment-4" style="height:600px; width:400px">
  indexing
+  TODO: admin indexskip table here 
+ 
  </div>
-
 </div>
 
 

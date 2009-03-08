@@ -7,7 +7,6 @@ require_once ('../classes/Indexer.php');
 
 $u = new UserManagement();
 $iUserId = $u->getUserId("pedant.dk");
-
 $i = new Indexer($iUserId);
 $i->index();
 

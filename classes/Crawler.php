@@ -49,13 +49,10 @@ class Crawler {
      array_push( $aFilterAdd, $aDomain[$i]);
     }
     $this->aFilterAdd = $aFilterAdd;
-
-    print "crawllimit:".$this->iCrawlLimit."\r\n";
-    print "max level:".$this->iMaxLevel."\r\n"; 
-
     $this->aFound=array();
     $this->aCrawled=array();
     $this->aProcess=array();
+  
   }
 
 
@@ -69,8 +66,6 @@ class Crawler {
    //avoid sql injection attacks 
    $url = urlencode($url); 
 
-
-   //print "URL(".strlen($url)."):$url\r\n";
    if(strlen($url)>256){
     print "URL too long \r\n";
     return;
@@ -81,9 +76,7 @@ class Crawler {
      return; 
    } 
    $html = urlencode($html);
-
-
-    mysql_query("INSERT IGNORE into dump(user_id, url, html) values('".$this->iCustomerId."','$url', '$html')") or die (" failed to insert into dump:".mysql_error());
+   mysql_query("INSERT IGNORE into dump(user_id, url, html) values('".$this->iCustomerId."','$url', '$html')") or die (" failed to insert into dump:".mysql_error());
    return; 
   }
 
@@ -185,8 +178,6 @@ class Crawler {
      	return true;
       }
     }
-
-  
     return false;
   }
 };

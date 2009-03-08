@@ -4,12 +4,10 @@
  require_once('Crawler.php');
  require_once('Searcher.php');
  
-
 class Yase{ 
  
  protected $iCustomerId; 
  protected $sAction;
- 
  protected $sName;
  protected $sPassword;
 
@@ -35,7 +33,7 @@ class Yase{
    $this->sName         =$_POST['name'];
    $this->sPassword     =$_POST['password'];
    $this->sAction       =$_POST['action'];
-   $this->sTicket       =$_POST['ticket'];
+   $this->sQuery        =$_POST['query']; 
   }
 
  public function crawl(){
@@ -48,8 +46,10 @@ class Yase{
  }
 
  public function search($sQuery){
-   $this->oSearch->search($sQuery);
+   $this->oSearcher->search($sQuery);
  } 
+
+
 };
 
 ?>

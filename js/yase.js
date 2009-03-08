@@ -1,14 +1,15 @@
 
-
-var search = {
+var yase = {
+ base:'/yase/yase.php',
  box:function() {
-  var search_box=document.getElementById('search_box');
-  var query = '';
-  search_box.innerHTML = '<input type="text" name="query" id="query" value="'+query+'"> <input type="submit" onClick="search_result(1);">';
-  } ,
-          
+   $('#search_box').html('<input type="text" name="query" id="query" value=""> <input type="submit" onclick="yase.result(1);">');
+  },
   result:function (page) {
-    var query=document.getElementById('query');
-    $('#search_result').load('test/SearcherTest.php');
+     $('#search_result').load(yase.base, 
+             {'query':$('#query').val() } );
   }
 }
+
+$(document).ready(function() {
+  yase.box();
+ });

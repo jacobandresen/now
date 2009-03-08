@@ -1,7 +1,6 @@
 drop table if exists document;
 drop table if exists dump;
-drop table if exists indexskip;
-drop table if exists crawlskip;
+drop table if exists store;
 drop table if exists filter;
 drop table if exists domain;
 drop table if exists user;
@@ -13,7 +12,6 @@ create table user (
  level_limit	int, 
  crawl_limit 	int
 );
-
 
 create table domain (
  id             int NOT NULL primary key auto_increment, 
@@ -32,20 +30,12 @@ create table filter (
  UNIQUE(domain_id, name)
 );
 
-create table crawlskip (
+create table store (
  id             int NOT NULL primary key auto_increment, 
+ storename      varchar(256), 
  owner          int,
- name		varchar(256) NOT NULL, 
- value         varchar(256) NOT NULL, 
- foreign key(owner) references domain(id)
-);
-
-create table indexskip (
- id             int NOT NULL primary key auto_increment, 
- owner          int,
- name		varchar(256) NOT NULL, 
- value         varchar(256) NOT NULL, 
- foreign key(owner) references domain(id)
+ name		varchar(256), 
+ value          varchar(256)
 );
 
 create table dump (
