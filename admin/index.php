@@ -1,24 +1,7 @@
 <html>
 <head>
  <title> Yet Another search engine - administration </title>
-
  <link type="text/css" href="http://jqueryui.com/latest/themes/base/ui.all.css" rel="stylesheet"/>
-<script type="text/javascript" src="http://jqueryui.com/latest/jquery-1.3.2.js"></script>
-<script type="text/javascript" src="http://jqueryui.com/ui/ui.core.js"></script>
-<script type="text/javascript" src="http://jqueryui.com/ui/ui.tabs.js"></script>
-
-<script type="text/javascript">
- $(document).ready(function() {
- 	$("#tabs").tabs( { deselectable: true});
- 	$("#tabs").tabs('option','disabled',[1,2,3,4]);
- 	$("#loginButton").click(function(){
- 	  $("#tabs").tabs('option','disabled',[]);
-	
-	});
-   });
-
-</script>
-
 </head>
 
 <body>
@@ -52,6 +35,9 @@
  </div>
 </div>
 
-
+<script type="text/javascript" src="http://jqueryui.com/latest/jquery-1.3.2.js"></script>
+<script type="text/javascript" src="http://jqueryui.com/ui/ui.core.js"></script>
+<script type="text/javascript" src="http://jqueryui.com/ui/ui.tabs.js"></script>
+<script type="text/javascript" src="js/admin.js"></script>
 </body>
 </html>
