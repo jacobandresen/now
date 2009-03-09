@@ -1,8 +1,5 @@
 <?php
 
-//
-//2009, Jacob Andresen <jacob.andresen@gmail.com>
-//
 class HTTPClient {
   
   //socket connection
@@ -43,8 +40,8 @@ class HTTPClient {
     $sRequest.="\r\nHost: ".$this->sHost;
     $sRequest.="\r\nAccept-Charset: iso-8859-1";
     $sRequest.="\r\nConnection: close\r\n\r\n"; 
-   
-    //print $sRequest;  
+
+ 
     fputs( $this->oSocket, $sRequest."\r\n"); 
   }
 
@@ -69,7 +66,6 @@ class HTTPClient {
   protected function getHeaders () {
     while( !feof($this->oSocket ) ) {
         $sLine=fgets($this->oSocket,2048);
-        //print "HEADER:".$sLine; 
         $indx=strpos($sLine,":"); 
         $sKey=substr($sLine, 0, $indx); 
         $sKey=strtolower($sKey); 
@@ -81,8 +77,6 @@ class HTTPClient {
     }
   }
  
-  //HACK: we only support GET so far
-  // this means that we can respond to a redirect with a new GET 
   protected function Redirect() {
         $this->iRedirects++;
         if($this->iRedirects<3){ 
@@ -108,11 +102,10 @@ class HTTPClient {
  
     if( preg_match("/http/i",$aStatus[0])) 
     {
-     
      if($aStatus[1]!="200"){
 
        //handle redirects
-       if($aStatus[1]=="301"){
+       if( $aStatus[1]=="301" || $aStatus[1]=="302"){
          $this->getHeaders(); 
          return($this->Redirect());
        } 
@@ -132,14 +125,16 @@ class HTTPClient {
     while( !feof($this->oSocket ) ) {
       $sLine=fgets($this->oSocket,2048);
       $this->sReply.=$sLine; 
-      //print $sLine; 
      }
     }
    } 
-   return($this->sReply);
+    
+    return($this->sReply);
   }  
  
   public function Get ($sIncomingUrl) {
+
+   //TODO: check if sIncomingUrl is a valid url	  
     $sHost = $this->extractHost($sIncomingUrl);
     if($sHost!=""){ 
         $this->sHost=$sHost;
