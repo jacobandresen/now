@@ -35,8 +35,14 @@ class HTTPClient {
     $this->aHeaders=array(); 
   }
 
+  public function Close(){
+   fclose($this->oSocket);
+  }
+ 
+
   private function SendRequest( $sRequest ){
     $sRequest.=" HTTP/1.0"; 
+    $sRequest.="\r\nUser-Agent: YASE alpha1"; 
     $sRequest.="\r\nHost: ".$this->sHost;
     $sRequest.="\r\nAccept-Charset: iso-8859-1";
     $sRequest.="\r\nConnection: close\r\n\r\n"; 
@@ -65,7 +71,7 @@ class HTTPClient {
   
   protected function getHeaders () {
     while( !feof($this->oSocket ) ) {
-        $sLine=fgets($this->oSocket,2048);
+        $sLine=fgets($this->oSocket,512);
         $indx=strpos($sLine,":"); 
         $sKey=substr($sLine, 0, $indx); 
         $sKey=strtolower($sKey); 
@@ -97,7 +103,7 @@ class HTTPClient {
         die("read failed");
     
     //status 
-    $sStatus=fgets($this->oSocket,2048);
+    $sStatus=fgets($this->oSocket,512);
     $aStatus=split(" ",$sStatus, 3);
  
     if( preg_match("/http/i",$aStatus[0])) 
@@ -119,13 +125,21 @@ class HTTPClient {
     $this->getHeaders(); 
    
     //number
-    $iNumber=fgets($this->oSocket,2048);
+    $iNumber=fgets($this->oSocket,512);
  
     $this->sReply=""; 
-    while( !feof($this->oSocket ) ) {
-      $sLine=fgets($this->oSocket,2048);
-      $this->sReply.=$sLine; 
+    try{
+     while( !feof($this->oSocket ) ) {
+       $sLine=fgets($this->oSocket,512);
+       //TODO: MAX SIZE should be a configuration setting 
+       if(strlen($this->sReply) < 1500000){ 
+         $this->sReply.=$sLine; 
+        }
      }
+   }catch(Exception $e){
+
+    print "failed retrieving:".$this->ssUrl."\r\n";
+   }
     }
    } 
     
@@ -133,11 +147,9 @@ class HTTPClient {
   }  
  
   public function Get ($sIncomingUrl) {
-
-   //TODO: check if sIncomingUrl is a valid url	  
     $sHost = $this->extractHost($sIncomingUrl);
     if($sHost!=""){ 
-        $this->sHost=$sHost;
+       $this->sHost=$sHost;
     } 
     $sUrl=$this->extractRelativeUrl($sIncomingUrl); 
     $this->sUrl=$sUrl; 

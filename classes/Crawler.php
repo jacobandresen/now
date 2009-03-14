@@ -58,11 +58,10 @@ class Crawler {
 
   public function clear () {
     mysql_query ("DELETE from dump where user_id='".$this->iCustomerId."'") or die(mysql_error());
-    $this->delSkipFilters();  
   }
 
   public function add ( $url, $html, $level ){
-   print "  add [$level] - $url \r\n";
+   print "  add [$level] - $url ".strlen($html)."\r\n";
    //avoid sql injection attacks 
    $url = urlencode($url); 
 
@@ -76,7 +75,7 @@ class Crawler {
      return; 
    } 
    $html = urlencode($html);
-   mysql_query("INSERT IGNORE into dump(user_id, url, html) values('".$this->iCustomerId."','$url', '$html')") or die (" failed to insert into dump:".mysql_error());
+   mysql_query("INSERT IGNORE into dump(user_id, url, html, level) values('".$this->iCustomerId."','$url', '$html', '$level')") or die (" failed to insert into dump:".mysql_error());
    return; 
   }
 
@@ -86,43 +85,94 @@ class Crawler {
      if($sHost!=""){
        $c->connect($sHost);
      }
-     return($c->get($sUrl)); 
+   
+   $sContent = $c->get($sUrl);
+   $c->Close();
+   return($sContent); 
    } 
 
-  public function crawl($sUrl, $iLevel, $sParent) {
-    print "crawl [$iLevel] - $sUrl \r\n";    
-    array_push( ($this->aCrawled), $sUrl); 
+  public function crawler($sUrl, $iLevel, $sParent){
+    print "crawl [$iLevel] - $sUrl \r\n";
+    array_push( ($this->aCrawled), $sUrl);
     $this->iLevel=$iLevel; 
     if ($this->iLevel > $this->iMaxLevel){ return false;}
     if ($this->iCrawled>$this->iCrawlLimit){return false; } 
 
     //grab contents of url
     $sResponse= $this->getUrl($sUrl);
-
+    $this->add($sUrl, $sResponse, $iLevel);
     //get links from url 
     preg_match_all("|href=\"([^\"]*?)\"|i", $sResponse, $aMatches);
     foreach($aMatches[1] as $sItem){
       $sFullUrl = $this->expandUrl($sItem, $sUrl);
       if (!in_array($sFullUrl, $this->aFound) and $this->bValidUrl($sFullUrl)){
-        array_push($this->aFound, $sFullUrl);
-        array_push($this->aProcess, $sFullUrl);
+        $oDoc = new Document();
+        $oDoc->sUrl = $sFullUrl;
+        $oDoc->iLevel = $iLevel+1;
+        array_push($this->aFound, $oDoc);
+        array_push($this->aProcess, $oDoc);
         //$stamp=time();
-        $sContent=$this->getUrl($sFullUrl); 
-        $this->add($sFullUrl, $sContent, $iLevel);
+        #$sContent=$this->getUrl($sFullUrl); 
+        #$this->add($sFullUrl, $sContent, $iLevel);
       }
     }
     $this->iCrawled++;
+    //print 'Crawled: '.$this->iCrawled."\r\n";
 
     //crawl links 
     while($sChildUrl=array_shift($this->aProcess)){ 
-     if($sChildUrl!=""){ 
-        if(!in_array($sChildUrl, ($this->aCrawled))){  
-          print "connect [$iLevel] $sUrl -> $sChildUrl \r\n"; 
-          array_push($this->aCrawled, $sChildUrl); 
-          $this->crawl($sChildUrl, ($iLevel+1), $sUrl);
+     if($sChildUrl->sUrl!=""){ 
+        if(!in_array($sChildUrl->sUrl, ($this->aCrawled))){  
+          print "connect [$sChildUrl->iLevel] $sUrl -> $sChildUrl->sUrl \r\n"; 
+          array_push($this->aCrawled, $sChildUrl->sUrl); 
+          $this->crawl($sChildUrl->sUrl, ($sChildUrl->iLevel), $sUrl);
         }   
       } 
     }
+  
+  }
+  
+  public function crawl($sUrl, $iLevel, $sParent) {
+    print "crawl [$iLevel] - $sUrl \r\n";
+    array_push( ($this->aCrawled), $sUrl);
+    $this->iLevel=$iLevel; 
+    if ($this->iLevel > $this->iMaxLevel){ return false;}
+    if ($this->iCrawled>$this->iCrawlLimit){return false; } 
+
+    //grab contents of url
+    $sResponse= $this->getUrl($sUrl);
+    $this->add($sUrl, $sResponse, $iLevel);
+    //get links from url 
+    preg_match_all("|href=\"([^\"]*?)\"|i", $sResponse, $aMatches);
+    foreach($aMatches[1] as $sItem){
+      $sFullUrl = $this->expandUrl($sItem, $sUrl);
+      if (!in_array($sFullUrl, $this->aFound) and $this->bValidUrl($sFullUrl)){
+        $oDoc = new Document();
+        $oDoc->sUrl = $sFullUrl;
+        $oDoc->iLevel = $iLevel+1;
+        array_push($this->aFound, $oDoc);
+        array_push($this->aProcess, $oDoc);
+#        array_push($this->aFound, $sFullUrl);
+#        array_push($this->aProcess, $sFullUrl);
+        //$stamp=time();
+        #$sContent=$this->getUrl($sFullUrl); 
+        #$this->add($sFullUrl, $sContent, $iLevel);
+      }
+    }
+    $this->iCrawled++;
+    //print 'Crawled: '.$this->iCrawled."\r\n";
+
+    //crawl links 
+#    while($sChildUrl=array_shift($this->aProcess)){ 
+#     if($sChildUrl!=""){ 
+#        if(!in_array($sChildUrl, ($this->aCrawled))){  
+#          print "connect [$iLevel] $sUrl -> $sChildUrl \r\n"; 
+#          array_push($this->aCrawled, $sChildUrl); 
+#          $this->crawl($sChildUrl, ($iLevel+1), $sUrl);
+#        }   
+#      } 
+#    }
+    
   }
 
   public function expandUrl($sItem, $sParent){
@@ -171,7 +221,6 @@ class Crawler {
     }
    
     //TODO: crawlskip 
-   
     foreach ($this->aFilterAdd as $oItem){
       preg_match("|$oItem|",$sUrl, $aMatch);
       if ( count($aMatch) > 0 ){
@@ -180,5 +229,11 @@ class Crawler {
     }
     return false;
   }
+};
+
+class Document{
+  public $sUrl = "";
+  public $sContent = "";
+  public $iLevel = 0;
 };
 ?>

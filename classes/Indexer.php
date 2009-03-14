@@ -36,15 +36,16 @@ class Indexer {
     $this->clear(); 
 
    //grab the latest versions from the dump
-  $res = mysql_query("select max(retrieved),url,html from dump where user_id='".$this->iCustomerId."' group by user_id,url") or die (mysql_error());
+  $res = mysql_query("select max(retrieved),url,html,level from dump where user_id='".$this->iCustomerId."' group by user_id,url") or die (mysql_error());
    while($row=mysql_fetch_array($res)){
      $this->add(urldecode($row['url']),
-     		urldecode($row['html'])
+     		urldecode($row['html']),
+     		$row['level']
 			);
     }
   }
 
-  public function add($url, $body ) {
+  public function add($url, $body, $level ) {
 
   $title="";
 
@@ -74,18 +75,20 @@ class Indexer {
    $sFound='';
 
    //find title
-   preg_match("|<title>(.*?)<\/title>|is", $body, $aMatches);
-   if(sizeof($aMatches)){ 
-     $title = $aMatches[1];
-     $sFound = 'title';
-   }
-  
-   preg_match("|<h1>(.*?)<\/h1>|is", $body, $aMatches);
-   if(sizeof($aMatches)){ 
-     $title = $aMatches[1];
-     $sFound = 'h1';
-   } 
-   
+   if ($title == ''){
+     preg_match("|<.*?content_header[^>]*?\>(.*?)<\/[^>]*?\>|is", $body, $aMatches);
+     if(sizeof($aMatches)){ 
+       $title = $aMatches[1];
+       $sFound = 'h1';
+     } 
+   }   
+   if ($title == ''){
+     preg_match("|<h1>(.*?)<\/h1>|is", $body, $aMatches);
+     if(sizeof($aMatches)){ 
+       $title = $aMatches[1];
+       $sFound = 'h1';
+     } 
+   }   
    if ($title == ''){
      preg_match("|<h2>(.*?)<\/h2>|is", $body, $aMatches);
      if(sizeof($aMatches)){ 
@@ -93,6 +96,13 @@ class Indexer {
       $sFound = 'h2';
      }
    }
+   if ($title == ''){
+     preg_match("|<title>(.*?)<\/title>|is", $body, $aMatches);
+     if(sizeof($aMatches)){ 
+       $title = $aMatches[1];
+       $sFound = 'title';
+     }
+   }  
    if ($title == ''){
      preg_match("|<h3>(.*?)<\/h3>|is", $body, $aMatches);
      if(sizeof($aMatches)){ 
@@ -114,12 +124,16 @@ class Indexer {
    // } 
    //}   
   //remove title:
-  $body = str_replace($title, "", $body);  
+  //$body = str_replace($title, "", $body); // Johan Bad idea  
   $title = strip_tags($title);	
 
   //remove clutter 
    $body = preg_replace("/<script.*?<\/script>/is", ' ', $body);
    $body = preg_replace("/<\!\-\-.*?\-\->/is", ' ', $body);
+   #$body = preg_match("/<body[^>]*?\>(.*?)<\/body>/is", $body, $matches);
+   #$body = $matches[1];
+   $body = preg_match("/<[^>]*?content_ingress[^>]*?\>(.*?)<\/body>/is", $body, $matches);
+   $body = $matches[1];
    $body = strip_tags($body);
    $body = $this->sHtmlToRawText($body);
    $body = preg_replace("/\s+/is", ' ', $body);
@@ -136,11 +150,11 @@ class Indexer {
    //add documents with content
    $blength=strlen($body);
    if($blength>5 && strlen($url)>0 ){ 
-     $sSQL = "INSERT INTO document(user_id,url,title,content,md5) values('".$this->iCustomerId."','$url','$title', '$body', '$md5');";
-     print "indexing: [ $blength ] $url \r\n";  
+     $sSQL = "INSERT INTO document(user_id,url,title,content,md5, level) values('".$this->iCustomerId."','$url','$title', '$body', '$md5', '$level');";
+     //print "indexing: [ $blength ] $url \r\n";  
      mysql_query( $sSQL ) or die (mysql_error());
    }else{
-      print "empty doc \r\n";
+      print $url." empty doc <br />\r\n";
     }
   } 
 
