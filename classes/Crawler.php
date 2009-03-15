@@ -45,7 +45,8 @@ class Crawler {
     $aDomain= $u->getDomains($iCustomerId);
     $aFilterAdd = array(); 
     for ($i=0;$i<sizeof($aDomain);$i++){
-     array_push( $aFilterAdd, $aDomain[$i]);
+        print "DOMAIN:".$aDomain[i]."\r\n"; 
+        array_push( $aFilterAdd, $aDomain[$i]);
     }
     $this->aFilterAdd = $aFilterAdd;
     $this->aFound=array();
@@ -104,10 +105,11 @@ class Crawler {
     $sResponse= $this->getUrl($sUrl);
     $this->add($sUrl, $sResponse, $iLevel);
     //get links from url 
-    preg_match_all("|href=\"([^\"]*?)\"|i", $sResponse, $aMatches);
+    preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
     foreach($aMatches[1] as $sItem){
       $sFullUrl = $this->expandUrl($sItem, $sUrl);
-      if (!in_array($sFullUrl, $this->aFound) and $this->bValidUrl($sFullUrl)){
+    print "FULL URL:".$sFullUrl."\r\n";   
+    if (!in_array($sFullUrl, $this->aFound) and $this->bValidUrl($sFullUrl)){
         $oDoc = new Document();
         $oDoc->sUrl = $sFullUrl;
         $oDoc->iLevel = $iLevel+1;
@@ -128,9 +130,7 @@ class Crawler {
           print "connect [$sChildUrl->iLevel] $sUrl -> $sChildUrl->sUrl \r\n"; 
             array_push($this->aCrawled, $sChildUrl->sUrl); 
           $this->crawl($sChildUrl->sUrl, ($sChildUrl->iLevel), $sUrl);
-        
-
-                  }   
+         }   
       } 
     }
   
@@ -147,7 +147,7 @@ class Crawler {
     $sResponse= $this->getUrl($sUrl);
     $this->add($sUrl, $sResponse, $iLevel);
     //get links from url 
-    preg_match_all("|href=\"([^\"]*?)\"|i", $sResponse, $aMatches);
+    preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
     foreach($aMatches[1] as $sItem){
       $sFullUrl = $this->expandUrl($sItem, $sUrl);
       if (!in_array($sFullUrl, $this->aFound) and $this->bValidUrl($sFullUrl)){
@@ -217,11 +217,12 @@ class Crawler {
           return false;
       }
      } 
-
     foreach ($this->aFilterAdd as $oItem){
       preg_match("|$oItem|",$sUrl, $aMatch);
       if ( count($aMatch) > 0 ){
      	return true;
+      }else {
+        print "NOT CRAWLED:".$sUrl."\r\n";
       }
     }
     return false;

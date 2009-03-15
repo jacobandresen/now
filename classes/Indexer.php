@@ -35,7 +35,7 @@ class Indexer {
     $this->clear(); 
 
    //grab the latest versions from the dump
-  $res = mysql_query("select max(retrieved),url,html,level from dump where user_id='".$this->iCustomerId."' group by user_id,url") or die (mysql_error());
+  $res = mysql_query("select max(retrieved),url,html,level from dump where user_id='".$this->iCustomerId."' group by user_id,url") ; //or die (mysql_error());
    while($row=mysql_fetch_array($res)){
      try{ 
      $this->add(urldecode($row['url']),
@@ -145,7 +145,7 @@ class Indexer {
 
   //check for duplicate 
   $md5 = md5($body); 
-  $result=mysql_query("SELECT * from document where md5='$md5'") or die(mysql_error());
+  $result=mysql_query("SELECT * from document where md5='$md5'");// or die(mysql_error());
     $row=mysql_fetch_row($result); 
     if($row) {
       print "\r\nduplicate found\r\n"; 
@@ -157,7 +157,7 @@ class Indexer {
    if($blength>5 && strlen($url)>0 ){ 
      $sSQL = "INSERT INTO document(user_id,url,title,content,md5, level) values('".$this->iCustomerId."','$url','$title', '$body', '$md5', '$level');";
      print "indexing: [ $blength ] $url \r\n";  
-     mysql_query( $sSQL ) or die (mysql_error());
+     mysql_query( $sSQL ) ;//or die (mysql_error());
    }else{
       print $url." empty doc <br />\r\n";
     }

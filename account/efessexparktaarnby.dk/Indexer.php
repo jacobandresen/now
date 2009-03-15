@@ -5,7 +5,7 @@ require_once ('../../classes/HTTPClient.php');
 require_once ('../../classes/Indexer.php');
 
 $u = new UserManagement();
-$iUserId = $u->getUserId("pedant.dk");
+$iUserId = $u->getUserId("efessexparktaarnby.dk");
 $i = new Indexer($iUserId);
 $i->index();
 

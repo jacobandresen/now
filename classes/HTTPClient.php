@@ -95,8 +95,18 @@ class HTTPClient {
            $sNewUrl=$this->aHeaders['location'];
            print "redirecting to:".$sNewUrl."\r\n"; 
            $this->Connect($this->sHost);
-           $this->sFinalUrl=$sNewUrl;           
-           print "[".$this->sFinalUrl."]\r\n"; 
+           
+            //make sure we have a full url
+            if(!(strpos($sNewUrl, $this->sHost))){
+                print "EXPAND:".$this->sHost."\r\n";
+                $sNewUrl="http://".$this->sHost.$sNewUrl;
+                print "NEW URL:".$sNewUrl."\r\n";
+            }
+
+
+            $this->sFinalUrl=$sNewUrl;           
+           
+            print "[".$this->sFinalUrl."]\r\n"; 
             return($this->Get($sNewUrl));
         }else{
           print "too many redirects \r\n";
