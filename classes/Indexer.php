@@ -37,19 +37,23 @@ class Indexer {
    //grab the latest versions from the dump
   $res = mysql_query("select max(retrieved),url,html,level from dump where user_id='".$this->iCustomerId."' group by user_id,url") or die (mysql_error());
    while($row=mysql_fetch_array($res)){
+     try{ 
      $this->add(urldecode($row['url']),
      		urldecode($row['html']),
      		$row['level']
 			);
+      }catch(Exception $e){
+        print "FAILED: $url \r\n";
+        }
     }
   }
 
   public function add($url, $body, $level ) {
-
-  $title="";
+    try{
+    $title="";
 
    //don't index same url twice
-    $res= mysql_query("SELECT id from document where url='$url' and user_id='".$this->iCustomerId."'") or die(mysql_error());
+    $res= mysql_query("SELECT id from document where url='$url' and user_id='".$this->iCustomerId."'") ; //or die(mysql_error());
    if($row=mysql_fetch_array($res)){
       print "duplicate: $url <br> \r\n"; 
       return false;
@@ -157,7 +161,12 @@ class Indexer {
    }else{
       print $url." empty doc <br />\r\n";
     }
-  } 
+   }catch(Exception $e){
+
+    print "failed adding $url\r\n";
+    } 
+
+ } 
 
   public function reset() {
     $sSQL = "DELETE from document where user_id='".$this->iCustomerId."'";  
