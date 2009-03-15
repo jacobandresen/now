@@ -12,9 +12,8 @@ class Crawler {
  protected $iMaxLevel;          //maximum distance from front page
  protected $iCrawlLimit;        //maximum number of urls to be crawled
 
-
- protected $aFilterAdd;		//domains to be crawled
- protected $aFilterSkip;	//skip filters for urls
+ public   $aFilterAdd;		//domains to be crawled
+ public   $aFilterSkip;	        //skip filters for urls
 
 
  public function __construct($iCustomerId){
@@ -52,9 +51,7 @@ class Crawler {
     $this->aFound=array();
     $this->aCrawled=array();
     $this->aProcess=array();
-  
   }
-
 
   public function clear () {
     mysql_query ("DELETE from dump where user_id='".$this->iCustomerId."'") or die(mysql_error());
@@ -87,6 +84,11 @@ class Crawler {
      }
    
    $sContent = $c->get($sUrl);
+   if ($sUrl!=$c->sFinalUrl){
+      print $sUrl ." -> ".$c->sFinalUrl."\r\n"; 
+      array_push($this->aCrawled, $sFinalUrl); 
+   } 
+
    $c->Close();
    return($sContent); 
    } 
@@ -124,9 +126,11 @@ class Crawler {
      if($sChildUrl->sUrl!=""){ 
         if(!in_array($sChildUrl->sUrl, ($this->aCrawled))){  
           print "connect [$sChildUrl->iLevel] $sUrl -> $sChildUrl->sUrl \r\n"; 
-          array_push($this->aCrawled, $sChildUrl->sUrl); 
+            array_push($this->aCrawled, $sChildUrl->sUrl); 
           $this->crawl($sChildUrl->sUrl, ($sChildUrl->iLevel), $sUrl);
-        }   
+        
+
+                  }   
       } 
     }
   
@@ -152,26 +156,12 @@ class Crawler {
         $oDoc->iLevel = $iLevel+1;
         array_push($this->aFound, $oDoc);
         array_push($this->aProcess, $oDoc);
-#        array_push($this->aFound, $sFullUrl);
-#        array_push($this->aProcess, $sFullUrl);
         //$stamp=time();
         #$sContent=$this->getUrl($sFullUrl); 
         #$this->add($sFullUrl, $sContent, $iLevel);
       }
     }
     $this->iCrawled++;
-    //print 'Crawled: '.$this->iCrawled."\r\n";
-
-    //crawl links 
-#    while($sChildUrl=array_shift($this->aProcess)){ 
-#     if($sChildUrl!=""){ 
-#        if(!in_array($sChildUrl, ($this->aCrawled))){  
-#          print "connect [$iLevel] $sUrl -> $sChildUrl \r\n"; 
-#          array_push($this->aCrawled, $sChildUrl); 
-#          $this->crawl($sChildUrl, ($iLevel+1), $sUrl);
-#        }   
-#      } 
-#    }
     
   }
 
@@ -219,8 +209,15 @@ class Crawler {
     if ( count($aMatch) > 0 ){
       return false;
     }
-   
-    //TODO: crawlskip 
+
+    foreach ($this->aFilterSkip as $oItem){
+      preg_match("|$oItem|", $sUrl, $aMatch);
+      if( count($aMatch) > 0){
+          print "SKIP $sUrl \r\n"; 
+          return false;
+      }
+     } 
+
     foreach ($this->aFilterAdd as $oItem){
       preg_match("|$oItem|",$sUrl, $aMatch);
       if ( count($aMatch) > 0 ){

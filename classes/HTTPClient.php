@@ -1,7 +1,13 @@
 <?php
 
+//TODO: support conditional GET
+//TODO: support HTTP 1.1
+
 class HTTPClient {
-  
+
+  public $sStatus;
+  public $sFinalUrl;
+ 
   //socket connection
   protected $oSocket; 
   protected $sHost;
@@ -47,7 +53,7 @@ class HTTPClient {
     $sRequest.="\r\nAccept-Charset: iso-8859-1";
     $sRequest.="\r\nConnection: close\r\n\r\n"; 
 
- 
+    if($this->oSocket) 
     fputs( $this->oSocket, $sRequest."\r\n"); 
   }
 
@@ -89,7 +95,9 @@ class HTTPClient {
            $sNewUrl=$this->aHeaders['location'];
            print "redirecting to:".$sNewUrl."\r\n"; 
            $this->Connect($this->sHost);
-           return($this->Get($sNewUrl));
+           $this->sFinalUrl=$sNewUrl;           
+           print "[".$this->sFinalUrl."]\r\n"; 
+            return($this->Get($sNewUrl));
         }else{
           print "too many redirects \r\n";
           return("");   
@@ -113,6 +121,7 @@ class HTTPClient {
        //handle redirects
        if( $aStatus[1]=="301" || $aStatus[1]=="302"){
          $this->getHeaders(); 
+         $this->sStatus="301"; 
          return($this->Redirect());
        } 
        if($aStatus[1]=="400"){

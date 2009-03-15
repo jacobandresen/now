@@ -4,7 +4,6 @@ class Indexer {
 
   protected $iCustomerId;       //customer number in database
   protected $iDomainId;         //current domain being processed 
-  
   protected $skipStore;		//skip filters
 
   public function setDomain($sDomain) {
@@ -132,8 +131,10 @@ class Indexer {
    $body = preg_replace("/<\!\-\-.*?\-\->/is", ' ', $body);
    #$body = preg_match("/<body[^>]*?\>(.*?)<\/body>/is", $body, $matches);
    #$body = $matches[1];
-   $body = preg_match("/<[^>]*?content_ingress[^>]*?\>(.*?)<\/body>/is", $body, $matches);
-   $body = $matches[1];
+
+ //korpen.se specific  
+ // $body = preg_match("/<[^>]*?content_ingress[^>]*?\>(.*?)<\/body>/is", $body, $matches);
+  // $body = $matches[1];
    $body = strip_tags($body);
    $body = $this->sHtmlToRawText($body);
    $body = preg_replace("/\s+/is", ' ', $body);
@@ -151,7 +152,7 @@ class Indexer {
    $blength=strlen($body);
    if($blength>5 && strlen($url)>0 ){ 
      $sSQL = "INSERT INTO document(user_id,url,title,content,md5, level) values('".$this->iCustomerId."','$url','$title', '$body', '$md5', '$level');";
-     //print "indexing: [ $blength ] $url \r\n";  
+     print "indexing: [ $blength ] $url \r\n";  
      mysql_query( $sSQL ) or die (mysql_error());
    }else{
       print $url." empty doc <br />\r\n";
