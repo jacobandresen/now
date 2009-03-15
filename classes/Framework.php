@@ -11,10 +11,10 @@ class Yase{
  protected $sName;
  protected $sPassword;
 
- protected $oUserManagement;
- protected $oIndexer;
- protected $oCrawler;
- protected $oSearcher;
+ public $oUserManagement;
+ public $oIndexer;
+ public $oCrawler;
+ public $oSearcher;
 
  public function __construct($sUser){
    

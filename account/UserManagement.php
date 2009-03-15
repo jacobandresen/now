@@ -2,7 +2,6 @@
  include("../classes/Global.php");
  include("../classes/UserManagement.php");
 
-
  $u = new UserManagement();
  $u->addUser("korpen.se","test", "korpen.se");
  $u->addUser("pedant.dk","test", "pedant.dk");

@@ -1,5 +1,4 @@
 <?
-
 class Paging{
 
   public  $iOffset     = 0;
@@ -36,7 +35,7 @@ class Paging{
 	    if ($iPage == $iIndex){
 	      $sNavigation .= ' | <b>' . $iIndex . '</b>';
       } else {
-	      $sNavigation .= ' | <a onClick="search_result('.($iIndex).');" class="nav">' . $iIndex . '</a> ';
+	      $sNavigation .= ' | <a onClick="yase.result('.($iIndex).');" class="nav">' . $iIndex . '</a> ';
 	    }
       if($iMenuItem==$iItems) break;
   
@@ -45,16 +44,16 @@ class Paging{
     	$sNavigation .= '...';
     }
 
-	  if($iPage > 1) $sNavigation = ' | <a onClick="search_result('.($iPage-1).');" class="nav">&lt;</a> ' . $sNavigation;
+	  if($iPage > 1) $sNavigation = ' | <a onClick="yase.result('.($iPage-1).');" class="nav">&lt;</a> ' . $sNavigation;
 	  else $sNavigation = ' | <b>&lt;</b> ' . $sNavigation;
 
-	  if($iPage != 1) $sNavigation = '<a onClick="search_result(1);" class="nav">&lt;&lt;</a> ' . $sNavigation;
+	  if($iPage != 1) $sNavigation = '<a onClick="yase.result(1);" class="nav">&lt;&lt;</a> ' . $sNavigation;
 	  else $sNavigation = '<b>&lt;&lt;</b> ' . $sNavigation;
 
-	  if($iPage < $iPages) $sNavigation = $sNavigation . ' | <a  onClick="search_result('.($iPage+1).');" class="nav">&gt;</a>';
+	  if($iPage < $iPages) $sNavigation = $sNavigation . ' | <a  onClick="yase.result('.($iPage+1).');" class="nav">&gt;</a>';
 	  else $sNavigation = $sNavigation . ' | <b>&gt;</b>';
 
-	  if($iPage != $iPages) $sNavigation = $sNavigation . ' | <a  onClick="search_result('.($iPages).');" class="nav">&gt;&gt;</a>';
+	  if($iPage != $iPages) $sNavigation = $sNavigation . ' | <a  onClick="yase.result('.($iPages).');" class="nav">&gt;&gt;</a>';
 	  else $sNavigation = $sNavigation . ' | <b>&gt;&gt;</b>';
 
 		print $sNavigation;

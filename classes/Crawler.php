@@ -45,7 +45,6 @@ class Crawler {
     $aDomain= $u->getDomains($iCustomerId);
     $aFilterAdd = array(); 
     for ($i=0;$i<sizeof($aDomain);$i++){
-        print "DOMAIN:".$aDomain[i]."\r\n"; 
         array_push( $aFilterAdd, $aDomain[$i]);
     }
     $this->aFilterAdd = $aFilterAdd;
@@ -54,7 +53,7 @@ class Crawler {
     $this->aProcess=array();
   }
 
-  public function clear () {
+  public function reset () {
     mysql_query ("DELETE from dump where user_id='".$this->iCustomerId."'") or die(mysql_error());
   }
 
