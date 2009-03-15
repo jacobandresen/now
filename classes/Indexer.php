@@ -70,9 +70,9 @@ class Indexer {
    //process content
    $orig=$body;
  
-   //if ($this->isUTF8($body)){
-   //  $body = iconv("UTF-8", "ISO-8859-1", $body);
-   //}
+   if ($this->isUTF8($body)){
+     $body = iconv("UTF-8", "ISO-8859-1", $body);
+   }
 
    $timestmp=time();
    $sFound='';
