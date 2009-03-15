@@ -17,18 +17,18 @@ body{
 div {
   /*border: 1px dashed #cccccc;*/
 }
-#title a{
+.title a{
   font-size: 16px;
   font-weight: bold;
   color: #5bb200;
   padding: 10px;
   text-decoration: none;
 }
-#content{
+.content{
   color: #666666;
   padding: 10px;
 }
-#navigation{
+.navigation{
 /*  border: 1px solid #339900;*/
   background: #65c202;
   text-align: center;
