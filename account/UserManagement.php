@@ -8,4 +8,5 @@
  $u->addUser("efessexparktaarnby.dk", "test", "efessexparktaarnby.dk");
  $u->addUser("jci.dk", "test", "jci.dk");
  $u->addUser("johanbackstrom.se", "test", "johanbackstrom.se");
+ $u->addUser("gianelli.dk", "test", "gianelli.dk");
 ?>

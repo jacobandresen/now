@@ -1,4 +1,4 @@
-<?php
+<?
 class Paging{
 
   public  $iOffset     = 0;

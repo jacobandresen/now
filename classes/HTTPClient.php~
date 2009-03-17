@@ -104,6 +104,8 @@ class HTTPClient {
                 $sNewUrl="http://".$this->sHost.$sNewUrl;
                 print "NEW URL:".$sNewUrl."\r\n";
             }
+
+
             $this->sFinalUrl=$sNewUrl;           
            
             print "[".$this->sFinalUrl."]\r\n"; 

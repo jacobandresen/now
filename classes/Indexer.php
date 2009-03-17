@@ -18,10 +18,7 @@ class Indexer {
   }
 
   public function addBodyFilter ($bodyfilter ) {
- //   $bodyfilter=urlencode($bodyfilter); 
- //   mysql_query("insert into filter(user_id, name,domain_id, value) values('".$this->iCustomerId."','body','".$this->iDomainId."','".$bodyfilter."')");// or die(mysql_error());
-  $this->sBodyFilter=$bodyfilter; 
-
+    $this->sBodyFilter=$bodyfilter; 
   }
 
  public function __construct($iCustomerId){

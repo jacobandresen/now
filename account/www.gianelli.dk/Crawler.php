@@ -5,12 +5,13 @@ require_once ('../../classes/HTTPClient.php');
 require_once ('../../classes/Crawler.php');
 
 $u = new UserManagement();
-$iUserId = $u->getUserId("jci.dk");
+$iUserId = $u->getUserId("gianelli.dk");
 
 $c = new Crawler($iUserId);
+$c->reset();
 $aFilterSkip = array();
 
-array_push( $aFilterSkip, "print");
+//array_push( $aFilterSkip, "print");
 array_push( $aFilterSkip, "\.pdf");
 array_push( $aFilterSkip, "\.ppt");
 array_push( $aFilterSkip, "\.jpeg");
@@ -24,9 +25,8 @@ array_push( $aFilterSkip, "xmlrpc");
 array_push( $aFilterSkip, "\#respond");
 array_push( $aFilterSkip, "\#comment");
 array_push( $aFilterSkip, "\.war");
-array_push( $aFilterSkip, "\.wmv");
 
 $c->aFilterSkip = $aFilterSkip;
-$c->crawler("http://www.jci.dk", 0, "http://www.jci.dk");
+$c->crawler("http://www.gianelli.dk", 0, "http://www.gianelli.dk");
 
 ?>

@@ -5,8 +5,7 @@ require_once ('../../classes/HTTPClient.php');
 require_once ('../../classes/Searcher.php');
 
 $u=new UserManagement();
-$iUserId=$u->getUserId("johanbackstrom.se");
+$iUserId=$u->getUserId("pedant.dk");
 $s=new Searcher($iUserId);
-$s->search("Johan");
-
+$s->search("test");
 ?>

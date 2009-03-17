@@ -42,6 +42,7 @@ class Yase{
    if(isset($_REQUEST['query'])) {
      $this->sQuery        =$_REQUEST['query']; 
    }
+
 }
 
  public function crawl(){
