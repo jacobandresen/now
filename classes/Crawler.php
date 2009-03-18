@@ -218,7 +218,8 @@ class Crawler {
      } 
     foreach ($this->aFilterAdd as $oItem){
       preg_match("|$oItem|",$sUrl, $aMatch);
-      if ( count($aMatch) > 0 ){
+      print "CHECK:".$oItem."\r\n"; 
+    if ( count($aMatch) > 0 ){
      	return true;
       }else {
         print "NOT CRAWLED:".$sUrl."\r\n";

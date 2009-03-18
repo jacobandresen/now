@@ -41,7 +41,7 @@ class Searcher {
         $content=htmlentities($content);
         $oResult = new Result();
         $oResult->sUrl = $row['url'];
-        $oResult->sTitle = $title;
+        $oResult->sTitle = html_entity_decode($title);
         $oResult->sContent = substr($content, 1, 400);
         $aRet[] = $oResult;
       }
