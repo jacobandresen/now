@@ -3,4 +3,9 @@
 
 Yase lets you crawl webpages and put them into a database where you can search them.
 
+
+dependencies:
+ mysql: http://mysql.com
+ xpdf: ftp://ftp.foolabs.com 
+
 released under GPL3 . Commercial licenses are available upon request.

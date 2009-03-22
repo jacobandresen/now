@@ -1,5 +1,7 @@
 <?php
 
+require_once('PDFFilter.php');
+
 class Crawler {
        
  public    $aFound;             //urls found so far
@@ -60,6 +62,7 @@ class Crawler {
   public function add ( $url, $html, $level ){
    print "  add [$level] - $url ".strlen($html)."\r\n";
    //avoid sql injection attacks 
+   $url = utf8_decode($url); 
    $url = urlencode($url); 
 
    if(strlen($url)>256){
@@ -71,6 +74,7 @@ class Crawler {
      print "FILE TOO BIG\r\n"; 
      return; 
    } 
+   $html = utf8_decode($html); 
    $html = urlencode($html);
    mysql_query("INSERT IGNORE into dump(user_id, url, html, level) values('".$this->iCustomerId."','$url', '$html', '$level')") or die (" failed to insert into dump:".mysql_error());
    return; 
@@ -90,6 +94,9 @@ class Crawler {
    } 
 
    $c->Close();
+   
+   
+   
    return($sContent); 
    } 
 
@@ -101,10 +108,18 @@ class Crawler {
     if ($this->iCrawled>$this->iCrawlLimit){return false; } 
 
     //grab contents of url
-    $sResponse= $this->getUrl($sUrl);
+	    
+    preg_match("|\.pdf|i", $sUrl, $aMatch);
+   if(count($aMatch)>0){
+     $p=new PDFFilter();
+     $sReponse = $p->filter($sUrl);
+   }else{ 
+     $sResponse= $this->getUrl($sUrl);
+    
     $this->add($sUrl, $sResponse, $iLevel);
     //get links from url 
     preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
+
     foreach($aMatches[1] as $sItem){
       $sFullUrl = $this->expandUrl($sItem, $sUrl);
     print "FULL URL:".$sFullUrl."\r\n";   
@@ -132,7 +147,9 @@ class Crawler {
          }   
       } 
     }
-  
+   } 
+
+
   }
   
   public function crawl($sUrl, $iLevel, $sParent) {
@@ -212,13 +229,13 @@ class Crawler {
     foreach ($this->aFilterSkip as $oItem){
       preg_match("|$oItem|", $sUrl, $aMatch);
       if( count($aMatch) > 0){
-          print "SKIP $sUrl \r\n"; 
+     //     print "SKIP $sUrl \r\n"; 
           return false;
       }
      } 
     foreach ($this->aFilterAdd as $oItem){
       preg_match("|$oItem|",$sUrl, $aMatch);
-      print "CHECK:".$oItem."\r\n"; 
+    //  print "CHECK:".$oItem."\r\n"; 
     if ( count($aMatch) > 0 ){
      	return true;
       }else {
