@@ -3,7 +3,8 @@
  require_once('Indexer.php');
  require_once('Crawler.php');
  require_once('Searcher.php');
- 
+ require_once('HTTPClient.php');
+
 class Yase{ 
  
  protected $iCustomerId; 
@@ -42,11 +43,13 @@ class Yase{
    if(isset($_REQUEST['query'])) {
      $this->sQuery        =$_REQUEST['query']; 
    }
-}
+ }
 
  public function crawl(){
    $domains = $this->oUserManagement->getDomains($this->iCustomerId);
-   $this->oCrawler->crawl($domains[0], 0, $domains[0]);
+   
+   print "START CRAWL:http://".$domains[0]."\r\n"; 
+   $this->oCrawler->crawler("http://".$domains[0], 0, "http://pedant.dk".$domains[0]);
  }
 
  public function index(){
@@ -57,7 +60,6 @@ class Yase{
    $this->oSearcher->search($sQuery);
  } 
 };
-
 ?>
 
 

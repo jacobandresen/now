@@ -1,16 +1,12 @@
 <?php
 require_once ('../../classes/Global.php');
-require_once ('../../classes/UserManagement.php');
-require_once ('../../classes/HTTPClient.php');
-require_once ('../../classes/Crawler.php');
+require_once ('../../classes/Framework.php');
 
-$u = new UserManagement();
-$iUserId = $u->getUserId("jaksm.dk");
 
-$c = new Crawler($iUserId);
-$c->reset();
+$y = new Yase("gianelli.dk");
+
 $aFilterSkip = array();
-
+//array_push( $aFilterSkip, "print");
 array_push( $aFilterSkip, "\.pdf");
 array_push( $aFilterSkip, "\.ppt");
 array_push( $aFilterSkip, "\.jpeg");
@@ -25,7 +21,7 @@ array_push( $aFilterSkip, "\#respond");
 array_push( $aFilterSkip, "\#comment");
 array_push( $aFilterSkip, "\.war");
 
-$c->aFilterSkip = $aFilterSkip;
-$c->crawler("http://www.jaksm.dk", 0, "http://www.jaksm.dk");
+$y->oCrawler->aFilterSkip = $aFilterSkip;
+$y->crawl();
 
 ?>

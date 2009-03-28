@@ -3,9 +3,43 @@
 
 Yase lets you crawl webpages and put them into a database where you can search them.
 
+Currently the serverside crawler and indexer jobs runs pr account via php on the command line.
+
+To use yase in its present form you will need to know how to use the command line in linux or cygwin and you will also need to be able to operate the mysql server.
+
+
 
 dependencies:
+-------------
+ php: http://php.net  
  mysql: http://mysql.com
- xpdf: ftp://ftp.foolabs.com 
+ xpdf: http://foolabs.com/xpdf/
 
+make sure that the binaries from php,mysql and xpdf are available on your PATH before running the  yase serverside account scripts.
+
+installation:
+-------------
+ load ./data/tables.sql into mysql
+ configure ./classes/Global.php for your mysql user
+ setup an account in ./account/
+
+
+usage:
+------
+call yase.php from an embedded iframe on your webpage
+
+see http://pedant.dk/projekter/yase/ for an example.
+
+
+Feedback:
+---------
+
+Please report bugs at :
+
+http://yase.lighthouseapp.com
+
+
+
+License:
+--------
 released under GPL3 . Commercial licenses are available upon request.

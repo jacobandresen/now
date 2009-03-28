@@ -1,17 +1,13 @@
 <?php
 require_once ('../../classes/Global.php');
-require_once ('../../classes/UserManagement.php');
-require_once ('../../classes/HTTPClient.php');
-require_once ('../../classes/Crawler.php');
+require_once ('../../classes/Framework.php');
 
-$u = new UserManagement();
-$iUserId = $u->getUserId("www.xn--schler-dya.net");
-
-$c = new Crawler($iUserId);
-$c->reset();
+$y = new Yase("kruse-net.dk");
+$y->oCrawler->reset();
 $aFilterSkip = array();
 
-//array_push( $aFilterSkip, "print");
+array_push( $aFilterSkip ,"\.js");
+array_push( $aFilterSkip, "print");
 array_push( $aFilterSkip, "\.pdf");
 array_push( $aFilterSkip, "\.PDF");
 array_push( $aFilterSkip, "\.ppt");
@@ -34,8 +30,20 @@ array_push( $aFilterSkip, "\.war");
 array_push( $aFilterSkip , "audioselect");
 array_push( $aFilterSkip, "antiselect");
 array_push( $aFilterSkip, "jigsaw");
+array_push( $aFilterSkip, "\/admin");
+array_push( $aFilterSkip, "\/tracker");
+array_push( $aFilterSkip, "\/dotproject");
+array_push( $aFilterSkip, "\/magicdb");
+array_push( $aFilterSkip, "\/gallery");
+array_push( $aFilterSkip, "\/pics");
+array_push( $aFilterSkip, "\/slides");
+array_push( $aFilterSkip, "\/viewforum");
+array_push( $aFilterSkip, "\/profile");
+array_push( $aFilterSkip, "\/search\.php");
+array_push( $aFilterSkip, "\/saelges");
 
-$c->aFilterSkip = $aFilterSkip;
-$c->crawler("http://www.xn--schler-dya.net", 0, "http://www.xn--schler-dya.net");
+$y->oCrawler->aFilterSkip = $aFilterSkip;
+
+$y->crawl();
 
 ?>

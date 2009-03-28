@@ -2,9 +2,8 @@
 
 //TODO: support conditional GET
 //TODO: support HTTP 1.1
-
 class HTTPClient {
-
+  protected $store;
   public $sStatus;
   public $sFinalUrl;
  
@@ -62,6 +61,7 @@ class HTTPClient {
     if ( count($aMatch) > 1 ){
       $sHost = $aMatch[2];
     }
+    if(isset($sHost)) 
     $this->sHost=$sHost;
     return($this->sHost); 
   } 
@@ -91,7 +91,8 @@ class HTTPClient {
  
   protected function Redirect() {
         $this->iRedirects++;
-        if($this->iRedirects<3){ 
+  	print "redirects#:".$this->iRedirects."\r\n";	
+	if($this->iRedirects<3){ 
            $sNewUrl=$this->aHeaders['location'];
            print "redirecting to:".$sNewUrl."\r\n"; 
            $this->Connect($this->sHost);
@@ -114,20 +115,21 @@ class HTTPClient {
         } 
   }  
 
+  // 
+  //TODO: write directly to store
+  //TODO: MAX SIZE should be a configuration setting 
+  // 
   protected function getReply () {
     $this->sReply=""; 
    
-    if(!$this->oSocket) 
-        die("read failed");
+    if(!$this->oSocket){ return(""); } 
     
     //status 
     $sStatus=fgets($this->oSocket,512);
     $aStatus=split(" ",$sStatus, 3);
- 
     if( preg_match("/http/i",$aStatus[0])) 
     {
      if($aStatus[1]!="200"){
-
        //handle redirects
        if( $aStatus[1]=="301" || $aStatus[1]=="302"){
          $this->getHeaders(); 
@@ -145,24 +147,20 @@ class HTTPClient {
    
     //number
     $iNumber=fgets($this->oSocket,512);
- 
     $this->sReply=""; 
     try{
      while( !feof($this->oSocket ) ) {
        $sLine=fgets($this->oSocket,512);
-       //TODO: MAX SIZE should be a configuration setting 
        if(strlen($this->sReply) < 1500000){ 
          $this->sReply.=$sLine; 
         }
      }
    }catch(Exception $e){
-
     print "failed retrieving:".$this->ssUrl."\r\n";
    }
     }
    } 
-    
-    return($this->sReply);
+   return($this->sReply);
   }  
  
   public function Get ($sIncomingUrl) {

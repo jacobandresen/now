@@ -6,7 +6,6 @@ class Paging{
   public  $iCount      = 0;
   public  $iPage       = 1;
   public  $iPages      = 1;
-  
   public $aTitles      = array();
   public $aColumns     = array();
 
@@ -112,5 +111,4 @@ class Paging{
   }
 
 }
-//onClick="search_result(1);"
 ?>

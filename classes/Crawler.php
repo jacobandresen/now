@@ -1,5 +1,6 @@
 <?php
 
+//include filters here
 require_once('PDFFilter.php');
 
 class Crawler {
@@ -19,7 +20,6 @@ class Crawler {
 
 
  public function __construct($iCustomerId){
-	 
     $this->iCustomerId = $iCustomerId;
     $this->iCrawled = 0;
     $this->iSeen=0 ;
@@ -71,7 +71,7 @@ class Crawler {
    } 
    
    if(strlen($html)>200000){
-     print "FILE TOO BIG\r\n"; 
+     print "FILE TOO BIG: $url \r\n"; 
      return; 
    } 
    $html = utf8_decode($html); 
@@ -81,23 +81,18 @@ class Crawler {
   }
 
   public function getUrl ($sUrl) {
-     $c=new HttpClient();
-     $sHost = $c->extractHost($sUrl);
-     if($sHost!=""){
-       $c->connect($sHost);
-     }
-   
-   $sContent = $c->get($sUrl);
-   if ($sUrl!=$c->sFinalUrl){
-      print $sUrl ." -> ".$c->sFinalUrl."\r\n"; 
-      array_push($this->aCrawled, $sFinalUrl); 
-   } 
-
-   $c->Close();
-   
-   
-   
-   return($sContent); 
+    $c=new HttpClient();
+    $sHost = $c->extractHost($sUrl);
+    if($sHost!=""){
+      $c->connect($sHost);
+    }
+    $sContent = $c->get($sUrl);
+    if (isset($c->sFinalUrl) && $sUrl!=$c->sFinalUrl){
+     print $sUrl ." -> ".$c->sFinalUrl."\r\n"; 
+     array_push($this->aCrawled, $sFinalUrl); 
+    } 
+    $c->Close();
+    return($sContent); 
    } 
 
   public function crawler($sUrl, $iLevel, $sParent){
@@ -108,17 +103,16 @@ class Crawler {
     if ($this->iCrawled>$this->iCrawlLimit){return false; } 
 
     //grab contents of url
-	    
     preg_match("|\.pdf|i", $sUrl, $aMatch);
-   if(count($aMatch)>0){
+    if(count($aMatch)>0){
      $p=new PDFFilter();
      $sReponse = $p->filter($sUrl);
-   }else{ 
+    }else{ 
      $sResponse= $this->getUrl($sUrl);
     
-    $this->add($sUrl, $sResponse, $iLevel);
-    //get links from url 
-    preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
+     $this->add($sUrl, $sResponse, $iLevel);
+     //get links from url 
+     preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
 
     foreach($aMatches[1] as $sItem){
       $sFullUrl = $this->expandUrl($sItem, $sUrl);
@@ -129,9 +123,6 @@ class Crawler {
         $oDoc->iLevel = $iLevel+1;
         array_push($this->aFound, $oDoc);
         array_push($this->aProcess, $oDoc);
-        //$stamp=time();
-        #$sContent=$this->getUrl($sFullUrl); 
-        #$this->add($sFullUrl, $sContent, $iLevel);
       }
     }
     $this->iCrawled++;
@@ -148,8 +139,6 @@ class Crawler {
       } 
     }
    } 
-
-
   }
   
   public function crawl($sUrl, $iLevel, $sParent) {
