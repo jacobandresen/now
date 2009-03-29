@@ -1,10 +1,8 @@
 <?php
 require_once ('../../classes/Global.php');
-require_once ('../../classes/Framework.php');
-
+require_once ('../../classes/Yase.php');
 
 $y = new Yase("jci.dk");
-
 $aFilterSkip = array();
 
 array_push( $aFilterSkip, "print");
@@ -24,6 +22,5 @@ array_push( $aFilterSkip, "\.war");
 array_push( $aFilterSkip, "\.wmv");
 
 $y->oCrawler->aFilterSkip = $aFilterSkip;
-
 $y->crawl();
 ?>

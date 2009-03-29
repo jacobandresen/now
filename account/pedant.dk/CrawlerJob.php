@@ -1,6 +1,6 @@
 <?php
 include ('../../classes/Global.php');
-include ('../../classes/Framework.php');
+include ('../../classes/Yase.php');
 
 $y = new Yase("pedant.dk");
 $aFilterSkip = array();
