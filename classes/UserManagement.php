@@ -30,7 +30,7 @@ class UserManagement {
  function addDomain($sUser, $sDomain){
     $res=mysql_query("SELECT id from user where login='".$sUser."'");
     if($row=mysql_fetch_row($res)){
-     	mysql_query("INSERT INTO domain(user_id,urlbase) values('".$row[0]."','".$sDomain."')") or die(mysql_error());
+     	mysql_query("INSERT INTO domain(user_id,urlbase) values('".$row[0]."','".$sDomain."')");// or die(mysql_error());
     }else{
     print "not found";
     } 	    
@@ -38,9 +38,10 @@ class UserManagement {
 
  //should require admin rights 
   function addUser($sUser, $sPassword, $sDomain){
-    mysql_query("INSERT INTO user(login,password,level_limit,crawl_limit) values('".$sUser."','".$sPassword."','100','5000')") or die(mysql_error());
+    mysql_query("INSERT INTO user(login,password,level_limit,crawl_limit) values('".$sUser."','".$sPassword."','100','5000')");// or die(mysql_error());
 
    $this->addDomain($sUser, $sDomain); 
+    print "added $sUser \r\n"; 
   }
 };
 

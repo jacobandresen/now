@@ -1,29 +1,51 @@
+
 p#edit {
  float:left;
  margin-top:20px;
  margin-left:20px;
 }
 
-#title a{
+body{
+  font-size: 13px;
   font-weight: bold;
-  color: #990000;
-  padding : 5px;
+  font-family: Arial,sans-serif; /*verdana, tahoma, arial, sans-serif;*/
+  line-height: 15px;
+  margin: 10px;
+  padding: 10px;
 }
-#navigation{
+
+div {
+  /*border: 1px dashed #cccccc;*/
+}
+.title a{
+  font-size: 16px;
+  font-weight: bold;
+  color: #5bb200;
+  padding: 10px;
+  text-decoration: none;
+}
+.content{
+  color: #666666;
+  padding: 10px;
+}
+.navigation{
+/*  border: 1px solid #339900;*/
+  background: #65c202;
   text-align: center;
-  padding: 5px;
+  padding: 10px;
 }
 .nav{
-  color: #990000;
+  color: #ffffff;
 }
 .nav a{
-  color: #990000;
+  color: #ffffff;
 }
+
 #search_box{
-  padding: 5px;
+  padding: 10px;
 }
 #search_result{
   padding-top: 20px;
-  padding: 5px;
+  padding: 10px;
 }
 

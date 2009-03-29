@@ -53,6 +53,7 @@ create table document (
  domain_id      int,
  url 		varchar(256),
  retrieved 	timestamp, 
+ level          int, 
  title 		text,
  content 	text,
  md5		varchar(60), 

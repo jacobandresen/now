@@ -1,5 +1,8 @@
 <?php
 
+//include filters here
+require_once('PDFFilter.php');
+
 class Crawler {
        
  public    $aFound;             //urls found so far
@@ -12,13 +15,11 @@ class Crawler {
  protected $iMaxLevel;          //maximum distance from front page
  protected $iCrawlLimit;        //maximum number of urls to be crawled
 
-
- protected $aFilterAdd;		//domains to be crawled
- protected $aFilterSkip;	//skip filters for urls
+ public   $aFilterAdd;		//domains to be crawled
+ public   $aFilterSkip;	        //skip filters for urls
 
 
  public function __construct($iCustomerId){
-	 
     $this->iCustomerId = $iCustomerId;
     $this->iCrawled = 0;
     $this->iSeen=0 ;
@@ -46,24 +47,22 @@ class Crawler {
     $aDomain= $u->getDomains($iCustomerId);
     $aFilterAdd = array(); 
     for ($i=0;$i<sizeof($aDomain);$i++){
-     array_push( $aFilterAdd, $aDomain[$i]);
+        array_push( $aFilterAdd, $aDomain[$i]);
     }
     $this->aFilterAdd = $aFilterAdd;
     $this->aFound=array();
     $this->aCrawled=array();
     $this->aProcess=array();
-  
   }
 
-
-  public function clear () {
+  public function reset () {
     mysql_query ("DELETE from dump where user_id='".$this->iCustomerId."'") or die(mysql_error());
-    $this->delSkipFilters();  
   }
 
   public function add ( $url, $html, $level ){
-   print "  add [$level] - $url \r\n";
+   print "  add [$level] - $url ".strlen($html)."\r\n";
    //avoid sql injection attacks 
+   $url = utf8_decode($url); 
    $url = urlencode($url); 
 
    if(strlen($url)>256){
@@ -72,57 +71,103 @@ class Crawler {
    } 
    
    if(strlen($html)>200000){
-     print "FILE TOO BIG\r\n"; 
+     print "FILE TOO BIG: $url \r\n"; 
      return; 
    } 
+   $html = utf8_decode($html); 
    $html = urlencode($html);
-   mysql_query("INSERT IGNORE into dump(user_id, url, html) values('".$this->iCustomerId."','$url', '$html')") or die (" failed to insert into dump:".mysql_error());
+   mysql_query("INSERT IGNORE into dump(user_id, url, html, level) values('".$this->iCustomerId."','$url', '$html', '$level')") or die (" failed to insert into dump:".mysql_error());
    return; 
   }
 
   public function getUrl ($sUrl) {
-     $c=new HttpClient();
-     $sHost = $c->extractHost($sUrl);
-     if($sHost!=""){
-       $c->connect($sHost);
-     }
-     return($c->get($sUrl)); 
+    $c=new HttpClient();
+    $sHost = $c->extractHost($sUrl);
+    if($sHost!=""){
+      $c->connect($sHost);
+    }
+    $sContent = $c->get($sUrl);
+    if (isset($c->sFinalUrl) && $sUrl!=$c->sFinalUrl){
+     print $sUrl ." -> ".$c->sFinalUrl."\r\n"; 
+     array_push($this->aCrawled, $sFinalUrl); 
+    } 
+    $c->Close();
+    return($sContent); 
    } 
 
+  public function crawler($sUrl, $iLevel, $sParent){
+    print "crawl [$iLevel] - $sUrl \r\n";
+    array_push( ($this->aCrawled), $sUrl);
+    $this->iLevel=$iLevel; 
+    if ($this->iLevel > $this->iMaxLevel){ return false;}
+    if ($this->iCrawled>$this->iCrawlLimit){return false; } 
+
+    //grab contents of url
+    preg_match("|\.pdf|i", $sUrl, $aMatch);
+    if(count($aMatch)>0){
+     $p=new PDFFilter();
+     $sReponse = $p->filter($sUrl);
+    }else{ 
+     $sResponse= $this->getUrl($sUrl);
+    
+     $this->add($sUrl, $sResponse, $iLevel);
+     //get links from url 
+     preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
+
+    foreach($aMatches[1] as $sItem){
+      $sFullUrl = $this->expandUrl($sItem, $sUrl);
+    print "FULL URL:".$sFullUrl."\r\n";   
+    if (!in_array($sFullUrl, $this->aFound) and $this->bValidUrl($sFullUrl)){
+        $oDoc = new Document();
+        $oDoc->sUrl = $sFullUrl;
+        $oDoc->iLevel = $iLevel+1;
+        array_push($this->aFound, $oDoc);
+        array_push($this->aProcess, $oDoc);
+      }
+    }
+    $this->iCrawled++;
+    //print 'Crawled: '.$this->iCrawled."\r\n";
+
+    //crawl links 
+    while($sChildUrl=array_shift($this->aProcess)){ 
+     if($sChildUrl->sUrl!=""){ 
+        if(!in_array($sChildUrl->sUrl, ($this->aCrawled))){  
+          print "connect [$sChildUrl->iLevel] $sUrl -> $sChildUrl->sUrl \r\n"; 
+            array_push($this->aCrawled, $sChildUrl->sUrl); 
+          $this->crawl($sChildUrl->sUrl, ($sChildUrl->iLevel), $sUrl);
+         }   
+      } 
+    }
+   } 
+  }
+  
   public function crawl($sUrl, $iLevel, $sParent) {
-    print "crawl [$iLevel] - $sUrl \r\n";    
-    array_push( ($this->aCrawled), $sUrl); 
+    print "crawl [$iLevel] - $sUrl \r\n";
+    array_push( ($this->aCrawled), $sUrl);
     $this->iLevel=$iLevel; 
     if ($this->iLevel > $this->iMaxLevel){ return false;}
     if ($this->iCrawled>$this->iCrawlLimit){return false; } 
 
     //grab contents of url
     $sResponse= $this->getUrl($sUrl);
-
+    $this->add($sUrl, $sResponse, $iLevel);
     //get links from url 
-    preg_match_all("|href=\"([^\"]*?)\"|i", $sResponse, $aMatches);
+    preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
     foreach($aMatches[1] as $sItem){
       $sFullUrl = $this->expandUrl($sItem, $sUrl);
       if (!in_array($sFullUrl, $this->aFound) and $this->bValidUrl($sFullUrl)){
-        array_push($this->aFound, $sFullUrl);
-        array_push($this->aProcess, $sFullUrl);
+        $oDoc = new Document();
+        $oDoc->sUrl = $sFullUrl;
+        $oDoc->iLevel = $iLevel+1;
+        array_push($this->aFound, $oDoc);
+        array_push($this->aProcess, $oDoc);
         //$stamp=time();
-        $sContent=$this->getUrl($sFullUrl); 
-        $this->add($sFullUrl, $sContent, $iLevel);
+        #$sContent=$this->getUrl($sFullUrl); 
+        #$this->add($sFullUrl, $sContent, $iLevel);
       }
     }
     $this->iCrawled++;
-
-    //crawl links 
-    while($sChildUrl=array_shift($this->aProcess)){ 
-     if($sChildUrl!=""){ 
-        if(!in_array($sChildUrl, ($this->aCrawled))){  
-          print "connect [$iLevel] $sUrl -> $sChildUrl \r\n"; 
-          array_push($this->aCrawled, $sChildUrl); 
-          $this->crawl($sChildUrl, ($iLevel+1), $sUrl);
-        }   
-      } 
-    }
+    
   }
 
   public function expandUrl($sItem, $sParent){
@@ -169,16 +214,30 @@ class Crawler {
     if ( count($aMatch) > 0 ){
       return false;
     }
-   
-    //TODO: crawlskip 
-   
+
+    foreach ($this->aFilterSkip as $oItem){
+      preg_match("|$oItem|", $sUrl, $aMatch);
+      if( count($aMatch) > 0){
+     //     print "SKIP $sUrl \r\n"; 
+          return false;
+      }
+     } 
     foreach ($this->aFilterAdd as $oItem){
       preg_match("|$oItem|",$sUrl, $aMatch);
-      if ( count($aMatch) > 0 ){
+    //  print "CHECK:".$oItem."\r\n"; 
+    if ( count($aMatch) > 0 ){
      	return true;
+      }else {
+        print "NOT CRAWLED:".$sUrl."\r\n";
       }
     }
     return false;
   }
+};
+
+class Document{
+  public $sUrl = "";
+  public $sContent = "";
+  public $iLevel = 0;
 };
 ?>
