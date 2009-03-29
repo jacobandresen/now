@@ -1,13 +1,8 @@
 <?php
 require_once ('../../classes/Global.php');
-require_once ('../../classes/UserManagement.php');
-require_once ('../../classes/HTTPClient.php');
-require_once ('../../classes/Indexer.php');
+require_once ('../../classes/Yase.php');
 
-$u = new UserManagement();
-$iUserId = $u->getUserId("kruse-net.dk");
-$i = new Indexer($iUserId);
-$i->reset();
+$y=new Yase("kruse-net.dk");
 
 $aFilterSkip=array();
 array_push($aFilterSkip, "\/page\/");
@@ -16,10 +11,10 @@ array_push($aFilterSkip, "\/tag\/");
 array_push($aFilterSkip, "wp-login");
 array_push($aFilterSkip, "\.js");
 array_push($aFilterSkip, "google\.com");
-$i->aFilterSkip=$aFilterSkip;
+$y->oIndexer->aFilterSkip=$aFilterSkip;
 
-$i->addBodyFilter("|div class=\"entry\">(.*?)class=\"rightmeta\"|is");
+$y->oIndexer->addBodyFilter("|div class=\"entry\">(.*?)class=\"rightmeta\"|is");
 
-$i->index();
+$y->index();
 
 ?>

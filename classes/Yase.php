@@ -5,6 +5,7 @@
  require_once('Searcher.php');
  require_once('HTTPClient.php');
 
+//TODO: refactor Paging to here
 class Yase{ 
  
  protected $iCustomerId; 
@@ -12,10 +13,14 @@ class Yase{
  protected $sName;
  protected $sPassword;
 
+ //setup
  public $oUserManagement;
+ 
+ //engine
  public $oIndexer;
  public $oCrawler;
  public $oSearcher;
+// public $oPaging;
 
  public function __construct($sUser){
    
@@ -26,7 +31,8 @@ class Yase{
    $this->oIndexer       = new Indexer($iCustomerId);
    $this->oCrawler       = new Crawler($iCustomerId); 
    $this->oSearcher      = new Searcher($iCustomerId); 
-   
+   //$this->oPaging        = new Paging($sUser);  
+ 
    $this->getParameters();
  }
 
@@ -56,9 +62,10 @@ class Yase{
    $this->oIndexer->index();
  }
 
- public function search($sQuery){
+ public function search($sQuery, $iPage){
    $this->oSearcher->search($sQuery);
  } 
+
 };
 ?>
 

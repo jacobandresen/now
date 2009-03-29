@@ -1,23 +1,19 @@
 <?php
 require_once ('../../classes/Global.php');
-require_once ('../../classes/UserManagement.php');
-require_once ('../../classes/HTTPClient.php');
-require_once ('../../classes/Indexer.php');
+require_once ('../../classes/Yase.php');
 
-$u = new UserManagement();
-$iUserId = $u->getUserId("jaksm.dk");
-$i = new Indexer($iUserId);
-$i->reset();
+
+$y=new Yase("jaksm.dk");
 
 $aFilterSkip=array();
-//array_push($aFilterSkip, "\/page\/");
-//array_push($aFilterSkip, "\/category\/");
-//array_push($aFilterSkip, "\/tag\/");
+array_push($aFilterSkip, "\/page\/");
+array_push($aFilterSkip, "\/category\/");
+array_push($aFilterSkip, "\/tag\/");
 array_push($aFilterSkip, "wp-login");
-$i->aFilterSkip=$aFilterSkip;
+$y->oIndexer->aFilterSkip=$aFilterSkip;
 
-//$i->addBodyFilter("|div class=\"entry-content\">(.*?)class=\"entry-meta\"|is");
+$y->oIndexer->addBodyFilter("|div class=\"entry-content\">(.*?)class=\"entry-meta\"|is");
 
-$i->index();
+$y->index();
 
 ?>

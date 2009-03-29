@@ -1,6 +1,6 @@
 <?php
 require_once ('../../classes/Global.php');
-require_once ('../../classes/Framework.php');
+require_once ('../../classes/Yase.php');
 
 $y = new Yase("kruse-net.dk");
 $y->oCrawler->reset();
@@ -43,7 +43,6 @@ array_push( $aFilterSkip, "\/search\.php");
 array_push( $aFilterSkip, "\/saelges");
 
 $y->oCrawler->aFilterSkip = $aFilterSkip;
-
 $y->crawl();
 
 ?>
