@@ -49,7 +49,7 @@ class Yase{
    $domains = $this->oUserManagement->getDomains($this->iCustomerId);
    
    print "START CRAWL:http://".$domains[0]."\r\n"; 
-   $this->oCrawler->crawler("http://".$domains[0], 0, "http://pedant.dk".$domains[0]);
+   $this->oCrawler->crawler("http://".$domains[0], 0, "http://".$domains[0]);
  }
 
  public function index(){
