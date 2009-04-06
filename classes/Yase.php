@@ -4,6 +4,7 @@
  require_once('Crawler.php');
  require_once('Searcher.php');
  require_once('HTTPClient.php');
+ require_once('Paging.php');
 
 //TODO: refactor Paging to here
 class Yase{ 
@@ -12,6 +13,7 @@ class Yase{
  protected $sAction;
  protected $sName;
  protected $sPassword;
+ protected $sAccount;
 
  //setup
  public $oUserManagement;
@@ -40,6 +42,9 @@ class Yase{
    if(isset($_REQUEST['name'])) {
      $this->sName         =$_REQUEST['name'];
    }		
+   if(isset($_REQUEST['account'])) {
+     $this->sAccount         =$_REQUEST['account'];
+   }		
    if(isset($_REQUEST['password'])){
      $this->sPassword     =$_REQUEST['password'];
    } 
@@ -66,6 +71,28 @@ class Yase{
    $this->oSearcher->search($sQuery);
  } 
 
+  public function page($sQuery, $iPage) {
+    $oPaging = new Paging("yase.php?account=".$this->sAccount."&query=".$sQuery);
+    $sQuery = utf8_decode($sQuery);
+    $iTotal = $this->oSearcher->iSearch($sQuery); 
+    
+    if(!isset($_REQUEST['page']) || $_GET['page'] < 1){
+      $iPage = 1;
+    }
+    $aRes = $this->oSearcher->aSearch($sQuery, $iPage);
+    $iPages = (int) ((($iTotal-1)/$this->oSearcher->iLimit))+1;
+    print '<div class="summary_info">The search for  <b>'.$sQuery.'</b> returned <b>'.$iTotal.'</b> results </div>';
+    print '<div class="navigation">';
+    $oPaging->sNavigationFloat($iPage, $iPages, 'account='.$this->sName.'&query='.$sQuery, $this->oSearcher->iLimit );
+    print '</div>';
+    foreach ($aRes as $oRes){
+      print '<div class="title"><a href="'.$oRes->sUrl.'" target="_parent">'.$oRes->sTitle.'</a></div>';
+      print '<div class="content">'.$oRes->sContent.'</div>';
+    }
+    print '<div class="navigation">';
+    $oPaging->sNavigationFloat($iPage, $iPages, '&query='.$sQuery, $this->oSearcher->iLimit );
+    print '</div>';
+  }
 };
 ?>
 
