@@ -1,7 +1,7 @@
 <?php
 
-//include filters here
 require_once('PDFFilter.php');
+require_once('Document.php');
 
 class Crawler {
        
@@ -70,7 +70,7 @@ class Crawler {
     return;
    } 
    
-   if(strlen($html)>200000){
+   if(strlen($html)>4000000){
      print "FILE TOO BIG: $url \r\n"; 
      return; 
    } 
@@ -102,7 +102,10 @@ class Crawler {
     if ($this->iLevel > $this->iMaxLevel){ return false;}
     if ($this->iCrawled>$this->iCrawlLimit){return false; } 
 
-    //grab contents of url
+    //random wait (firewall buster)
+   sleep(rand(0,3)); 	
+	
+   //grab contents of url
     preg_match("|\.pdf|i", $sUrl, $aMatch);
     if(count($aMatch)>0){
      $p=new PDFFilter();
@@ -148,6 +151,9 @@ class Crawler {
     if ($this->iLevel > $this->iMaxLevel){ return false;}
     if ($this->iCrawled>$this->iCrawlLimit){return false; } 
 
+   //random wait (firewall buster)
+   sleep(rand(0,3)); 	
+   
     //grab contents of url
     $sResponse= $this->getUrl($sUrl);
     $this->add($sUrl, $sResponse, $iLevel);
@@ -235,9 +241,4 @@ class Crawler {
   }
 };
 
-class Document{
-  public $sUrl = "";
-  public $sContent = "";
-  public $iLevel = 0;
-};
 ?>

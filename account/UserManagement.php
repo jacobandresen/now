@@ -12,5 +12,6 @@
  $u->addUser("jaksm.dk", "test", "jaksm.dk"); 
  $u->addUser("kruse-net.dk", "test", "kruse-net.dk");
  $u->addUser("www.xn--schler-dya.net", "test", "www.xn--schler-dya.net");
- $u->addUser("sjv.se", "test", "sjv.se");
+ $u->addUser("www.sjv.se", "test", "www.sjv.se");
+ $u->addUser("support.dataaccess.com", "test", "support.dataaccess.com");
 ?>

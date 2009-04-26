@@ -25,7 +25,7 @@ create table filter (
  id                     int NOT NULL primary key auto_increment,
  domain_id                int,
  name                   varchar(256),
- value                  LONGTEXT, 
+ value                  TEXT, 
  foreign key(domain_id) references domain(id),
  UNIQUE(domain_id, name)
 );
@@ -54,8 +54,8 @@ create table document (
  url 		varchar(256),
  retrieved 	timestamp, 
  level          int, 
- title 		TEXT,
- content 	LONGTEXT,
+ title 		text,
+ content 	text,
  md5		varchar(60), 
  FULLTEXT(content), 
  foreign key(user_id) references user(id)
