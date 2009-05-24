@@ -1,13 +1,14 @@
 <html>
 <head>
- <title>yase demo</title>
+  <title>Yet another search engine</title>
+  <script type="text/javascript" src="lib/ext/adapter/ext/ext-base.js"></script>
+  <script type="text/javascript" src="lib/ext/ext-all.js"></script>
+  <script type="text/javascript" src="Admin.js"></script>
 </head>
-<body> 
+<body>	
 
-<ul>
-<li> admin <a href="admin/">administration</a> </li>
-<li> yase demo <a href="samples/search.html">search page</a> </li>
-</ul>
+test
 
-</body>
+<body>
 </html>
+	
