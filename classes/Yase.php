@@ -6,34 +6,29 @@
  require_once('HTTPClient.php');
  require_once('Paging.php');
 
-//TODO: refactor Paging to here
 class Yase{ 
  
- protected $iCustomerId; 
+ protected $iAccountId; 
+
  protected $sAction;
  protected $sName;
  protected $sPassword;
  protected $sAccount;
 
- //setup
  public $oUserManagement;
  
- //engine
  public $oIndexer;
  public $oCrawler;
  public $oSearcher;
-// public $oPaging;
 
- public function __construct($sUser){
+ public function __construct($sAccount){
    
    $this->oUserManagement = new UserManagement();
-   $iCustomerId = $this->oUserManagement->getUserId($sUser);
-   $this->iCustomerId    = $iCustomerId;
+   $this->iAccountId      = $this->oUserManagement->getAccountId($sAccount);
    
-   $this->oIndexer       = new Indexer($iCustomerId);
-   $this->oCrawler       = new Crawler($iCustomerId); 
-   $this->oSearcher      = new Searcher($iCustomerId); 
-   //$this->oPaging        = new Paging($sUser);  
+   $this->oIndexer       = new Indexer($this->iAccountId);
+   $this->oCrawler       = new Crawler($this->iAccountId); 
+   $this->oSearcher      = new Searcher($this->iAccountId); 
  
    $this->getParameters();
  }
@@ -56,9 +51,13 @@ class Yase{
    }
  }
 
+ public function addCrawlFilter( $sName, $sValue ) {
+   $this->oCrawler->filterSettings->put( $sName , $sValue, "regex");
+ }
+
+
  public function crawl(){
-   $domains = $this->oUserManagement->getDomains($this->iCustomerId);
-   
+   $domains = $this->oUserManagement->getDomains($this->iAccountId);
    print "START CRAWL:http://".$domains[0]."\r\n"; 
    $this->oCrawler->crawler("http://".$domains[0], 0, "http://".$domains[0]);
  }
@@ -70,7 +69,6 @@ class Yase{
  public function search($sQuery, $iPage){
    $this->oSearcher->search($sQuery);
  } 
-
   public function page($sQuery, $iPage) {
     $oPaging = new Paging("yase.php?account=".$this->sAccount."&query=".$sQuery);
     $sQuery = utf8_decode($sQuery);

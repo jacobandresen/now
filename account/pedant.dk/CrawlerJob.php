@@ -3,21 +3,19 @@ include ('../../classes/Global.php');
 include ('../../classes/Yase.php');
 
 $y = new Yase("pedant.dk");
-$aFilterSkip = array();
-array_push( $aFilterSkip, "\.pdf");
-array_push( $aFilterSkip, "\.ppt");
-array_push( $aFilterSkip, "\.jpeg");
-array_push( $aFilterSkip, "\.jpg");
-array_push( $aFilterSkip, "\.gif");
-array_push( $aFilterSkip, "\.zip");
-array_push( $aFilterSkip, "feed");
-array_push( $aFilterSkip, "\.css");
-array_push( $aFilterSkip, "\.xml");
-array_push( $aFilterSkip, "xmlrpc");
-array_push( $aFilterSkip, "\#respond");
-array_push( $aFilterSkip, "\#comment");
-array_push( $aFilterSkip, "\.war");
 
-$y->oCrawler->aFilterSkip = $aFilterSkip;
+$y->addCrawlFilter("pdf", "\.pdf");
+$y->addCrawlFilter("ppt", "\.ppt");
+$y->addCrawlFilter("jpg", "\.jpg");
+$y->addCrawlFilter("gif", "\.gif");
+$y->addCrawlFilter("zip", "\.zip");
+$y->addCrawlFilter("feed", "feed");
+$y->addCrawlFilter("css", "\.css");
+$y->addCrawlFilter("xml", "\.xml");
+$y->addCrawlFilter("xmlrpc", "xmlrpc");
+$y->addCrawlFilter("respond", "\#respond");
+$y->addCrawlFilter("comment", "\#comment");
+$y->addCrawlFilter("war", "\.war");
+
 $y->crawl();
 ?>

@@ -12,7 +12,6 @@
  $sAccount="pedant.dk";
  $sQuery="";
  $iPage="";
-
  if(isset($_GET["account"])){ $sAccount=$_GET['account']; } 
  if(isset($_GET['query'])){ $sQuery=$_GET['query']; } 
  if(isset($_GET['page'])){ $iPage = $_GET['page']; } 
@@ -23,7 +22,6 @@
  <input type="text" name="query"/>
  <input type="submit" name="search" value="yase"/>
 </form>
-
 
 <?php
  $y=new Yase($sAccount);

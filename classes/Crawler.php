@@ -2,72 +2,66 @@
 
 require_once('PDFFilter.php');
 require_once('Document.php');
+require_once('Setting.php');
 
 class Crawler {
-       
- public    $aFound;             //urls found so far
- protected $iLevel;             //distance from front page
- protected $iCrawled;           //urls crawled so far
- protected $iSeen;              //urls seen so far during crawl
- protected $aCrawled;           //urls crawled so far 
- protected $aProcess;           //urls to be processed
- protected $iCustomerId;        //customer number in database
- protected $iMaxLevel;          //maximum distance from front page
- protected $iCrawlLimit;        //maximum number of urls to be crawled
 
- public   $aFilterAdd;		//domains to be crawled
- public   $aFilterSkip;	        //skip filters for urls
+  protected $iAccountId;        //customer number in database
 
+  protected $iMaxLevel;         //maximum distance from front page
+  protected $iCrawlLimit;       //maximum number of urls to be crawled
 
- public function __construct($iCustomerId){
-    $this->iCustomerId = $iCustomerId;
+  //configurable settings
+  public $filterSettings;       //regexes to be skipped
+
+  //runtime information
+  protected $iLevel;            //distance from front page
+  protected $iCrawled;          //urls crawled so far
+  protected $iSeen;             //urls seen so far during crawl
+  public    $aFound;            //urls found so far
+  protected $aCrawled;          //urls crawled so far 
+  protected $aProcess;          //urls to be processed
+
+  //domains configured for account
+  public  $aDomains;
+
+  public function __construct($iAccountId){
+    $this->iAccountId = $iAccountId;
     $this->iCrawled = 0;
     $this->iSeen=0 ;
-
-    //crawl settings 
-    $res = mysql_query("SELECT * from user where id='".$this->iCustomerId."'") or die(mysql_error());
-    if ($row=mysql_fetch_array($res)){
-      if ($row['level_limit']>0) { 
-       $this->iMaxLevel=$row['level_limit'];
-       }else{
-       $this->iMaxLevel=20;
-      }
-      if ($row['crawl_limit']>0){
-       $this->iCrawlLimit=$row['crawl_limit'];
-      }else{
-       $this->iCrawlLimit=500; 
-      }
-    }else{
-      $this->iMaxLevel=20;     
-      $this->iCrawlLimit=500;   
-    }
-
-    //fetch domains to be crawled
-    $u=new UserManagement();
-    $aDomain= $u->getDomains($iCustomerId);
-    $aFilterAdd = array(); 
-    for ($i=0;$i<sizeof($aDomain);$i++){
-        array_push( $aFilterAdd, $aDomain[$i]);
-    }
-    $this->aFilterAdd = $aFilterAdd;
     $this->aFound=array();
     $this->aCrawled=array();
     $this->aProcess=array();
+ 
+    $res = mysql_query("SELECT * from account where id='".$this->iAccountId."'") or die(mysql_error());
+    $row = mysql_fetch_row($res); 
+    $this->iMaxLevel=$row['level_limit'];
+    $this->iCrawlLimit=$row['crawl_limit'];
+
+    $aDomains = array(); 
+    $res = mysql_query("SELECT * from domain where account_id='".$iAccountId."'");
+    while ($row =mysql_fetch_array($res) ) {
+       $sName = $row['name'];
+       array_push( $aDomains, $sName ) ;
+   }
+   $this->aDomains = $aDomains; 
+   
+   $this->filterSettings = new Setting(§iAccountId, "filters");
   }
 
-  public function reset () {
-    mysql_query ("DELETE from dump where user_id='".$this->iCustomerId."'") or die(mysql_error());
-  }
+ public function reset () {
+   mysql_query ("DELETE from dump where account_id='".$this->iAccountId."'") or die(mysql_error());
+ }
 
-  public function add ( $url, $html, $level ){
+ public function add ( $url, $html, $level ){
    print "  add [$level] - $url ".strlen($html)."\r\n";
-   //avoid sql injection attacks 
+ 
    $url = utf8_decode($url); 
    $url = urlencode($url); 
 
    if(strlen($url)>256){
-    print "URL too long \r\n";
-    return;
+     print "URL too long \r\n";
+     return;
    } 
    
    if(strlen($html)>4000000){
@@ -76,41 +70,42 @@ class Crawler {
    } 
    $html = utf8_decode($html); 
    $html = urlencode($html);
-   mysql_query("INSERT IGNORE into dump(user_id, url, html, level) values('".$this->iCustomerId."','$url', '$html', '$level')") or die (" failed to insert into dump:".mysql_error());
+    
+   mysql_query("INSERT IGNORE into dump(account_id, url, html, level) values('".$this->iAccountId."','$url', '$html', '$level')") or die (" failed to insert into dump:".mysql_error());
    return; 
-  }
+ }
 
-  public function getUrl ($sUrl) {
-    $c=new HttpClient();
-    $sHost = $c->extractHost($sUrl);
-    if($sHost!=""){
-      $c->connect($sHost);
-    }
-    $sContent = $c->get($sUrl);
-    if (isset($c->sFinalUrl) && $sUrl!=$c->sFinalUrl){
+ public function getUrl ($sUrl) {
+   $c=new HttpClient();
+   $sHost = $c->extractHost($sUrl);
+   if($sHost!=""){
+     $c->connect($sHost);
+   }
+   $sContent = $c->get($sUrl);
+   if (isset($c->sFinalUrl) && $sUrl!=$c->sFinalUrl){
      print $sUrl ." -> ".$c->sFinalUrl."\r\n"; 
      array_push($this->aCrawled, $sFinalUrl); 
-    } 
-    $c->Close();
-    return($sContent); 
    } 
+   $c->Close();
+   return($sContent); 
+ } 
 
-  public function crawler($sUrl, $iLevel, $sParent){
-    print "crawl [$iLevel] - $sUrl \r\n";
-    array_push( ($this->aCrawled), $sUrl);
-    $this->iLevel=$iLevel; 
-    if ($this->iLevel > $this->iMaxLevel){ return false;}
-    if ($this->iCrawled>$this->iCrawlLimit){return false; } 
+ public function crawler($sUrl, $iLevel, $sParent){
+   print "crawl [$iLevel] - $sUrl \r\n";
+   array_push( ($this->aCrawled), $sUrl);
+   $this->iLevel=$iLevel; 
+   if ($this->iLevel > $this->iMaxLevel){ return false;}
+   if ($this->iCrawled>$this->iCrawlLimit){return false; } 
 
-    //random wait (firewall buster)
+   //random wait (firewall buster)
    sleep(rand(0,3)); 	
 	
    //grab contents of url
-    preg_match("|\.pdf|i", $sUrl, $aMatch);
-    if(count($aMatch)>0){
+   preg_match("|\.pdf|i", $sUrl, $aMatch);
+   if(count($aMatch)>0){
      $p=new PDFFilter();
      $sReponse = $p->filter($sUrl);
-    }else{ 
+   }else{ 
      $sResponse= $this->getUrl($sUrl);
     
      $this->add($sUrl, $sResponse, $iLevel);
@@ -129,14 +124,13 @@ class Crawler {
       }
     }
     $this->iCrawled++;
-    //print 'Crawled: '.$this->iCrawled."\r\n";
 
     //crawl links 
     while($sChildUrl=array_shift($this->aProcess)){ 
      if($sChildUrl->sUrl!=""){ 
         if(!in_array($sChildUrl->sUrl, ($this->aCrawled))){  
           print "connect [$sChildUrl->iLevel] $sUrl -> $sChildUrl->sUrl \r\n"; 
-            array_push($this->aCrawled, $sChildUrl->sUrl); 
+           array_push($this->aCrawled, $sChildUrl->sUrl); 
           $this->crawl($sChildUrl->sUrl, ($sChildUrl->iLevel), $sUrl);
          }   
       } 
@@ -173,7 +167,6 @@ class Crawler {
       }
     }
     $this->iCrawled++;
-    
   }
 
   public function expandUrl($sItem, $sParent){
@@ -210,34 +203,34 @@ class Crawler {
       return $sBase.'/'.$sPage.$sItem;
     }
     $sUrl = $sBase.'/'.$sItem;
-    
     return $sUrl;
   }
 
-  //Make sure that we want to crawl the url
+  /**
+   *Make sure that we want to crawl the url
+   */ 
   public function bValidUrl($sUrl){
     preg_match("|\@|",$sUrl, $aMatch);
     if ( count($aMatch) > 0 ){
       return false;
     }
 
-    foreach ($this->aFilterSkip as $oItem){
+    foreach( $this->filterSettings->getAll() as $oField){
+      $oItem=$oField->value;
       preg_match("|$oItem|", $sUrl, $aMatch);
       if( count($aMatch) > 0){
-     //     print "SKIP $sUrl \r\n"; 
-          return false;
-      }
-     } 
-    foreach ($this->aFilterAdd as $oItem){
-      preg_match("|$oItem|",$sUrl, $aMatch);
-    //  print "CHECK:".$oItem."\r\n"; 
-    if ( count($aMatch) > 0 ){
-     	return true;
-      }else {
-        print "NOT CRAWLED:".$sUrl."\r\n";
-      }
+        return false; 
+      } 
     }
-    return false;
+
+    foreach( $this->aDomains as $oItem){
+      preg_match("|$oItem|", $sUrl, $aMatch);
+      if( count($aMatch) > 0){
+        return true; 
+      } 
+     }
+   
+    return true;
   }
 };
 

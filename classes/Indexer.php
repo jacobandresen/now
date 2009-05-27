@@ -1,5 +1,7 @@
 <?php
 
+require_once('UserManagement.php');
+
 class Indexer { 
 
   protected $iCustomerId;       //customer number in database
@@ -8,46 +10,35 @@ class Indexer {
   public $aFilterSkip;		
   public $sBodyFilter;
 
-  public function setDomain($sDomain) {
-    $res = mysql_query("SELECT id from domain where user_id='".$this->iCustomerId."' and base='".$sDomain."'") or die(mysql_error());
-    if ($row = mysql_fetch_array($res) ){
-     $this->iDomainId=$row['id'];
-    }else{
-     $this->iDomainId=-1;
-    }
-  }
-
   public function addBodyFilter ($bodyfilter ) {
     $this->sBodyFilter=$bodyfilter; 
   }
 
- public function __construct($iCustomerId){
-   if ((!(isset($iCustomerId))) || $iCustomerId<0){
-     die("index:invalid customer id \r\n");
+ public function __construct($iAccountId){
+   if ((!(isset($iAccountId))) || $iAccountId<0){
+     die("index:invalid account id \r\n");
    }
-   $this->iCustomerId=$iCustomerId; 
-   $this->aFilterSkip=array(); 
-   $this->sBodyFilter=""; 
+   $this->iAccountId=$iAccountId; 
+   //$this->aFilterSkip=array(); 
+   //$this->sBodyFilter=""; 
   }
 
   public function clear(){
-    mysql_query("DELETE FROM document where user_id='".$this->iCustomerId."'");
+    mysql_query("DELETE FROM document where account_id='".$this->iAccountId."'");
   }
 
   public function index(){
     $this->clear(); 
 
-   //grab the latest versions from the dump
-  $res = mysql_query("select max(retrieved),url,html,level from dump where user_id='".$this->iCustomerId."' group by user_id,url") ; //or die (mysql_error());
-   while($row=mysql_fetch_array($res)){
-     try{ 
-     $this->add(urldecode($row['url']),
-     		urldecode($row['html']),
-     		$row['level']
-			);
-      }catch(Exception $e){
-        print "FAILED: $url \r\n";
-        }
+    $res = mysql_query("select max(retrieved),url,html,level from dump where user_id='".$this->iAccountId."' group by account_id,url") ; //or die (mysql_error());
+    while($row=mysql_fetch_array($res)){
+      try{ 
+        $this->add(urldecode($row['url']),
+     	   urldecode($row['html']),
+     	   $row['level']);
+       }catch(Exception $e){
+         print "FAILED: $url \r\n";
+       }
     }
   }
 
@@ -55,9 +46,8 @@ class Indexer {
     try{
     $title="";
 
-   //don't index same url twice
-    $res= mysql_query("SELECT id from document where url='$url' and user_id='".$this->iCustomerId."'") ; //or die(mysql_error());
-   if($row=mysql_fetch_array($res)){
+    $res= mysql_query("SELECT id from document where url='$url' and account_id='".$this->iAccountId."'") ; //or die(mysql_error());
+    if($row=mysql_fetch_array($res)){
       print "duplicate: $url <br> \r\n"; 
       return false;
    }
@@ -72,7 +62,6 @@ class Indexer {
 
    //process content
    $orig=$body;
- 
    if ($this->isUTF8($body)){
      $body = iconv("UTF-8", "ISO-8859-1", $body);
    }
@@ -125,10 +114,10 @@ class Indexer {
       }
    }
 
-  //remove title:
-  $title = strip_tags($title);	
+   //remove title:
+   $title = strip_tags($title);	
 
-  //remove clutter 
+   //remove clutter 
    $body = preg_replace("/<script.*?<\/script>/is", ' ', $body);
    $body = preg_replace("/<\!\-\-.*?\-\->/is", ' ', $body);
 
@@ -136,32 +125,28 @@ class Indexer {
    $body = $this->sHtmlToRawText($body);
    $body = preg_replace("/\s+/is", ' ', $body);
 
-
-
-  //check for duplicate 
-  $md5 = md5($body); 
-  $result=mysql_query("SELECT * from document where md5='$md5'");// or die(mysql_error());
-    $row=mysql_fetch_row($result); 
-    if($row) {
-      print "\r\nduplicate found for ".$url."\r\n"; 
-      return false;
-    }
+   //check for duplicate 
+   $md5 = md5($body); 
+   $result=mysql_query("SELECT * from document where md5='$md5'");// or die(mysql_error());
+   $row=mysql_fetch_row($result); 
+   if($row) {
+     print "\r\nduplicate found for ".$url."\r\n"; 
+     return false;
+   }
   
    //add documents with content
    $blength=strlen($body);
    if($blength>5 && strlen($url)>0 ){ 
-     $sSQL = "INSERT INTO document(user_id,url,title,content,md5, level) values('".$this->iCustomerId."','$url','$title', '$body', '$md5', '$level');";
+     $sSQL = "INSERT INTO document(account_id,url,title,content,md5, level) values('".$this->iAccountId."','$url','$title', '$body', '$md5', '$level');";
      print "indexing: [ $blength ] $url \r\n";  
      mysql_query( $sSQL ) ;//or die (mysql_error());
    }else{
       print $url." empty doc <br />\r\n";
     }
-   }catch(Exception $e){
-
+  }catch(Exception $e){
     print "failed adding $url\r\n";
-    } 
-
- } 
+  } 
+} 
 
   public function reset() {
     $sSQL = "DELETE from document where user_id='".$this->iCustomerId."'";  

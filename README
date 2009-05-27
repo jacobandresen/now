@@ -8,7 +8,6 @@ Currently the serverside crawler and indexer jobs runs pr account via php on the
 To use yase in its present form you will need to know how to use the command line in linux or cygwin and you will also need to be able to operate the mysql server.
 
 
-
 dependencies:
 -------------
  php: http://php.net  

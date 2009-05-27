@@ -3,6 +3,9 @@
  include("../classes/UserManagement.php");
 
  $u = new UserManagement();
+
+ $u->clearAll();
+
  $u->addUser("korpen.se","test", "www.korpen.se");
  $u->addUser("pedant.dk","test", "pedant.dk");
  $u->addUser("efessexparktaarnby.dk", "test", "efessexparktaarnby.dk");

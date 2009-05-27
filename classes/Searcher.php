@@ -3,16 +3,16 @@
 include("Result.php");
 
 class Searcher {
-  protected $iCustomerId;
+  protected $iAccountId;
   public $iLimit = 5;
 
-  public function __construct($iCustomerId) {
-    $this->iCustomerId=$iCustomerId;
+  public function __construct($iAccountId) {
+    $this->iAccountId=$iAccountId;
   }
 
   function search($query) {
     if($query!=""){
-      $result = mysql_query("SELECT *, MATCH(content) AGAINST('$query') AS score FROM document WHERE MATCH(content) AGAINST('$query') and user_id='".$this->iCustomerId."' ORDER BY score DESC"); 
+      $result = mysql_query("SELECT *, MATCH(content) AGAINST('$query') AS score FROM document WHERE MATCH(content) AGAINST('$query') and account_id='".$this->iAccountId."' ORDER BY score DESC"); 
       print "<ul>\r\n";     
       while ($row=mysql_fetch_array($result)){
         $title=$row['title'];
@@ -33,7 +33,7 @@ class Searcher {
 	    $sLimit = " LIMIT " . $this->iLimit . " OFFSET $iOffset";
 	  }
     if($query!=""){
-      $result = mysql_query("SELECT *, MATCH(content) AGAINST('$query') AS score FROM document WHERE MATCH(content) AGAINST('$query') and user_id='".$this->iCustomerId."' ORDER BY score DESC ".$sLimit); 
+      $result = mysql_query("SELECT *, MATCH(content) AGAINST('$query') AS score FROM document WHERE MATCH(content) AGAINST('$query') and user_id='".$this->iAccountId."' ORDER BY score DESC ".$sLimit); 
       while ($row=mysql_fetch_array($result)){
         $title=$row['title'];
         $title=htmlentities($title); 
