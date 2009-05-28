@@ -30,7 +30,8 @@ class Indexer {
   public function index(){
     $this->clear(); 
 
-    $res = mysql_query("select max(retrieved),url,html,level from dump where user_id='".$this->iAccountId."' group by account_id,url") ; //or die (mysql_error());
+    $res = mysql_query("select max(retrieved),url,html,level from dump where account_id='".$this->iAccountId."' group by account_id,url") or die (mysql_error());
+    
     while($row=mysql_fetch_array($res)){
       try{ 
         $this->add(urldecode($row['url']),

@@ -33,20 +33,19 @@ class Crawler {
     $this->aCrawled=array();
     $this->aProcess=array();
  
-    $res = mysql_query("SELECT * from account where id='".$this->iAccountId."'") or die(mysql_error());
-    $row = mysql_fetch_row($res); 
-    $this->iMaxLevel=$row['level_limit'];
-    $this->iCrawlLimit=$row['crawl_limit'];
+    //hardcoded settings 
+    $this->iMaxLevel=40;
+    $this->iCrawlLimit = 5000;
 
+    //domains to be crawled 
     $aDomains = array(); 
     $res = mysql_query("SELECT * from domain where account_id='".$iAccountId."'");
     while ($row =mysql_fetch_array($res) ) {
        $sName = $row['name'];
        array_push( $aDomains, $sName ) ;
-   }
-   $this->aDomains = $aDomains; 
-   
-   $this->filterSettings = new Setting(§iAccountId, "filters");
+    }
+    $this->aDomains = $aDomains; 
+    $this->filterSettings = new Setting(§iAccountId, "filters");
   }
 
  public function reset () {
@@ -55,7 +54,6 @@ class Crawler {
 
  public function add ( $url, $html, $level ){
    print "  add [$level] - $url ".strlen($html)."\r\n";
- 
    $url = utf8_decode($url); 
    $url = urlencode($url); 
 
@@ -91,7 +89,7 @@ class Crawler {
  } 
 
  public function crawler($sUrl, $iLevel, $sParent){
-   print "crawl [$iLevel] - $sUrl \r\n";
+   print "crawler [$iLevel] - $sUrl \r\n";
    array_push( ($this->aCrawled), $sUrl);
    $this->iLevel=$iLevel; 
    if ($this->iLevel > $this->iMaxLevel){ return false;}
@@ -114,7 +112,6 @@ class Crawler {
 
     foreach($aMatches[1] as $sItem){
       $sFullUrl = $this->expandUrl($sItem, $sUrl);
-    print "FULL URL:".$sFullUrl."\r\n";   
     if (!in_array($sFullUrl, $this->aFound) and $this->bValidUrl($sFullUrl)){
         $oDoc = new Document();
         $oDoc->sUrl = $sFullUrl;
@@ -146,14 +143,15 @@ class Crawler {
     if ($this->iCrawled>$this->iCrawlLimit){return false; } 
 
    //random wait (firewall buster)
-   sleep(rand(0,3)); 	
+   //sleep(rand(0,3)); 	
    
     //grab contents of url
     $sResponse= $this->getUrl($sUrl);
     $this->add($sUrl, $sResponse, $iLevel);
     //get links from url 
     preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
-    foreach($aMatches[1] as $sItem){
+    
+   foreach($aMatches[1] as $sItem){
       $sFullUrl = $this->expandUrl($sItem, $sUrl);
       if (!in_array($sFullUrl, $this->aFound) and $this->bValidUrl($sFullUrl)){
         $oDoc = new Document();
@@ -230,7 +228,7 @@ class Crawler {
       } 
      }
    
-    return true;
+    return false;
   }
 };
 

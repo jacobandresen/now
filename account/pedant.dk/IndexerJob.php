@@ -13,6 +13,7 @@ $y->oIndexer->aFilterSkip=$aFilterSkip;
 
 $y->oIndexer->addBodyFilter("|div class=\"entry-content\">(.*?)class=\"comments\"|is");
 
+$y->oIndexer->clear();
 $y->index();
 
 ?>

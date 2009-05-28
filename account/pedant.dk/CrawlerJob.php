@@ -4,6 +4,8 @@ include ('../../classes/Yase.php');
 
 $y = new Yase("pedant.dk");
 
+$y->oCrawler->reset();
+
 $y->addCrawlFilter("pdf", "\.pdf");
 $y->addCrawlFilter("ppt", "\.ppt");
 $y->addCrawlFilter("jpg", "\.jpg");
