@@ -70,6 +70,7 @@ class Crawler {
    $html = urlencode($html);
     
    mysql_query("INSERT IGNORE into dump(account_id, url, html, level) values('".$this->iAccountId."','$url', '$html', '$level')") or die (" failed to insert into dump:".mysql_error());
+   
    return; 
  }
 
@@ -128,7 +129,7 @@ class Crawler {
         if(!in_array($sChildUrl->sUrl, ($this->aCrawled))){  
           print "connect [$sChildUrl->iLevel] $sUrl -> $sChildUrl->sUrl \r\n"; 
            array_push($this->aCrawled, $sChildUrl->sUrl); 
-          $this->crawl($sChildUrl->sUrl, ($sChildUrl->iLevel), $sUrl);
+          $this->crawler($sChildUrl->sUrl, ($sChildUrl->iLevel), $sUrl);
          }   
       } 
     }

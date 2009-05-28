@@ -54,6 +54,7 @@ class Indexer {
    }
   
    //process skip filters
+   if($this->aFilterSkip) 
    foreach ($this->aFilterSkip as $oItem){
      preg_match("|$oItem|", $url, $aMatch);
      if ( count($aMatch) > 0){
