@@ -151,7 +151,7 @@ class Indexer {
 } 
 
   public function reset() {
-    $sSQL = "DELETE from document where user_id='".$this->iCustomerId."'";  
+    $sSQL = "DELETE from document where account_id='".$this->iAccountId."'";  
     mysql_query( $sSQL ) or die(mysql_error());
   } 
 

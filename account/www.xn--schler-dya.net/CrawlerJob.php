@@ -4,33 +4,37 @@ require_once ('../../classes/Yase.php');
 
 $y = new Yase("www.xn--schler-dya.net");
 
-$aFilterSkip = array();
 
-//array_push( $aFilterSkip, "print");
-array_push( $aFilterSkip, "\.pdf");
-array_push( $aFilterSkip, "\.PDF");
-array_push( $aFilterSkip, "\.ppt");
-array_push( $aFilterSkip, "\.PPT");
-array_push( $aFilterSkip, "\.jpeg");
-array_push( $aFilterSkip, "\.JPEG");
-array_push( $aFilterSkip, "\.jpg");
-array_push( $aFilterSkip, "\.JPG");
-array_push( $aFilterSkip, "\.gif");
-array_push( $aFilterSkip, "\.GIF");
-array_push( $aFilterSkip, "\.zip");
-array_push( $aFilterSkip, "feed");
-array_push( $aFilterSkip, "\.xml");
-array_push( $aFilterSkip, "\.css");
-array_push( $aFilterSkip, "\.CSS");
-array_push( $aFilterSkip, "xmlrpc");
-array_push( $aFilterSkip, "\#respond");
-array_push( $aFilterSkip, "\#comment");
-array_push( $aFilterSkip, "\.war");
-array_push( $aFilterSkip , "audioselect");
-array_push( $aFilterSkip, "antiselect");
-array_push( $aFilterSkip, "jigsaw");
+$y->oCrawler->reset();
 
-$y->oCrawler->aFilterSkip = $aFilterSkip;
+$y->addCrawlFilter("js", "\.js");
+$y->addCrawlFilter("print", "print");
+$y->addCrawlFilter("pdf", "\.pdf");
+$y->addCrawlFilter("PDF", "\.PDF");
+$y->addCrawlFilter("ppt", "\.ppt");
+$y->addCrawlFilter("PPT", "\.PPT");
+$y->addCrawlFilter("jpeg", "\.jpeg");
+$y->addCrawlFilter("JPEG", "\.JPEG");
+$y->addCrawlFilter("jpg", "\.jpg");
+$y->addCrawlFilter("JPG", "\.JPG");
+$y->addCrawlFilter("gif", "\.gif");
+$y->addCrawlFilter("GIF", "\.GIF");
+$y->addCrawlFilter("zip", "\.zip");
+$y->addCrawlFilter("feed", "feed");
+$y->addCrawlFilter("xml", "\.xml");
+$y->addCrawlFilter("XML", "\.XML");
+$y->addCrawlFilter("css", "\.css");
+$y->addCrawlFilter("CSS", "\.CSS");
+$y->addCrawlFilter("xmlrpc", "xmlrpc");
+$y->addCrawlFilter("respond", "\#respond");
+$y->addCrawlFilter("comment", "\#comment");
+$y->addCrawlFilter("war", "\.war");
+$y->addCrawlFilter("audioselect", "audioselect");
+$y->addCrawlFilter("antiselect", "antiselect");
 
 $y->crawl();
+
 ?>
+
+
+

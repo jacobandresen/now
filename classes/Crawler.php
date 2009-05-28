@@ -100,6 +100,7 @@ class Crawler {
    sleep(rand(0,3)); 	
 	
    //grab contents of url
+   //TODO: use HTML header instead 
    preg_match("|\.pdf|i", $sUrl, $aMatch);
    if(count($aMatch)>0){
      $p=new PDFFilter();
@@ -136,38 +137,6 @@ class Crawler {
    } 
   }
   
-  public function crawl($sUrl, $iLevel, $sParent) {
-    print "crawl [$iLevel] - $sUrl \r\n";
-    array_push( ($this->aCrawled), $sUrl);
-    $this->iLevel=$iLevel; 
-    if ($this->iLevel > $this->iMaxLevel){ return false;}
-    if ($this->iCrawled>$this->iCrawlLimit){return false; } 
-
-   //random wait (firewall buster)
-   //sleep(rand(0,3)); 	
-   
-    //grab contents of url
-    $sResponse= $this->getUrl($sUrl);
-    $this->add($sUrl, $sResponse, $iLevel);
-    //get links from url 
-    preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
-    
-   foreach($aMatches[1] as $sItem){
-      $sFullUrl = $this->expandUrl($sItem, $sUrl);
-      if (!in_array($sFullUrl, $this->aFound) and $this->bValidUrl($sFullUrl)){
-        $oDoc = new Document();
-        $oDoc->sUrl = $sFullUrl;
-        $oDoc->iLevel = $iLevel+1;
-        array_push($this->aFound, $oDoc);
-        array_push($this->aProcess, $oDoc);
-        //$stamp=time();
-        #$sContent=$this->getUrl($sFullUrl); 
-        #$this->add($sFullUrl, $sContent, $iLevel);
-      }
-    }
-    $this->iCrawled++;
-  }
-
   public function expandUrl($sItem, $sParent){
    $sPage="";	  
    if ($sItem == './'){
