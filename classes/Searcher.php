@@ -33,7 +33,7 @@ class Searcher {
 	    $sLimit = " LIMIT " . $this->iLimit . " OFFSET $iOffset";
 	  }
     if($query!=""){
-      $result = mysql_query("SELECT *, MATCH(content) AGAINST('$query') AS score FROM document WHERE MATCH(content) AGAINST('$query') and user_id='".$this->iAccountId."' ORDER BY score DESC ".$sLimit); 
+      $result = mysql_query("SELECT *, MATCH(content) AGAINST('$query') AS score FROM document WHERE MATCH(content) AGAINST('$query') and account_id='".$this->iAccountId."' ORDER BY score DESC ".$sLimit); 
       while ($row=mysql_fetch_array($result)){
         $title=$row['title'];
         $title=htmlentities($title); 
@@ -53,7 +53,7 @@ class Searcher {
     if ($query != "") {
       $sSQL = "SELECT count(title) AS cnt 
                FROM document 
-               WHERE MATCH(content) AGAINST('$query') and user_id='".$this->iCustomerId."'";
+               WHERE MATCH(content) AGAINST('$query') and account_id='".$this->iAccountId."'";
 	    $result = mysql_query( $sSQL ) or die ( mysql_error());
       $row = mysql_fetch_array($result);
       return $row['cnt'];

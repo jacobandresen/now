@@ -8,6 +8,7 @@ $aFilterSkip=array();
 array_push($aFilterSkip, "\/page\/");
 array_push($aFilterSkip, "\/category\/");
 array_push($aFilterSkip, "\/tag\/");
+array_push($aFilterSkip, "\/trackback\/");
 array_push($aFilterSkip, "wp-login");
 $y->oIndexer->aFilterSkip=$aFilterSkip;
 

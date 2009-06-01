@@ -2,15 +2,15 @@
 
 //NOTE: pdftotext is available with xpdf from ftp.foolabs.com
 class PDFFilter {
-  public $iCustomerId;     
+  public $iAccountId;     
 
-  public function __construct($iCustomerId){ 
-    $this->iCustomerId=$iCustomerId;
+  public function __construct($iAccountId){ 
+    $this->iAccountId=$iAccountId;
   }
   
   public function filter($sUrl ){
     $sContent = file_get_contents($sUrl);
-    $tmpFile=$this->iCustomerId."tmp"; 
+    $tmpFile=$this->iAccountId."tmp"; 
     unlink($tmpFile.".pdf");
     unlink($tmpFile.".txt");
     $fh = fopen($tmpFile.".pdf",'w');

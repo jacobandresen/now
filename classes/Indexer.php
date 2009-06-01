@@ -4,7 +4,7 @@ require_once('UserManagement.php');
 
 class Indexer { 
 
-  protected $iCustomerId;       //customer number in database
+  protected $iAccontId;         //account number in database
   protected $iDomainId;         //current domain being processed 
   protected $skipStore;		//skip filters
   public $aFilterSkip;		
@@ -19,12 +19,11 @@ class Indexer {
      die("index:invalid account id \r\n");
    }
    $this->iAccountId=$iAccountId; 
-   //$this->aFilterSkip=array(); 
-   //$this->sBodyFilter=""; 
+   $this->sBodyFilter=""; 
   }
 
   public function clear(){
-    mysql_query("DELETE FROM document where account_id='".$this->iAccountId."'");
+    mysql_query("DELETE FROM document where account_id='".$this->iAccountId."'") or die (mysql_error());
   }
 
   public function index(){
@@ -44,12 +43,15 @@ class Indexer {
   }
 
   public function add($url, $body, $level ) {
+
+    print "ADD: $url \r\n";
     try{
     $title="";
 
-    $res= mysql_query("SELECT id from document where url='$url' and account_id='".$this->iAccountId."'") ; //or die(mysql_error());
+ 
+    $res= mysql_query("SELECT url from document where url='$url' and account_id='".$this->iAccountId."'") or die(mysql_error());
     if($row=mysql_fetch_array($res)){
-      print "duplicate: $url <br> \r\n"; 
+      print "duplicate: $url <br>  -> ".$row['url']."\r\n"; 
       return false;
    }
   
@@ -58,7 +60,8 @@ class Indexer {
    foreach ($this->aFilterSkip as $oItem){
      preg_match("|$oItem|", $url, $aMatch);
      if ( count($aMatch) > 0){
-       return false;
+      	print "SKIP DUE TO :".$oItem."\r\n"; 
+	return false;
      }
    }
 
@@ -123,19 +126,24 @@ class Indexer {
    $body = preg_replace("/<script.*?<\/script>/is", ' ', $body);
    $body = preg_replace("/<\!\-\-.*?\-\->/is", ' ', $body);
 
-   $body = strip_tags($body);
    $body = $this->sHtmlToRawText($body);
    $body = preg_replace("/\s+/is", ' ', $body);
 
+   $body = strip_tags($body);
    //check for duplicate 
    $md5 = md5($body); 
-   $result=mysql_query("SELECT * from document where md5='$md5'");// or die(mysql_error());
+   $result=mysql_query("SELECT url,md5 from document where md5='$md5'") or die(mysql_error());
    $row=mysql_fetch_row($result); 
    if($row) {
-     print "\r\nduplicate found for ".$url."\r\n"; 
+    print $title;
+     print $body; 
+     print "\r\nduplicate found for ".$url." -> ".$row['url'].", md5:".$row['md5']."\r\n"; 
      return false;
    }
-  
+ 
+   print "BODY: ".$body."\r\n";
+
+ 
    //add documents with content
    $blength=strlen($body);
    if($blength>5 && strlen($url)>0 ){ 

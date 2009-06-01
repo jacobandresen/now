@@ -16,7 +16,6 @@ class Setting {
   } 
   
   function getAll(){
-
     $results=array();  
     $res = mysql_query("select id,name,value,type from setting where tablename='".$this->sTable."' and account_id='".$this->iOwner."'") or  die (mysql_error());
     while ($row = mysql_fetch_array($res) ){
@@ -41,7 +40,6 @@ class Setting {
     return($f); 
   }
 
- 
   function delete($iID){
      mysql_query("DELETE FROM setting where tablename='".$this->sTable."' and id='".$iID) or die(mysql_error());
   }

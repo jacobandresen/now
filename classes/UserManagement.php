@@ -2,7 +2,7 @@
 
 /**
  *System level user account management
- *NOTE: this should only be exposed from admin level applications
+ *NOTE: this should only be exposed from admin level applications 
  */
 class UserManagement {
 
