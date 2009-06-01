@@ -12,14 +12,18 @@ class Setting {
 
   function put($sName, $sValue, $sType ){
      mysql_query("INSERT INTO setting(tablename,account_id,name,value,type) value('".$this->sTable."','".$this->iOwner."','".$sName."','".$sValue."','".$sType."')") or die (mysql_error());
-  
   } 
-  
+ 
+  function update($iID, $sName, $sValue, $sType ) {
+    mysql_query("UPDATE setting set tablename='".$sTable."', account_id='".$this->iOwner."', name='".$sName."', value='".sValue."', type='".$sType."' where id='".$iID."'"); 
+  }
+ 
   function getAll(){
     $results=array();  
     $res = mysql_query("select id,name,value,type from setting where tablename='".$this->sTable."' and account_id='".$this->iOwner."'") or  die (mysql_error());
     while ($row = mysql_fetch_array($res) ){
       $f=new Field();
+      $f->id = $row['id']; 
       $f->name= $row['name'];
       $f->value= $row['value'];
       $f->type= $row['type'];

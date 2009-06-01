@@ -1,31 +1,53 @@
 <?php
+session_start();
 
-/**
- *System level user account management
- *NOTE: this should only be exposed from admin level applications 
- */
 class UserManagement {
+
+  function login($sLogin, $sPassword) {
+    $res = mysql_query("SELECT login from user where login='".$sLogin."' and password='".$sPassword."'");
+    $row = mysql_fetch_row($res);
+    $sLoggedIn = $row[0];
+    if ( isset($sLoggedIn) ){
+      $_SESSION['login'] = $sLoggedIn; 
+      return true;
+    }else{
+      return false;
+    } 
+  }
+  function checkAccess($iAccountId) {
+    if($_SESSION['login']) { 
+      $iUserId = $this->getUserId( $_SESSION['login'] ) ;
+      $res = mysql_query("SELECT id from account where user_id='".$iUserId."'"); 
+      $row = mysql_fetch_row($res);
+      $iIDcheck= $row['id'];
+      if ( $iIDcheck == $iAccountId) {
+        return true;
+      }else{
+        return false; 
+      }
+    }
+  }
 
   function clearAll () {
     mysql_query("DELETE  from account;") or die(mysql_error());
     mysql_query("DELETE  from user;") or die(mysql_error());
-   print "clear! \r\n";  
- }
+    print "clear! \r\n";  
+  }
 
- function addUser($sUser, $sPassword, $sDomain){
-   print "add user: $sUser \r\n"; 
-   mysql_query("INSERT INTO user(login,password) values('".$sUser."','".$sPassword."')") or die(mysql_error());
+  function addUser($sUser, $sPassword, $sDomain){
+    print "add user: $sUser \r\n"; 
+    mysql_query("INSERT INTO user(login,password) values('".$sUser."','".$sPassword."')") or die(mysql_error());
 
-   $iAccountId=$this->addDefaultAccount($sUser); 
-   $this->addDomain($iAccountId, $sDomain); 
-   print "added $sUser \r\n"; 
- }
+    $iAccountId=$this->addDefaultAccount($sUser); 
+    $this->addDomain($iAccountId, $sDomain); 
+    print "added $sUser \r\n"; 
+  }
 
- function getUserId($sUser){
-   $res=mysql_query("SELECT id from user where login='".$sUser."'");
-   $row=mysql_fetch_row($res);
-   return($row[0]);
- }
+  function getUserId($sUser){
+    $res=mysql_query("SELECT id from user where login='".$sUser."'");
+    $row=mysql_fetch_row($res);
+    return($row[0]);
+  }
  
  function addDefaultAccount($sUser) {
    $iUserId=$this->getUserId(sUser);

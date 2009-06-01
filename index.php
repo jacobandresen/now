@@ -9,10 +9,6 @@
 </head>
 <body>	
 
-<div id="header">
- search settings
-</div>
-
 
 <div id="crawler-grid">
 </div>

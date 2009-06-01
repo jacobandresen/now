@@ -1,47 +1,78 @@
 Ext.onReady(function(){
+
+  //TODO: login
   Ext.QuickTips.init();	
   Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
-	
-  var cm = new Ext.grid.ColumnModel([{
-    id:'regex',
-    header: 'regular expression',
-    dataIndex:'regex',
-    width:220,
-    editor: new Ext.form.TextField({ allowBlank:false })
-   }]);
-  cm.defaultSortable = true;
-	
+
   var Setting = Ext.data.Record.create([
-    {name: 'name', type: 'string'},
-    {value: 'value', type: 'string'}
+    {name: 'name'},
+    {name: 'value', type: 'string'}
   ]);
 
-  var store = new Ext.data.Store({
-    proxy: new Ext.data.ScriptTagProxy({ url: 'services/crawlersettings.php'}),
-    reader: new Ext.data.XmlReader({
-             record: ''
-           }, Setting),
-    sortInfo:{field:'name', direction:'ASC'}
+  var filterStore = new Ext.data.Store({
+    proxy: new Ext.data.HttpProxy({ 
+	url: 'services/setting.php?action=GET&table=filters'}),
+        reader: new Ext.data.JsonReader({
+            root: 'field',id:'id' 
+            },Setting),
+         sortInfo:{field:'name',direction:'ASC'},
+         listeners: {
+             update: function(store,r, oper) {
+               //TODO: open a Ext.data.connection to "services/setting.php" 
+               // and save the edited fields to the server 
+               console.log('hello world'); 
+              } 
+          }
   });
+  
+  var settingsModel = new Ext.grid.ColumnModel([
+   {
+    id:'name',
+    header: 'name',
+    dataIndex:'name',
+    width:220,
+    editor: new Ext.form.TextField({ allowBlank:false })
+   },
+   {
+    id:'value',
+    header: 'value',
+    dataIndex: 'value',
+    width:220,
+    editor: new Ext.form.TextField({ allowBlank:false })
+   }
+   ]);
+  settingsModel.defaultSortable = true;
 
-  var grid = new Ext.grid.EditorGridPanel({
-    store:store,
-    cm: cm,
+  var filterGrid = new Ext.grid.EditorGridPanel({
+    store:filterStore,
+    cm: settingsModel,
     renderTo: 'crawler-grid',
     width: 600,
     height:300,
     title:'crawler settings',
-    tbar: [{
-      text: 'add settings',
+    tbar: [
+      {
+      text: 'save',
       handler: function() {
-      var s = new Setting({
-        name:'',
-        regex:''
-      });
-      store.insert(0,s);
-      }		
-    }]
-		
-   })	
-    store.load();
+             //TODO: get the edited fields and save them to the server  
+	     console.log("SAVE!");
+            } 
+      },
+      {
+      text: 'add filter',
+      handler: function() {
+                var s=new Setting({
+		   name:'',
+                   value:'',
+                   type: ''
+                }); 
+                filterGrid.getStore().insert(0,s);
+                filterGrid.stopEditing();
+                filterStore.insert(0,s);
+	        filterGrid.startEditing(0,0);
+              } 
+       }]
+   });	
+   
+   filterStore.load();
 })
