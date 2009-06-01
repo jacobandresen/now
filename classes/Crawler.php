@@ -45,7 +45,7 @@ class Crawler {
        array_push( $aDomains, $sName ) ;
     }
     $this->aDomains = $aDomains; 
-    $this->filterSettings = new Setting(§iAccountId, "filters");
+    $this->filterSettings = new Setting($iAccountId, "filters");
   }
 
  public function reset () {
