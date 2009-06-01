@@ -11,6 +11,7 @@ array_push($aFilterSkip, "\/tag\/");
 array_push($aFilterSkip, "wp-login");
 array_push($aFilterSkip, "\.js");
 array_push($aFilterSkip, "google\.com");
+array_push($aFilterSkip, "javascript\:");
 $y->oIndexer->aFilterSkip=$aFilterSkip;
 
 $y->oIndexer->addBodyFilter("|div class=\"entry\">(.*?)class=\"rightmeta\"|is");

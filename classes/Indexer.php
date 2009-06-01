@@ -126,10 +126,13 @@ class Indexer {
    $body = preg_replace("/<script.*?<\/script>/is", ' ', $body);
    $body = preg_replace("/<\!\-\-.*?\-\->/is", ' ', $body);
 
+   $body = preg_replace("/\(/is", '', $body);
+   $body = preg_replace("/\'/is", '', $body);
    $body = $this->sHtmlToRawText($body);
    $body = preg_replace("/\s+/is", ' ', $body);
 
    $body = strip_tags($body);
+   
    //check for duplicate 
    $md5 = md5($body); 
    $result=mysql_query("SELECT url,md5 from document where md5='$md5'") or die(mysql_error());
@@ -140,9 +143,6 @@ class Indexer {
      print "\r\nduplicate found for ".$url." -> ".$row['url'].", md5:".$row['md5']."\r\n"; 
      return false;
    }
- 
-   print "BODY: ".$body."\r\n";
-
  
    //add documents with content
    $blength=strlen($body);

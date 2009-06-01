@@ -1,20 +1,24 @@
 <?php
 require_once('../classes/Global.php');
-require_once('../classes/Store.php');
+require_once('../classes/Setting.php');
 
+$iAccountId     = $_REQUEST['account'];
 $sAction	= $_REQUEST['action'];
 $sTableName 	= $_REQUEST['table'];
 
-//TEST
-$s  = new Store(1, $sTableName);
-$s->put("pdf", "\.pdf");
-$s->put("jpg", "\.jpg");
-print json_encode( $s->getAll());
-//GET
+$s  = new Setting($iAccountId, $sTableName);
 //PUT
-//DELETE
+if ($sAction=="PUT") {
+  $s->deleteAll(); 
+  $jsonDATA = json_decode($_REQUEST['data']); 
+  foreach($jsonDATA as $field){
+    $s->put( $field->name, $field->value);
+  }
+}
+
+//GET
+if ($sAction=="GET"){
+  print json_encode( $s->getAll());
+}
 ?>
-[  
-{name:'jpg', value:'\.jpg', type:'string'},
-{name:'gif', value:'\.gif', type:'string'}
-]
+

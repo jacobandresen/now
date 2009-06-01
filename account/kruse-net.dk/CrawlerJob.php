@@ -4,7 +4,9 @@ require_once ('../../classes/Yase.php');
 
 $y = new Yase("kruse-net.dk");
 $y->oCrawler->reset();
+$y->oCrawler->filterSettings->deleteAll();
 
+$y->addCrawlFilter("javascript", "javascript\:");
 $y->addCrawlFilter("js", "\.js");
 $y->addCrawlFilter("print", "print");
 $y->addCrawlFilter("pdf", "\.pdf");
@@ -40,7 +42,7 @@ $y->addCrawlFilter("viewforum", "\/viewforum");
 $y->addCrawlFilter("profile", "\/profile");
 $y->addCrawlFilter("search", "\/search\.php");
 $y->addCrawlFilter("saelges", "saelges");
-
+$y->addCrawlFilter("trackback", "\/trackback");
 $y->crawl();
 
 ?>
