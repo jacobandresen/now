@@ -34,6 +34,7 @@ class Crawler {
     $this->aProcess=array();
  
     //hardcoded settings 
+    //TODO: this should be configurable from an admin account 
     $this->iMaxLevel=40;
     $this->iCrawlLimit = 5000;
 

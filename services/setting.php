@@ -7,7 +7,6 @@ $sAction	= $_REQUEST['action'];
 $sTableName 	= $_REQUEST['table'];
 $iSettingId	= $_REQUEST['id'];
 
-
 //if (!(isset($_SESSION['login'])) ) {
 //  print "not logged in\r\n";
 //  exit;
@@ -29,7 +28,6 @@ if ($sAction=="PUT"){
   $s->update($field->id, $field->name, $field->value, $field->type);  
 }
 
-
 if ($sAction=="POST") {
   $fields = json_decode($_REQUEST['data']); 
   foreach($fields as $field) { 
@@ -40,8 +38,6 @@ if ($sAction=="POST") {
 if ($sAction=="DELETE"){
   $s->delete($iSettingId);
 }
-
-
 
 ?>
 

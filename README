@@ -22,6 +22,8 @@ installation:
  configure ./classes/Global.php for your mysql user
  setup an account in ./account/
 
+ to index large files then you will need to alter the max mem settings for php and the max packet size for mysql
+
 
 usage:
 ------
