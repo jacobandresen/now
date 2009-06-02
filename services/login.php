@@ -12,7 +12,6 @@ if( $u->login( $sUser, $sPassword ) ) {
 } else {
   print false;
 }
-  
 ?>
 
  

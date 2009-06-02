@@ -8,10 +8,10 @@ $sTableName 	= $_REQUEST['table'];
 $iSettingId	= $_REQUEST['id'];
 
 
-if (!(isset($_SESSION['login'])) ) {
-  print "not logged in\r\n";
-  exit;
-}
+//if (!(isset($_SESSION['login'])) ) {
+//  print "not logged in\r\n";
+//  exit;
+//}
 
 if($iAccountId==''|| $sAction=='' || $sTableName=='') {
   print "misssing required parameter\r\n";
