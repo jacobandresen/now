@@ -47,7 +47,7 @@ class Indexer {
     print "ADD: $url \r\n";
     try{
     $title="";
-
+    $url= urlencode($url);
  
     $res= mysql_query("SELECT url from document where url='$url' and account_id='".$this->iAccountId."'") or die(mysql_error());
     if($row=mysql_fetch_array($res)){

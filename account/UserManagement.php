@@ -3,7 +3,6 @@
  include("../classes/UserManagement.php");
 
  $u = new UserManagement();
-
  $u->clearAll();
 
  $u->addUser("korpen.se","test", "www.korpen.se");
@@ -16,5 +15,6 @@
  $u->addUser("kruse-net.dk", "test", "kruse-net.dk");
  $u->addUser("www.xn--schler-dya.net", "test", "www.xn--schler-dya.net");
  $u->addUser("www.sjv.se", "test", "www.sjv.se");
-
+ $u->addUser("www3.ridsport.se", "test", "www3.ridsport.se"); 
+ $u->addUser("www3.swehockey.se", "test", "www3.swehockey.se");
 ?>
