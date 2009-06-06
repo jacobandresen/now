@@ -6,7 +6,6 @@ Ext.onReady(function(){
   //TODO: initialize with an available account to the user
   //HACK: for now I just list "pedant.dk" from the sample setup
   var iAccount=12;
-
   var settingsModel;
   var filterGrid;
 
@@ -14,24 +13,22 @@ Ext.onReady(function(){
   Ext.QuickTips.init();	
   Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
   
-
-  //BEGIN: combo box selection
   var Account = Ext.data.Record.create([
-    {name: 'id'},
-    {name: 'user_id'},  
-    {name: 'name'},
-    {name: 'level_imit'},
-    {name: 'crawl_limit'}
+    {name: 'iID'},
+    {name: 'iAccountID'},  
+    {name: 'sName'},
+    {name: 'iLevelLimit'},
+    {name: 'iCrawlLimit'}
   ]);
 
   var accountStore = new Ext.data.Store({
-   url: 'services/account.php',
-   reader: new Ext.data.JsonReader({ id: 'name'}, Account)
+    url: 'app.php/accounts', 
+    reader: new Ext.data.JsonReader({ iID: 'sName'}, Account)
   });
 
   var accountCombo = new Ext.form.ComboBox({
    store: accountStore,
-   displayField: 'name',
+   displayField: 'sName',
    mode: 'local',
    triggerAction: 'all',
    selectOnFocus:true, 
@@ -39,29 +36,27 @@ Ext.onReady(function(){
    applyTo: 'account-combo',
    listeners: {
      select: function(combo, record) {
-        iAccount = record.get('id');
-        filterGrid.title = record.get('name'); 
-        filterStore.proxy.conn.url = 'services/setting.php?action=GET&account='+iAccount+'&table=filters';
+        iAccount = record.get('iID');
+        filterGrid.title = record.get('sName');   
+        filterStore.proxy.conn.url = 'app.php/settings?account_id='+iAccount;
+        console.log(filterStore.proxy.conn.url); 
         filterStore.load(); 
       }    
    } 
  });
  accountStore.load();
-//END: combo box selection
 
-//BEGIN:crawler filter settings
   var Setting = Ext.data.Record.create([
-    {name: 'id'}, 
-    {name: 'name'},
-    {name: 'value'},
-    {name: 'type'}
+    {name: 'iID'}, 
+    {name: 'sName'},
+    {name: 'sValue'},
+    {name: 'sType'}
   ]);
 
-  //TODO: when iAccount changes then the content of this grid should change 
   var filterStore = new Ext.data.Store({
-    proxy: new Ext.data.HttpProxy({url: 'services/setting.php?action=GET&account='+iAccount+'&table=filters'}),
-    reader: new Ext.data.JsonReader({ id:'name' },Setting),
-    sortInfo:{field:'name',direction:'ASC'},
+    proxy: new Ext.data.HttpProxy({url: 'app.php/settings'}),
+    reader: new Ext.data.JsonReader({ id:'sName' },Setting),
+    sortInfo:{field:'sName',direction:'ASC'},
     listeners: {
       update: function(store,r, oper) {
         console.log('update!'); 
@@ -76,14 +71,14 @@ Ext.onReady(function(){
    {
     id:'name',
     header: 'name',
-    dataIndex:'name',
+    dataIndex:'sName',
     width:220,
     editor: new Ext.form.TextField({ allowBlank:false })
    },
    {
     id:'value',
     header: 'value',
-    dataIndex: 'value',
+    dataIndex: 'sValue',
     width:220,
     editor: new Ext.form.TextField({ allowBlank:false })
    }
@@ -103,7 +98,6 @@ Ext.onReady(function(){
       iconCls: 'save', 
       width: 100, 
        handler: function() {
-             //TODO: get the edited fields and save them to the server  
 	     console.log("SAVE!");
             } 
       },

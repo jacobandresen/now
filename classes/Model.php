@@ -13,8 +13,13 @@ class Model {
         $this->get($uInput);
     }
    }
-   
+
+   protected function loggedin () {
+     return ( true ); 
+   } 
+
    public function get ( $iID ) {
+     if (!$this->loggedin() ) return;
      $sSQL = 'SELECT * FROM ' . $this->sTable . ' WHERE id=' . $iID . '';
      $oRs = mysql_query($sSQL);
     
@@ -26,6 +31,8 @@ class Model {
    }
 
    public function post( ){
+     if (!$this->loggedin() ) return;
+     
      $sSQL = 'SHOW columns FROM '.$this->sTable;
      $oRs = mysql_query( $sSQL ); 
      while($aRow = mysql_fetch_assoc($oRs)) {
@@ -74,7 +81,7 @@ class Model {
        }
        $sSQL = trim($sSQL, ",");
        $sSQL .= " WHERE id  = '".$aData[$iIndexID]."'";
-       mysql_query( $sSQL ) ; //or die ( $this->sql_failure_handler($sSQL, mysql_error()));
+       mysql_query( $sSQL ) ; 
      }
   }
   public function update ()  {
@@ -82,11 +89,13 @@ class Model {
   }
 
   public function delete( ) {
+    if (!$this->loggedin() ) return;
     $sSQL = "DELETE FROM $this->sTable WHERE id = '".(int)$this->iID ."' LIMIT 1";
     mysql_query( $sSQL );
   }
 
   public function bound ( $sFilter = '') {
+    if (!$this->loggedin() ) return;
     $sSQL = "SELECT count(id) as cnt FROM $this->sTable $sFilter";
     $oRs = mysql_query( $sSQL ) ; 
     while($aRow = mysql_fetch_assoc($oRs)) {
@@ -96,8 +105,9 @@ class Model {
   }
  
   public function search ( $sFilter = ' ORDER BY id ') {
+    if (!$this->loggedin() ) return;
     $aRet = array();
-    $sSQL = "SELECT id FROM $this->sTable $sFilter";
+    $sSQL = "SELECT id FROM $this->sTable $sFilter ;";
     $oRs = mysql_query( $sSQL ) ; 
     while($aRow = mysql_fetch_assoc($oRs)) {
       $aRet[] = new $this->sClass( (int)$aRow['id'] );

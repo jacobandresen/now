@@ -7,10 +7,12 @@
   require_once("classes/Response.php");
 
   require_once("models/Setting.php");
+  require_once("models/Account.php");
 
   $request = new Request(array('restful' => true));
 
   if (isset($request->controller)) {
+    //TODO: check if the file exists 
     $controller_name = ucfirst($request->controller);
     require("controllers/".$controller_name.".php");
     $controller = new $controller_name;
