@@ -1,6 +1,6 @@
 <?php
 
-include("Result.php");
+require_once("Result.php");
 
 class Searcher {
   protected $iAccountId;

@@ -139,7 +139,6 @@ class Indexer {
    $row=mysql_fetch_row($result); 
    if($row) {
     print $title;
-     print $body; 
      print "\r\nduplicate found for ".$url." -> ".$row['url'].", md5:".$row['md5']."\r\n"; 
      return false;
    }

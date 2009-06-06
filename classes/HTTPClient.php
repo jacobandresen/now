@@ -44,7 +44,6 @@ class HTTPClient {
    fclose($this->oSocket);
   }
  
-
   private function SendRequest( $sRequest ){
     $sRequest.=" HTTP/1.0"; 
     $sRequest.="\r\nUser-Agent: YASE alpha1"; 
@@ -98,7 +97,6 @@ class HTTPClient {
            $this->Connect($this->sHost);
            
             //make sure we have a full url
-	  
 	   if(!(strpos($sNewUrl, $this->sHost)) &&
 	       !(strpos($sNewUrl, "/"))){
                 print "EXPAND:".$this->sHost."\r\n";
