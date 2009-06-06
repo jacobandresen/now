@@ -5,6 +5,7 @@ class Request {
   public function __construct($params) {
     $this->restful = (isset($params["restful"])) ? $params["restful"]: false;
     $this->method = $_SERVER["REQUEST_METHOD"];
+    $this->parseRequest();
   }
 
   public function isRestful() {
@@ -29,10 +30,12 @@ class Request {
       $this->id = (isset($_REQUEST['id'])) ? json_decode(stripslashes($_REQUEST['id']), true) : null; 
     }
 
-    if (isset($_SERVER["PATH_INFO"])) {
-        $cai = '/^\([a-z]+\w)\/([a-z]+)\/([0-9]+)$/'; // /controller/action/id
-        $ca  = '^\/([a-z]+\w)\/([a-z]+)$/';   	      // /controller/action
-        $i   = '^\/([0-9]+)$/';                       // /id 
+   // if (isset($_SERVER["PATH_INFO"])) {
+        $cai = '/^\/([a-z]+\w)\/([a-z]+)\/([0-9]+)$/'; // /controller/action/id
+        $ca  = '/^\/([a-z]+\w)\/([a-z]+)$/';   	       // /controller/action
+        $ci  = '/^\/([a-z]+\w)\/([0-9]+)$/';           // /controller/id 
+        $c   = '/^\/([a-z]+\w)$/';                     // /controller 
+        $i   = '/^\/([0-9]+)$/';                       // /id 
         $matches = array();
         if (preg_match($cai, $_SERVER["PATH_INFO"], $matches)) {
            $this->controller = $matches[1];
@@ -49,7 +52,7 @@ class Request {
        } else if (preg_match($i,  $_SERVER["PATH_INFO"], $matches)) {
            $this->id = $matches[1]; 
        }
-     } 
+   //  } 
    }
 };
 ?>

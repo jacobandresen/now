@@ -5,7 +5,7 @@ class Controller {
   protected $model;
 
   public function  __construct() {
-   $model_name = ucfirst($sTable);
+   $model_name = ucfirst($this->sTable);
    $this->model = new $model_name;
   }
 
@@ -16,7 +16,12 @@ class Controller {
 
     switch ($this->request->method) {
       case 'GET' :
-        return $this->model->get($this->id);
+        if (isset($this->id)) { 
+        $this->model->get($this->id);
+        return(json_encode($this->model)); 
+        } else {
+        return( json_encode($this->model->search( )) ) ;
+        } 
         break;  
       case 'POST':
         $this->model = json_decode($this->params['data']); 

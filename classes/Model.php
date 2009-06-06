@@ -10,15 +10,14 @@ class Model {
        $this->bFetchObject($uInput);
     }
     if( is_int($uInput) ){
-        $this->bGetByID($uInput);
+        $this->get($uInput);
     }
    }
    
    public function get ( $iID ) {
      $sSQL = 'SELECT * FROM ' . $this->sTable . ' WHERE id=' . $iID . '';
-     $oRs = mysql_query($sSQL) or die ( $this->bInstall());
-     echo mysql_error();
-     
+     $oRs = mysql_query($sSQL);
+    
      if($aRow = mysql_fetch_array($oRs)) {
         return $this->bFetchObject($aRow);
      } else {
