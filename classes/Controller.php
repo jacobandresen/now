@@ -5,8 +5,8 @@ class Controller {
   protected $model;
 
   public function  __construct() {
-   $model_name = ucfirst($this->sTable);
-   $this->model = new $model_name;
+    $model_name = ucfirst($this->sTable);
+    $this->model = new $model_name;
   }
 
   public function dispatch($request) {
@@ -17,10 +17,10 @@ class Controller {
     switch ($this->request->method) {
       case 'GET' :
         if (isset($this->id)) { 
-        $this->model->get($this->id);
-        return(json_encode($this->model)); 
+          $this->model->get($this->id);
+          return(json_encode($this->model)); 
         } else {
-        return( json_encode($this->model->search( )) ) ;
+          return( json_encode($this->model->search( )) ) ;
         } 
         break;  
       case 'POST':

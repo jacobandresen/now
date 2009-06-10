@@ -71,7 +71,7 @@ class Yase{
  } 
   public function page($sQuery, $iPage) {
     $oPaging = new Paging("yase.php?account=".$this->sAccount."&query=".$sQuery);
-    $sQuery = utf8_decode($sQuery);
+   // $sQuery = utf8_decode($sQuery);
     $iTotal = $this->oSearcher->iSearch($sQuery); 
     
     if(!isset($_REQUEST['page']) || $_GET['page'] < 1){

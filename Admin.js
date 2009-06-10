@@ -1,18 +1,12 @@
 Ext.onReady(function(){
 
-  //TODO: handle login
-  //TODO: create a component for this code (maybe extend on EditorGridPanel ? )
-
-  //TODO: initialize with an available account to the user
-  //HACK: for now I just list "pedant.dk" from the sample setup
+  Ext.QuickTips.init();	
+  Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
+  
   var iAccount=12;
   var settingsModel;
   var filterGrid;
 
-  //general
-  Ext.QuickTips.init();	
-  Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
-  
   var Account = Ext.data.Record.create([
     {name: 'iID'},
     {name: 'iAccountID'},  
@@ -27,24 +21,23 @@ Ext.onReady(function(){
   });
 
   var accountCombo = new Ext.form.ComboBox({
-   store: accountStore,
-   displayField: 'sName',
-   mode: 'local',
-   triggerAction: 'all',
-   selectOnFocus:true, 
-   emptyText: 'Select an account ...',
-   applyTo: 'account-combo',
-   listeners: {
-     select: function(combo, record) {
+    store: accountStore,
+    displayField: 'sName',
+    mode: 'local',
+    triggerAction: 'all',
+    selectOnFocus:true, 
+    emptyText: 'Select an account ...',
+    applyTo: 'account-combo',
+    listeners: {
+      select: function(combo, record) {
         iAccount = record.get('iID');
         filterGrid.title = record.get('sName');   
         filterStore.proxy.conn.url = 'app.php/settings?account_id='+iAccount;
-        console.log(filterStore.proxy.conn.url); 
         filterStore.load(); 
       }    
-   } 
- });
- accountStore.load();
+    } 
+  });
+  accountStore.load();
 
   var Setting = Ext.data.Record.create([
     {name: 'iID'}, 
@@ -117,8 +110,6 @@ Ext.onReady(function(){
               } 
        }]
    });	
-   
    filterStore.load();
-//END:crawler filter settings
 
 })

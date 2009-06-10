@@ -1,6 +1,4 @@
 <?php
-session_start();
-
 class UserManagement {
 
   function login($sLogin, $sPassword) {

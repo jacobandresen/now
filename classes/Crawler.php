@@ -67,7 +67,8 @@ class Crawler {
      print "FILE TOO BIG: $url \r\n"; 
      return; 
    } 
-   $html = utf8_decode($html); 
+ 
+//   $html = utf8_decode($html); 
    $html = urlencode($html);
     
    mysql_query("INSERT IGNORE into dump(account_id, url, html, level) values('".$this->iAccountId."','$url', '$html', '$level')") or die (" failed to insert into dump:".mysql_error());

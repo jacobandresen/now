@@ -9,9 +9,7 @@ class Setting extends Model{
     } else {
      return ( Model::search() );
      } 
-
    }
-
 };
 
 ?>

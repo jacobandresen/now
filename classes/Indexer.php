@@ -29,6 +29,8 @@ class Indexer {
   public function index(){
     $this->clear(); 
 
+    print "start INDEX\r\n";
+
     $res = mysql_query("select max(retrieved),url,html,level from dump where account_id='".$this->iAccountId."' group by account_id,url") or die (mysql_error());
     
     while($row=mysql_fetch_array($res)){
@@ -49,12 +51,6 @@ class Indexer {
     $title="";
     $url= urlencode($url);
  
-    $res= mysql_query("SELECT url from document where url='$url' and account_id='".$this->iAccountId."'") or die(mysql_error());
-    if($row=mysql_fetch_array($res)){
-      print "duplicate: $url <br>  -> ".$row['url']."\r\n"; 
-      return false;
-   }
-  
    //process skip filters
    if($this->aFilterSkip) 
    foreach ($this->aFilterSkip as $oItem){
@@ -65,11 +61,20 @@ class Indexer {
      }
    }
 
+    $res= mysql_query("SELECT url from document where url='$url' and account_id='".$this->iAccountId."'") or die(mysql_error());
+    if($row=mysql_fetch_array($res)){
+      print "duplicate: $url <br>  -> ".$row['url']."\r\n"; 
+      return false;
+   }
+ 
    //process content
    $orig=$body;
    if ($this->isUTF8($body)){
      $body = iconv("UTF-8", "ISO-8859-1", $body);
-   }
+  }
+
+  // print "BODY:".$body."\r\n";
+
 
    $timestmp=time();
    $sFound='';
@@ -103,13 +108,24 @@ class Indexer {
        $sFound = 'title';
      }
    }  
-   if ($title == ''){
+    if ($title == ''){
      preg_match("|<h3>(.*?)<\/h3>|is", $body, $aMatches);
      if(sizeof($aMatches)){ 
       $title = $aMatches[1];
       $sFound = 'h3';
      }
    }
+
+  if ($title == ''){
+     preg_match("|<h4>(.*?)<\/h4>|is", $body, $aMatches);
+     if(sizeof($aMatches)){ 
+      $title = $aMatches[1];
+      $sFound = 'h4';
+     }
+   }
+
+
+
 
    //clean body
    if($this->sBodyFilter!=""){
@@ -120,7 +136,10 @@ class Indexer {
    }
 
    //remove title:
-   $title = strip_tags($title);	
+  $title = strip_tags($title);	
+  $title = html_entity_decode($title); 
+  print "TITLE:".$title."\r\n";
+
 
    //remove clutter 
    $body = preg_replace("/<script.*?<\/script>/is", ' ', $body);
@@ -190,7 +209,7 @@ class Indexer {
   
   function sHtmlToRawText($sWord, $bNewLines=false, $bCleanHtml=false){
    //translate html entities to their corresponding chars
-   $sWord = html_entity_decode($sWord);  
+   //$sWord = html_entity_decode($sWord);  
   
    if ($bCleanHtml) {
       $sWord = preg_replace("/<br\s*?\/\>/", "\n", $sWord);

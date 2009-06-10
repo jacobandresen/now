@@ -16,10 +16,16 @@ class Searcher {
       print "<ul>\r\n";     
       while ($row=mysql_fetch_array($result)){
         $title=$row['title'];
-        $title=htmlentities($title); 
-        $content=$row['content'];
+       // $title=htmlentities($title); 
+        $url=urldecode($row['url']); 
+        $title=trim($title); 
+        if(strlen($title)<2){
+          $title=$url;
+        } 
+ 
+         $content=$row['content'];
         $content=htmlentities($content);
-        print "\t<li><a href=\"".$row['url']."\">".$title."</a><br/>\r\n";       print substr($content, 1, 400);
+        print "\t<li><a href=\"".$url."\">".$title."</a><br/>\r\n";       print substr($content, 1, 400);
         print "</li>\r\n";
       }
       print "</ul>\r\n";   
@@ -36,12 +42,13 @@ class Searcher {
       $result = mysql_query("SELECT *, MATCH(content) AGAINST('$query') AS score FROM document WHERE MATCH(content) AGAINST('$query') and account_id='".$this->iAccountId."' ORDER BY score DESC ".$sLimit); 
       while ($row=mysql_fetch_array($result)){
         $title=$row['title'];
-        $title=htmlentities($title); 
         $content=$row['content'];
-        $content=htmlentities($content);
         $oResult = new Result();
-        $oResult->sUrl = $row['url'];
-        $oResult->sTitle = html_entity_decode($title);
+        $oResult->sUrl = urldecode($row['url']);
+        $oResult->sTitle = trim(htmlentities($title));
+      
+        if($oResult->sTitle==""){ $oResult->sTitle = $oResult->sUrl; }  
+          
         $oResult->sContent = substr($content, 1, 400);
         $aRet[] = $oResult;
       }

@@ -34,7 +34,7 @@ class Setting {
   
   function get($sName){
     $f=new Field();
-    $res = mysql_query("select id,name,value,type from setting where tablename='".$this->sTable."' and account_idr='".$this->iOwnerId."' and name='".$this->sName."'");
+    $res = mysql_query("select id,name,value,type from setting where tablename='".$this->sTable."' and account_id='".$this->iOwnerId."' and name='".$this->sName."'");
     if($row=mysql_fetch_array($res)){
       $f 	  = new Field();
       $f->name 	 = $row['name'];
