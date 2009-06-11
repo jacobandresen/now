@@ -1,10 +1,10 @@
 <?php
 
   require_once("classes/Global.php");
-  require_once("classes/Controller.php");
-  require_once("classes/Model.php");
-  require_once("classes/Request.php");
-  require_once("classes/Response.php");
+  require_once("rest/Controller.php");
+  require_once("rest/Model.php");
+  require_once("rest/Request.php");
+  require_once("rest/Response.php");
 
   require_once("models/Setting.php");
   require_once("models/Account.php");

@@ -1,10 +1,10 @@
 <?php
- require_once('UserManagement.php'); 
- require_once('Indexer.php');
- require_once('Crawler.php');
- require_once('Searcher.php');
- require_once('HTTPClient.php');
- require_once('Paging.php');
+ require_once('yase/UserManagement.php'); 
+ require_once('yase/Indexer.php');
+ require_once('yase/Crawler.php');
+ require_once('yase/Searcher.php');
+ require_once('yase/HTTPClient.php');
+ require_once('yase/Paging.php');
 
 class Yase{ 
  
