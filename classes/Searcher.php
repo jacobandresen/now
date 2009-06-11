@@ -16,7 +16,7 @@ class Searcher {
       print "<ul>\r\n";     
       while ($row=mysql_fetch_array($result)){
         $title=$row['title'];
-       // $title=htmlentities($title); 
+        $title=html_entity_decode($title); 
         $url=urldecode($row['url']); 
         $title=trim($title); 
         if(strlen($title)<2){
@@ -24,8 +24,10 @@ class Searcher {
         } 
  
          $content=$row['content'];
-        $content=htmlentities($content);
-        print "\t<li><a href=\"".$url."\">".$title."</a><br/>\r\n";       print substr($content, 1, 400);
+        $content=html_entitydecode($content);
+       	$content = preg_replace('s/\&.*?\;/is',' ', $content); 
+
+	print "\t<li><a href=\"".$url."\">".$title."</a><br/>\r\n";       print substr($content, 1, 400);
         print "</li>\r\n";
       }
       print "</ul>\r\n";   
@@ -43,12 +45,12 @@ class Searcher {
       while ($row=mysql_fetch_array($result)){
         $title=$row['title'];
         $content=$row['content'];
-        $oResult = new Result();
+       	$content = preg_replace('/\&.*?\;/is',' ', $content); 
+        
+	$oResult = new Result();
         $oResult->sUrl = urldecode($row['url']);
-        $oResult->sTitle = trim(htmlentities($title));
-      
+        $oResult->sTitle = trim(html_entity_decode($title));
         if($oResult->sTitle==""){ $oResult->sTitle = $oResult->sUrl; }  
-          
         $oResult->sContent = substr($content, 1, 400);
         $aRet[] = $oResult;
       }
