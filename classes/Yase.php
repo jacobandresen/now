@@ -1,10 +1,10 @@
 <?php
- require_once('yase/UserManagement.php'); 
- require_once('yase/Indexer.php');
- require_once('yase/Crawler.php');
- require_once('yase/Searcher.php');
- require_once('yase/HTTPClient.php');
- require_once('yase/Paging.php');
+ require_once('UserManagement.php'); 
+ require_once('Indexer.php');
+ require_once('Crawler.php');
+ require_once('Searcher.php');
+ require_once('HTTPClient.php');
+ require_once('Paging.php');
 
 class Yase{ 
  
@@ -71,7 +71,6 @@ class Yase{
  } 
   public function page($sQuery, $iPage) {
     $oPaging = new Paging("yase.php?account=".$this->sAccount."&query=".$sQuery);
-   // $sQuery = utf8_decode($sQuery);
     $iTotal = $this->oSearcher->iSearch($sQuery); 
     
     if(!isset($_REQUEST['page']) || $_GET['page'] < 1){

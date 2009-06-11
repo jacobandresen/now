@@ -2,18 +2,18 @@
 <head>
   <title>Yet another search engine</title>
 
-  <link rel="stylesheet"  href="lib/ext2.2/resources/css/ext-all.css" type="text/css"/>
-  <script type="text/javascript" src="lib/ext2.2/adapter/ext/ext-base.js"></script>
-  <script type="text/javascript" src="lib/ext2.2/ext-all.js"></script>
+  <link rel="stylesheet"  href="lib/ext-3.0-rc2/resources/css/ext-all.css" type="text/css"/>
+  <script type="text/javascript" src="lib/ext-3.0-rc2/adapter/ext/ext-base.js"></script>
+  <script type="text/javascript" src="lib/ext-3.0-rc2/ext-all.js"></script>
   <script type="text/javascript" src="Admin.js"></script>
 
   <style type="text/css">
     .add {
-      background-image:url(shared/icons/fam/add.gif) !important;
+      background-image:url(resources/icons/fam/add.gif) !important;
     }
 
     .save {
-      background-image:url(shared/icons/save.gif) !important;
+      background-image:url(resources/icons/save.gif) !important;
     }
 
   </style>
