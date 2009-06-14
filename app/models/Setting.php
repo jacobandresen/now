@@ -5,9 +5,9 @@ class Setting extends Model{
 
   public function search() {
     if ( isset($_REQUEST['account_id']) ) { 
-    return ( Model::search(" WHERE account_id=".$_REQUEST['account_id']." ORDER by id") );
+    return ( Model::fetchArray(" WHERE account_id=".$_REQUEST['account_id']." ORDER by id") );
     } else {
-     return ( Model::search() );
+     return ( Model::fetchArray() );
      } 
    }
 };

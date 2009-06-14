@@ -20,7 +20,7 @@ class Controller {
           $this->model->get($this->id);
           return(json_encode($this->model)); 
         } else {
-          return( json_encode($this->model->search( )) ) ;
+          return( json_encode($this->model->fetchArray( )) ) ;
         } 
         break;  
       case 'POST':

@@ -5,7 +5,6 @@
 <body> 
 
 <?php
- require_once("classes/Global.php"); 
  require_once("classes/Yase.php");
 
  $sAccount="pedant.dk";

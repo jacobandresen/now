@@ -94,7 +94,7 @@ class Model {
     mysql_query( $sSQL );
   }
 
-  public function bound ( $sFilter = '') {
+  public function fetchCount ( $sFilter = '') {
     if (!$this->loggedin() ) return;
     $sSQL = "SELECT count(id) as cnt FROM $this->sTable $sFilter";
     $oRs = mysql_query( $sSQL ) ; 
@@ -104,7 +104,7 @@ class Model {
     return 0;
   }
  
-  public function search ( $sFilter = ' ORDER BY id ') {
+  public function fetchArray ( $sFilter = ' ORDER BY id ') {
     if (!$this->loggedin() ) return;
     $aRet = array();
     $sSQL = "SELECT id FROM $this->sTable $sFilter ;";
