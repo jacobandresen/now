@@ -105,7 +105,7 @@ class Crawler {
     preg_match("|\.pdf|i", $sUrl, $aMatch);
     if(count($aMatch)>0){
       $p=new PDFFilter();
-      $sReponse = $p->filter($sUrl);
+      $sResponse = $p->filter($sUrl);
     }else{ 
       $sResponse= $this->getUrl($sUrl);
     

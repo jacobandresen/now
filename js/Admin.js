@@ -1,115 +1,77 @@
-Ext.onReady(function(){
+var App = new Ext.App({});
 
-  Ext.QuickTips.init();	
-  Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
-  
-  var iAccount=12;
-  var settingsModel;
-  var filterGrid;
+var settingsProxy = new Ext.data.HttpProxy({
+  api: {
+      read    : 'app.php/settings/view', 
+      create  : 'app.php/settings/create',
+      update  : 'app.php/settings/update',
+      destroy : 'app.php/settings/destroy'
+  }
+});  
 
-  var Account = Ext.data.Record.create([
-    {name: 'iID'},
-    {name: 'iAccountID'},  
-    {name: 'sName'},
-    {name: 'iLevelLimit'},
-    {name: 'iCrawlLimit'}
-  ]);
+var settingsReader = new Ext.data.JsonReader({
+  totalProperty: 'total',
+  successProperty: 'success',
+  idProperty: 'id',
+  root: 'setting'
+  }, [
+  {name: 'iID'}, 
+  {name: 'sName', allowBlank:false},
+  {name: 'sValue', allowBlank:false},
+  {name: 'sType'}
+]);
 
-  var accountStore = new Ext.data.Store({
-    url: 'app.php/accounts', 
-    reader: new Ext.data.JsonReader({ iID: 'sName'}, Account)
-  });
-
-  var accountCombo = new Ext.form.ComboBox({
-    store: accountStore,
-    displayField: 'sName',
-    mode: 'local',
-    triggerAction: 'all',
-    selectOnFocus:true, 
-    emptyText: 'Select an account ...',
-    applyTo: 'account-combo',
-    listeners: {
-      select: function(combo, record) {
-        iAccount = record.get('iID');
-        filterGrid.title = record.get('sName');   
-        filterStore.proxy.conn.url = 'app.php/settings?account_id='+iAccount;
-        filterStore.load(); 
-      }    
-    } 
-  });
-  accountStore.load();
-
-  var Setting = Ext.data.Record.create([
-    {name: 'iID'}, 
-    {name: 'sName'},
-    {name: 'sValue'},
-    {name: 'sType'}
-  ]);
-
-  var filterStore = new Ext.data.Store({
-    proxy: new Ext.data.HttpProxy({url: 'app.php/settings'}),
-    reader: new Ext.data.JsonReader({ id:'sName' },Setting),
-    sortInfo:{field:'sName',direction:'ASC'},
-    listeners: {
-      update: function(store,r, oper) {
-        console.log('update!'); 
-      },
-      save: function(store, r, oper) {
-        console.log('save!');
-      } 
+var settingsWriter = new Ext.data.JsonWriter({
+  returnJson: true,
+  writeAllFields: false
+});
+ 
+var settingsStore = new Ext.data.Store({
+  id: 'setting',
+  proxy: settingsProxy,
+  reader: settingsReader,
+  writer: settingsWriter,
+  autoSave: true,
+  listeners: {
+    write: function(store, action, result, res, rs ){
+      App.setAlert(res.success, res.message);
+    },
+    exception: function(proxy, type, action, options, res, arg){
+      if (type === 'remote') {
+        Ext.Msg.show({
+          title: 'REMOTE EXCEPTION',
+          msg: res.message,
+          icon: Ext.MessageBox.ERROR
+        });
+      }
     }
-  });
-  
-  settingsModel = new Ext.grid.ColumnModel([
-   {
-    id:'name',
-    header: 'name',
-    dataIndex:'sName',
-    width:220,
-    editor: new Ext.form.TextField({ allowBlank:false })
-   },
-   {
-    id:'value',
-    header: 'value',
-    dataIndex: 'sValue',
-    width:220,
-    editor: new Ext.form.TextField({ allowBlank:false })
-   }
-   ]);
-  settingsModel.defaultSortable = true;
+  }
+}
+var textField = new Ext.form.TextField();
 
-  filterGrid = new Ext.grid.EditorGridPanel({
-    store:filterStore,
-    cm: settingsModel,
-    renderTo: 'crawler-grid',
-    width: 600,
-    height:300,
-    title:'crawler skip filters',
-    tbar: [
-      {
-      tooltip: 'save', 
-      iconCls: 'save', 
-      width: 100, 
-       handler: function() {
-	     console.log("SAVE!");
-            } 
-      },
-      {
-      tooltip: 'add filter',
-      iconCls: 'add', 
-      width: 100, 
-      handler: function() {
-                var s=new Setting({
-		   name:'',
-                   value:'',
-                   type: ''
-                }); 
-                filterGrid.stopEditing();
-                filterStore.insert(0,s);
-	        filterGrid.startEditing(0,0);
-              } 
-       }]
-   });	
-   filterStore.load();
+var settingsColumns = [
+  {header: "name", width:120, sortable: true, 
+   dataIndex: 'sName', editor: textField},
+  {header: "value", width:120, sortable: true,
+   dataIndex: 'sValue', editor:textField}
+]; 
+settingsStore.load();
 
-})
+Ext.onReady(function() {
+   Ext.QuickTips.init();
+   var settingsGrid = new YASE.SettingsGrid({
+     renderTo: 'crawler-settings',
+     store: settingsStore,
+     columns: settingsColumns,
+     listeners: {
+       rowclick: function(g, index, ev) {
+         var rec = g.store.getAt(index);
+       },
+       destroy: function() {
+       //  settingsForm.getForm().reset();
+       }
+     }
+   });
+});
+
+
