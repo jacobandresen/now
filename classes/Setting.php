@@ -1,5 +1,4 @@
 <?php
-require_once('Field.php');
 require_once('IModel.php');
 require_once('REST/Model.php');
 

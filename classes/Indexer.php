@@ -1,7 +1,5 @@
 <?php
 
-require_once('UserManagement.php');
-
 
 //TODO:avoid deleting the old index while making the new one
 

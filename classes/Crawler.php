@@ -34,7 +34,7 @@ class Crawler {
     $this->aCrawled=array();
     $this->aProcess=array();
  
-    //hardcoded settings 
+    //hardcoded settings  (this should not be tweakable by the user)
     $this->iMaxLevel=40;
     $this->iCrawlLimit = 5000;
 
@@ -46,7 +46,8 @@ class Crawler {
        array_push( $aDomains, $sName ) ;
     }
     $this->aDomains = $aDomains; 
- 
+
+    //configurable settings (to be tweaked by the user in the UI) 
     $s=new Setting();
     $this->filterSettings = 
 		  $s->fetchArray(' WHERE account_id='.$this->iAccountId.' AND tablename="filters"');
@@ -101,7 +102,7 @@ class Crawler {
     if ($this->iCrawled>$this->iCrawlLimit){return false; } 
 
     //random wait (firewall buster)
-    sleep(rand(0,3)); 	
+    //sleep(rand(0,3)); 	
 	
     //grab contents of url
     //TODO: use HTML header instead 

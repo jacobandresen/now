@@ -3,7 +3,6 @@
 //TODO: support conditional GET
 //TODO: support HTTP 1.1
 class HTTPClient {
-  protected $store;
   public $sStatus;
   public $sFinalUrl;
  
@@ -41,7 +40,7 @@ class HTTPClient {
   }
 
   public function Close(){
-   fclose($this->oSocket);
+    fclose($this->oSocket);
   }
  
   private function SendRequest( $sRequest ){
@@ -76,45 +75,43 @@ class HTTPClient {
   
   protected function getHeaders () {
     while( !feof($this->oSocket ) ) {
-        $sLine=fgets($this->oSocket,512);
-        $indx=strpos($sLine,":"); 
-        $sKey=substr($sLine, 0, $indx); 
-        $sKey=strtolower($sKey); 
-        $sValue=substr($sLine,$indx+1, strlen($sLine)-$indx); 
-        $sValue=trim($sValue); 
-        $sValue=strtolower($sValue);
-        $this->aHeaders[$sKey]=$sValue; 
-        if($sLine=="\r\n") break; 
+      $sLine=fgets($this->oSocket,512);
+      $indx=strpos($sLine,":"); 
+      $sKey=substr($sLine, 0, $indx); 
+      $sKey=strtolower($sKey); 
+      $sValue=substr($sLine,$indx+1, strlen($sLine)-$indx); 
+      $sValue=trim($sValue); 
+      $sValue=strtolower($sValue);
+      $this->aHeaders[$sKey]=$sValue; 
+      if($sLine=="\r\n") break; 
     }
   }
  
   protected function Redirect() {
-        $this->iRedirects++;
+    $this->iRedirects++;
   	print "redirects#:".$this->iRedirects."\r\n";	
-	if($this->iRedirects<3){ 
-           $sNewUrl=$this->aHeaders['location'];
-           print "redirecting to:".$sNewUrl."\r\n"; 
-           $this->Connect($this->sHost);
+	  if($this->iRedirects<3){ 
+      $sNewUrl=$this->aHeaders['location'];
+      print "redirecting to:".$sNewUrl."\r\n"; 
+      $this->Connect($this->sHost);
            
-            //make sure we have a full url
-	   if(!(strpos($sNewUrl, $this->sHost)) &&
-	       !(strpos($sNewUrl, "/"))){
-                print "EXPAND:".$this->sHost."\r\n";
-                $sNewUrl="http://".$this->sHost.$sNewUrl;
-                print "NEW URL:".$sNewUrl."\r\n";
-            }
-            $this->sFinalUrl=$sNewUrl;           
-           
-            print "[".$this->sFinalUrl."]\r\n"; 
-            return($this->Get($sNewUrl));
-        }else{
-          print "too many redirects \r\n";
-          return("");   
-        } 
+      //make sure we have a full url
+	    if(!(strpos($sNewUrl, $this->sHost)) &&
+	      !(strpos($sNewUrl, "/"))){
+          print "EXPAND:".$this->sHost."\r\n";
+          $sNewUrl="http://".$this->sHost.$sNewUrl;
+          print "NEW URL:".$sNewUrl."\r\n";
+        }
+      $this->sFinalUrl=$sNewUrl;           
+      print "[".$this->sFinalUrl."]\r\n"; 
+      return($this->Get($sNewUrl));
+    }else{
+      print "too many redirects \r\n";
+      return("");   
+    } 
   }  
 
   // 
-  //TODO: write directly to store
   //TODO: MAX SIZE should be a configuration setting 
   // 
   protected function getReply () {
@@ -125,38 +122,36 @@ class HTTPClient {
     //status 
     $sStatus=fgets($this->oSocket,512);
     $aStatus=split(" ",$sStatus, 3);
-    if( preg_match("/http/i",$aStatus[0])) 
-    {
-     if($aStatus[1]!="200"){
-       //handle redirects
-       if( $aStatus[1]=="301" || $aStatus[1]=="302"){
-         $this->getHeaders(); 
-         $this->sStatus="301"; 
-         return($this->Redirect());
-       } 
-       if($aStatus[1]=="400"){
-        print "[".$this->sUrl."] was not found!\r\n";
-        return("");
+    if( preg_match("/http/i",$aStatus[0])){
+      if($aStatus[1]!="200"){
+        //handle redirects
+        if( $aStatus[1]=="301" || $aStatus[1]=="302"){
+          $this->getHeaders(); 
+          $this->sStatus="301"; 
+          return($this->Redirect());
         } 
-     }else{
-
-    //headers
-    $this->getHeaders(); 
-   
-    //number
-    $iNumber=fgets($this->oSocket,512);
-    $this->sReply=""; 
-    try{
-     while( !feof($this->oSocket ) ) {
-       $sLine=fgets($this->oSocket,512);
-       if(strlen($this->sReply) < 1500000){ 
-         $this->sReply.=$sLine; 
+        if($aStatus[1]=="400"){
+          print "[".$this->sUrl."] was not found!\r\n";
+          return("");
+        } 
+      }else{
+        //headers
+        $this->getHeaders(); 
+       
+        //number
+        $iNumber=fgets($this->oSocket,512);
+        $this->sReply=""; 
+        try{
+          while( !feof($this->oSocket ) ) {
+            $sLine=fgets($this->oSocket,512);
+            if(strlen($this->sReply) < 1500000){ 
+              $this->sReply.=$sLine; 
+            }
+          }
+        }catch(Exception $e){
+          print "failed retrieving:".$this->ssUrl."\r\n";
         }
-     }
-   }catch(Exception $e){
-    print "failed retrieving:".$this->ssUrl."\r\n";
-   }
-    }
+      }
    } 
    return($this->sReply);
   }  

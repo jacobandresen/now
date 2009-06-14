@@ -47,7 +47,7 @@ class Searcher {
         $content=$row['content'];
        	$content = preg_replace('/\&.*?\;/is',' ', $content); 
         
-	$oResult = new Result();
+	      $oResult = new Result();
         $oResult->sUrl = urldecode($row['url']);
         $oResult->sTitle = trim(html_entity_decode($title));
         if($oResult->sTitle==""){ $oResult->sTitle = $oResult->sUrl; }  
