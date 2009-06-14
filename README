@@ -3,9 +3,7 @@
 
 Yase lets you crawl webpages and put them into a database where you can search them.
 
-Currently the serverside crawler and indexer jobs runs pr account via php on the command line.
-
-To use yase in its present form you will need to know how to use the command line in linux or cygwin and you will also need to be able to operate the mysql server.
+crawler settings are controlled by the settings table.
 
 
 dependencies:
@@ -20,7 +18,6 @@ installation:
 -------------
  load ./data/tables.sql into mysql
  configure ./classes/Global.php for your mysql user
- setup an account in ./account/
 
  to index large files then you will need to alter the max mem settings for php and the max packet size for mysql
 
@@ -36,9 +33,7 @@ Feedback:
 ---------
 
 Please report bugs at :
-
 http://yase.lighthouseapp.com
-
 
 
 License:

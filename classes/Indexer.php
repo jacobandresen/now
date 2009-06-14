@@ -2,11 +2,17 @@
 
 require_once('UserManagement.php');
 
+
+//TODO:avoid deleting the old index while making the new one
+
 class Indexer { 
 
+  //admin settings
   protected $iAccontId;         //account number in database
   protected $iDomainId;         //current domain being processed 
-  protected $skipStore;		//skip filters
+
+  //user configurable settings (Model based)
+  protected $skipStore;		     //skip filters
   public $aFilterSkip;		
   public $sBodyFilter;
 
@@ -14,12 +20,12 @@ class Indexer {
     $this->sBodyFilter=$bodyfilter; 
   }
 
- public function __construct($iAccountId){
-   if ((!(isset($iAccountId))) || $iAccountId<0){
-     die("index:invalid account id \r\n");
-   }
-   $this->iAccountId=$iAccountId; 
-   $this->sBodyFilter=""; 
+  public function __construct($iAccountId){
+    if ((!(isset($iAccountId))) || $iAccountId<0){
+      die("index:invalid account id \r\n");
+    }
+    $this->iAccountId=$iAccountId; 
+    $this->sBodyFilter=""; 
   }
 
   public function clear(){
@@ -48,133 +54,124 @@ class Indexer {
 
     print "ADD: $url \r\n";
     try{
-    $title="";
-    $url= urlencode($url);
+      $title="";
+      $url= urlencode($url);
  
-   //process skip filters
-   if($this->aFilterSkip) 
-   foreach ($this->aFilterSkip as $oItem){
-     preg_match("|$oItem|", $url, $aMatch);
-     if ( count($aMatch) > 0){
-      	print "SKIP DUE TO :".$oItem."\r\n"; 
-	return false;
-     }
-   }
-
-    $res= mysql_query("SELECT url from document where url='$url' and account_id='".$this->iAccountId."'") or die(mysql_error());
-    if($row=mysql_fetch_array($res)){
-      print "duplicate: $url <br>  -> ".$row['url']."\r\n"; 
-      return false;
-   }
- 
-   //process content
-   $orig=$body;
-   if ($this->isUTF8($body)){
-     $body = iconv("UTF-8", "ISO-8859-1", $body);
-  }
-
-  // print "BODY:".$body."\r\n";
-
-
-   $timestmp=time();
-   $sFound='';
-
-   //find title
-   if ($title == ''){
-     preg_match("|<.*?content_header[^>]*?\>(.*?)<\/[^>]*?\>|is", $body, $aMatches);
-     if(sizeof($aMatches)){ 
-       $title = $aMatches[1];
-       $sFound = 'h1';
-     } 
-   }   
-   if ($title == ''){
-     preg_match("|<h1>(.*?)<\/h1>|is", $body, $aMatches);
-     if(sizeof($aMatches)){ 
-       $title = $aMatches[1];
-       $sFound = 'h1';
-     } 
-   }   
-   if ($title == ''){
-     preg_match("|<h2>(.*?)<\/h2>|is", $body, $aMatches);
-     if(sizeof($aMatches)){ 
-      $title = $aMatches[1];
-      $sFound = 'h2';
-     }
-   }
-   if ($title == ''){
-     preg_match("|<title>(.*?)<\/title>|is", $body, $aMatches);
-     if(sizeof($aMatches)){ 
-       $title = $aMatches[1];
-       $sFound = 'title';
-     }
-   }  
-    if ($title == ''){
-     preg_match("|<h3>(.*?)<\/h3>|is", $body, $aMatches);
-     if(sizeof($aMatches)){ 
-      $title = $aMatches[1];
-      $sFound = 'h3';
-     }
-   }
-
-  if ($title == ''){
-     preg_match("|<h4>(.*?)<\/h4>|is", $body, $aMatches);
-     if(sizeof($aMatches)){ 
-      $title = $aMatches[1];
-      $sFound = 'h4';
-     }
-   }
-
-
-
-
-   //clean body
-   if($this->sBodyFilter!=""){
-     preg_match($this->sBodyFilter, $body, $aMatches); 
-     if(sizeof($aMatches)>0){
-       $body= $aMatches[1];
+      //process skip filters
+      if($this->aFilterSkip) {
+        foreach ($this->aFilterSkip as $oItem){
+          preg_match("|$oItem|", $url, $aMatch);
+          if ( count($aMatch) > 0){
+      	    print "SKIP DUE TO :".$oItem."\r\n"; 
+	          return false;
+          }
+        }
       }
-   }
 
-   //remove title:
-  $title = strip_tags($title);	
-  $title = html_entity_decode($title); 
-  print "TITLE:".$title."\r\n";
-
-
-   //remove clutter 
-   $body = preg_replace("/<script.*?<\/script>/is", ' ', $body);
-   $body = preg_replace("/<\!\-\-.*?\-\->/is", ' ', $body);
-
-   $body = preg_replace("/\(/is", '', $body);
-   $body = preg_replace("/\'/is", '', $body);
-   $body = $this->sHtmlToRawText($body);
-   $body = preg_replace("/\s+/is", ' ', $body);
-
-   $body = strip_tags($body);
-   
-   //check for duplicate 
-   $md5 = md5($body); 
-   $result=mysql_query("SELECT url,md5 from document where md5='$md5'") or die(mysql_error());
-   $row=mysql_fetch_row($result); 
-   if($row) {
-    print $title;
-     print "\r\nduplicate found for ".$url." -> ".$row['url'].", md5:".$row['md5']."\r\n"; 
-     return false;
-   }
+      $res= mysql_query("SELECT url from document where url='$url' and account_id='".$this->iAccountId."'") or die(mysql_error());
+      if($row=mysql_fetch_array($res)){
+        print "duplicate: $url <br>  -> ".$row['url']."\r\n"; 
+        return false;
+      }
  
-   //add documents with content
-   $blength=strlen($body);
-   if($blength>5 && strlen($url)>0 ){ 
-     $sSQL = "INSERT INTO document(account_id,url,title,content,md5, level) values('".$this->iAccountId."','$url','$title', '$body', '$md5', '$level');";
-     print "indexing: [ $blength ] $url \r\n";  
-     mysql_query( $sSQL ) ;//or die (mysql_error());
-   }else{
+      //process content
+      $orig=$body;
+      if ($this->isUTF8($body)){
+        $body = iconv("UTF-8", "ISO-8859-1", $body);
+      }
+
+      $timestmp=time();
+      $sFound='';
+
+      //find title
+      if ($title == ''){
+        preg_match("|<.*?content_header[^>]*?\>(.*?)<\/[^>]*?\>|is", $body, $aMatches);
+        if(sizeof($aMatches)){ 
+          $title = $aMatches[1];
+          $sFound = 'h1';
+        } 
+      }   
+      if ($title == ''){
+        preg_match("|<h1>(.*?)<\/h1>|is", $body, $aMatches);
+        if(sizeof($aMatches)){ 
+          $title = $aMatches[1];
+          $sFound = 'h1';
+        } 
+      }   
+      if ($title == ''){
+        preg_match("|<h2>(.*?)<\/h2>|is", $body, $aMatches);
+        if(sizeof($aMatches)){ 
+          $title = $aMatches[1];
+          $sFound = 'h2';
+        }
+      }
+      if ($title == ''){
+        preg_match("|<title>(.*?)<\/title>|is", $body, $aMatches);
+        if(sizeof($aMatches)){ 
+          $title = $aMatches[1];
+          $sFound = 'title';
+        }
+      }  
+      if ($title == ''){
+        preg_match("|<h3>(.*?)<\/h3>|is", $body, $aMatches);
+       if(sizeof($aMatches)){ 
+         $title = $aMatches[1];
+         $sFound = 'h3';
+       }
+      }
+
+     if ($title == ''){
+       preg_match("|<h4>(.*?)<\/h4>|is", $body, $aMatches);
+       if(sizeof($aMatches)){ 
+         $title = $aMatches[1];
+         $sFound = 'h4';
+       }
+     }
+
+     //clean body
+    if($this->sBodyFilter!=""){
+      preg_match($this->sBodyFilter, $body, $aMatches); 
+      if(sizeof($aMatches)>0){
+        $body= $aMatches[1];
+      }
+    }
+
+    $title = strip_tags($title);	
+    $title = html_entity_decode($title); 
+    print "TITLE:".$title."\r\n";
+
+    //remove clutter 
+    $body = preg_replace("/<script.*?<\/script>/is", ' ', $body);
+    $body = preg_replace("/<\!\-\-.*?\-\->/is", ' ', $body);
+    $body = preg_replace("/\(/is", '', $body);
+    $body = preg_replace("/\'/is", '', $body);
+    $body = $this->sHtmlToRawText($body);
+    $body = preg_replace("/\s+/is", ' ', $body);
+    $body = strip_tags($body);
+   
+    //check for duplicate 
+    $md5 = md5($body); 
+    $result=mysql_query("SELECT url,md5 from document where md5='$md5'") or die(mysql_error());
+    $row=mysql_fetch_row($result); 
+    if($row) {
+      print $title;
+      print "\r\nduplicate found for ".$url." -> ".$row['url'].", md5:".$row['md5']."\r\n"; 
+      return false;
+    }
+ 
+    //add documents with content
+    $blength=strlen($body);
+    if($blength>5 && strlen($url)>0 ){ 
+      $sSQL = "INSERT INTO document(account_id,url,title,content,md5, level) values('".$this->iAccountId."','$url','$title', '$body', '$md5', '$level');";
+      print "indexing: [ $blength ] $url \r\n";  
+      mysql_query( $sSQL ) ;//or die (mysql_error());
+    }else{
       print $url." empty doc <br />\r\n";
     }
-  }catch(Exception $e){
-    print "failed adding $url\r\n";
+    }catch(Exception $e){
+     print "failed adding $url\r\n";
+    } 
   } 
-} 
 
   public function reset() {
     $sSQL = "DELETE from document where account_id='".$this->iAccountId."'";  

@@ -1,5 +1,5 @@
 <?php
-class Request {
+class REST_Request {
   public $restful, $method, $controller, $action, $id, $params;
   
   public function __construct($params) {

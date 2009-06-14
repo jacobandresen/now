@@ -1,6 +1,6 @@
 <?php
 
-class Model {
+class REST_Model {
   
   function __construct( $uInput=false ){
     $this->sTable = $this->sTable;

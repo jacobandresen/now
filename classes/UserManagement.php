@@ -12,6 +12,7 @@ class UserManagement {
       return false;
     } 
   }
+
   function checkAccess($iAccountId) {
     if($_SESSION['login']) { 
       $iUserId = $this->getUserId( $_SESSION['login'] ) ;
@@ -59,34 +60,32 @@ class UserManagement {
    return($row[0]);   
   }
 
- function getAccountId($sAccount) {
-   $res = mysql_query("SELECT id from account where name='".$sAccount."'") or die(mysql_error());;
-   $row = mysql_fetch_row($res);
-   return($row[0]);
- }
+  function getAccountId($sAccount) {
+    $res = mysql_query("SELECT id from account where name='".$sAccount."'") or die(mysql_error());;
+    $row = mysql_fetch_row($res);
+    return($row[0]);
+  }
 
- function addDomain($iAccountId, $sDomain){
+  function addDomain($iAccountId, $sDomain){
     print "add domain: $sDomain \r\n"; 
     mysql_query("INSERT INTO domain(account_id,name) values('".$iAccountId."','".$sDomain."')") or die(mysql_error());
- }	
+  }	
 
- function getDomains($iAccountId){
-   $aDomain=array();	 
-   $res = mysql_query("SELECT name from domain where account_id='".$iAccountId."'");
-   while($row = mysql_fetch_array($res)){
-     array_push($aDomain, $row['name'] );
-   }
-   return($aDomain);
- }
+  function getDomains($iAccountId){
+    $aDomain=array();	 
+    $res = mysql_query("SELECT name from domain where account_id='".$iAccountId."'");
+    while($row = mysql_fetch_array($res)){
+      array_push($aDomain, $row['name'] );
+    }
+    return($aDomain);
+  }
 
- function getDomainId($sUser, $sDomain){ 
+  function getDomainId($sUser, $sDomain){ 
    $userid=$this->getUserId($sUser);
    $res=mysql_query("SELECT id from domain where account_id='".$iAccountId."' and name='".$sDomain."'") or die(mysql_error());
    $row=mysql_fetch_row($res);
    return($row[0]); 
  }
-
 };
-
 ?>
 

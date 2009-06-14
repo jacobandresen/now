@@ -1,6 +1,5 @@
 <?
-class Response {
-
+class REST_Response {
   public $success, $data, $message, $errors, $tid, $trace;
   
   public function __construct($params = array()) {

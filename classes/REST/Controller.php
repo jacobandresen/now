@@ -1,5 +1,5 @@
 <?php
-class Controller {
+class REST_Controller {
   public $sTable;
   public $request, $id, $params;
   protected $model;

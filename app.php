@@ -1,18 +1,22 @@
 <?php
 
-  require_once("classes/Global.php");
-  require_once("rest/Controller.php");
-  require_once("rest/Model.php");
-  require_once("rest/Request.php");
-  require_once("rest/Response.php");
+  require_once("classes/Yase.php");
+ 
+  //REST framework  (based on the extjs 3.0 example)
+  require_once("classes/REST/Controller.php");
+  require_once("classes/REST/Model.php");
+  require_once("classes/REST/Request.php");
+  require_once("classes/REST/Response.php");
 
-  require_once("models/Setting.php");
-  require_once("models/Account.php");
+  //model
+  require_once("app/models/Setting.php");
+  require_once("app/models/Account.php");
 
+  //controller
   $request = new Request(array('restful' => true));
   if (isset($request->controller)) {
     $controller_name = ucfirst($request->controller);
-    require("controllers/".$controller_name.".php");
+    require("app/controllers/".$controller_name.".php");
     $controller = new $controller_name;
     echo $controller->dispatch($request); 
   }

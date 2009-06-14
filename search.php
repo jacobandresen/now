@@ -23,7 +23,7 @@
 
 <?php
  $y=new Yase($sAccount);
-  $y->page($sQuery, $iPage);
+ $y->page($sQuery, $iPage);
 ?>
 
 </body>
