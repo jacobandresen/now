@@ -1,7 +1,5 @@
 <?php
 
-require_once("Result.php");
-
 class Searcher {
   protected $iAccountId;
   public $iLimit = 5;

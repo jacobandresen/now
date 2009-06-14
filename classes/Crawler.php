@@ -1,9 +1,5 @@
 <?php
 
-require_once('PDFFilter.php');
-require_once('Document.php');
-require_once('Setting.php');
-
 class Crawler {
 
   //admin settings (not set by the user)

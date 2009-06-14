@@ -1,6 +1,5 @@
 <?php
 
-
 //TODO:avoid deleting the old index while making the new one
 
 class Indexer { 

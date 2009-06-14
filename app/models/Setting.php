@@ -1,13 +1,13 @@
 <?php
 
-class Setting extends Model{
+class Setting extends REST_Model implements IModel{
   protected  $sTable = "setting";
 
-  public function search() {
+  public function fetchArray() {
     if ( isset($_REQUEST['account_id']) ) { 
-    return ( Model::fetchArray(" WHERE account_id=".$_REQUEST['account_id']." ORDER by id") );
+    return ( REST_Model::fetchArray(" WHERE account_id=".$_REQUEST['account_id']." ORDER by id") );
     } else {
-     return ( Model::fetchArray() );
+     return ( REST_Model::fetchArray() );
      } 
    }
 };

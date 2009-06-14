@@ -1,6 +1,6 @@
 <html>
 <head>
- <link rel="stylesheet" type="text/css" href="css/yase.css"/>
+ <link rel="stylesheet" type="text/css" href="resources/css/yase.css"/>
 </head>
 <body> 
 
