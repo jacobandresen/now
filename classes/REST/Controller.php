@@ -1,4 +1,8 @@
 <?php
+
+//TODO: find a way to update php attributes from json
+//			(and keep the methods on REST_Model)
+
 class REST_Controller {
   public $sTable;
   public $request, $id, $params;
@@ -13,26 +17,53 @@ class REST_Controller {
     $this->request = $request;
     $this->id      = $request->id;
     $this->params  = $request->params;
-
-    switch ($this->request->method) {
-      case 'GET' :
-        if (isset($this->id)) { 
+    
+    $res = new REST_Response();  
+    switch ($this->request->action) {
+      case 'view' :
+       if (isset($this->id)) { 
           $this->model->get($this->id);
-          return(json_encode($this->model)); 
+          $res->data = $this->model;
+          $res->message = "view"; 
+			    $res->success = true;
+          return ($res->to_json()); 
         } else {
-          return( json_encode($this->model->fetchArray( )) ) ;
+          $res->data = $this->model->fetchArray();
+          $res->success = true;
+          return( $res->to_json() ); 
         } 
         break;  
-      case 'POST':
+      case 'create':
         $this->model = json_decode($this->params['data']); 
-        return $this->model->update();
+        $res->data = $this->model; 
+        $res->message = "create"; 
+        $res->success = true;
+        return ($res->to_json()); 
         break;
-      case 'PUT':
-        $this->model = json_decode($this->params['data']); 
-        return $this->model->update();
+      case 'update':
+        $this->model = new Setting(); 
+				$this->model->sName=$this->params['sName'];
+        $this->model->sValue=$this->params['sValue'];
+        $this->model->sType=$this->params['sType'];        
+        $this->model->update(); 
+        $res->message = "update"; 
+        $res->data = $this->model;
+        $res->success = true;
+        return ($res->to_json()); 
         break;
-      case 'DELETE':
-        return $this->model->delete();
+      case 'destroy':
+        $id = stripslashes($_REQUEST['data']);
+        $res->message=$id; 
+        $res->success=true; 
+        $this->model->get($id);
+        
+        $res->success =false;
+        if( isset($this->model) ) { 
+          $this->model->delete();
+          $res->success = true;
+        } 
+        $res->data = null;
+  		  return ($res->to_json()); 
         break;
     } 
   }

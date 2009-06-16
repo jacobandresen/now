@@ -76,7 +76,7 @@ class Crawler {
   }
 
   public function getUrl ($sUrl) {
-    $c=new HttpClient();
+    $c=new HTTPClient();
     $sHost = $c->extractHost($sUrl);
     if($sHost!=""){
       $c->connect($sHost);

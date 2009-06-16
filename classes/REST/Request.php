@@ -13,7 +13,7 @@ class REST_Request {
   }
 
   protected function parseRequest() {
-    if ($this->method == 'PUT'){
+     if ($this->method == 'PUT'){
       $raw = '';
       $httpContent = fopen('php://input', 'r');
       while ( $kb = fread($httpContent, 1024)) {
@@ -24,13 +24,13 @@ class REST_Request {
 
       parse_str($raw, $params);
       $this->id = (isset($params['id'])) ?$params['id'] : null;
-      $this->params = (isset($params['data'])) ? json_decode(stripslashes($params['data']), true) : null;
+      $this->params = (isset($params['data'])) ? json_decode(stripslashes($params['setting']), true) : null;
     } else {
       $this->params = (isset($_REQUEST['data'])) ? json_decode(stripslashes($_REQUEST['data']), true) : null;
       $this->id = (isset($_REQUEST['id'])) ? json_decode(stripslashes($_REQUEST['id']), true) : null; 
     }
 
-   // if (isset($_SERVER["PATH_INFO"])) {
+    if (isset($_SERVER["PATH_INFO"])) {
         $cai = '/^\/([a-z]+\w)\/([a-z]+)\/([0-9]+)$/'; // /controller/action/id
         $ca  = '/^\/([a-z]+\w)\/([a-z]+)$/';   	       // /controller/action
         $ci  = '/^\/([a-z]+\w)\/([0-9]+)$/';           // /controller/id 
@@ -52,7 +52,7 @@ class REST_Request {
        } else if (preg_match($i,  $_SERVER["PATH_INFO"], $matches)) {
            $this->id = $matches[1]; 
        }
-   //  } 
+     } 
    }
 };
 ?>

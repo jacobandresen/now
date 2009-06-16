@@ -21,7 +21,7 @@ class REST_Model {
    public function get ( $iID ) {
      if (!$this->loggedin() ) return;
      $sSQL = 'SELECT * FROM ' . $this->sTable . ' WHERE id=' . $iID . '';
-     $oRs = mysql_query($sSQL);
+      $oRs = mysql_query($sSQL);
     
      if($aRow = mysql_fetch_array($oRs)) {
         return $this->bFetchObject($aRow);

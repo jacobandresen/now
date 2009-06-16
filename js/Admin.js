@@ -1,29 +1,28 @@
-var App = new Ext.App({});
+//var App = new Ext.App({});
 
 var settingsProxy = new Ext.data.HttpProxy({
   api: {
-      read    : 'app.php/settings/view', 
-      create  : 'app.php/settings/create',
-      update  : 'app.php/settings/update',
-      destroy : 'app.php/settings/destroy'
+    read    : 'app.php/settings/view', 
+    create  : 'app.php/settings/create',
+    update  : 'app.php/settings/update',
+    destroy : 'app.php/settings/destroy'
   }
 });  
 
 var settingsReader = new Ext.data.JsonReader({
-  totalProperty: 'total',
-  successProperty: 'success',
-  idProperty: 'id',
-  root: 'setting'
+  successProperty: 'success', 
+  idProperty:'iID',
+  root:'data'
   }, [
   {name: 'iID'}, 
-  {name: 'sName', allowBlank:false},
-  {name: 'sValue', allowBlank:false},
+  {name: 'sName'},
+  {name: 'sValue'},
   {name: 'sType'}
 ]);
 
 var settingsWriter = new Ext.data.JsonWriter({
   returnJson: true,
-  writeAllFields: false
+  writeAllFields: true 
 });
  
 var settingsStore = new Ext.data.Store({
@@ -34,7 +33,11 @@ var settingsStore = new Ext.data.Store({
   autoSave: true,
   listeners: {
     write: function(store, action, result, res, rs ){
-      App.setAlert(res.success, res.message);
+      //App.setAlert(res.success, res.message);
+     // alert( "write:"+res.message);  
+    },
+    destroy: function(store, action, result, res, rs ){
+      alert( "destroy:"+res.message);
     },
     exception: function(proxy, type, action, options, res, arg){
       if (type === 'remote') {
@@ -46,7 +49,7 @@ var settingsStore = new Ext.data.Store({
       }
     }
   }
-}
+});
 var textField = new Ext.form.TextField();
 
 var settingsColumns = [
@@ -55,23 +58,26 @@ var settingsColumns = [
   {header: "value", width:120, sortable: true,
    dataIndex: 'sValue', editor:textField}
 ]; 
-settingsStore.load();
 
 Ext.onReady(function() {
-   Ext.QuickTips.init();
-   var settingsGrid = new YASE.SettingsGrid({
-     renderTo: 'crawler-settings',
-     store: settingsStore,
-     columns: settingsColumns,
-     listeners: {
-       rowclick: function(g, index, ev) {
-         var rec = g.store.getAt(index);
-       },
-       destroy: function() {
-       //  settingsForm.getForm().reset();
-       }
+  Ext.QuickTips.init();
+
+  var settingsGrid = new YASE.SettingsGrid({
+    renderTo: 'crawler-grid',
+    store: settingsStore,
+    columns: settingsColumns, 
+    /*listeners: {
+     rowclick: function(g, index, ev) {
+       var rec = g.store.getAt(index);
+       //alert('click');  
+     },
+     destroy: function() {
+       alert('destroy'); 
+       //settingsForm.getForm().reset();
      }
-   });
+   }*/
+ });
+  settingsStore.load();
 });
 
 

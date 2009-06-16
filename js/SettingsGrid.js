@@ -1,23 +1,20 @@
 Ext.namespace('YASE');
 
-
 YASE.SettingsGrid = Ext.extend(Ext.grid.EditorGridPanel, {
+  renderTo: 'crawl-grid', 
   iconCls: 'silk-grid',
   frame: true,
   title: 'Settings',
-  autoScroll: true,
   height: 300,
-  style: 'margin-top: 10px',
-
+ 
   initComponent : function() {
     this.viewConfig = {
       forceFit: true
     };
-    this.relayEvents(this.store, ['destroy', 'save', 'update'];
-    this.tbar = this.buildTopToolbar();
+    this.relayEvents(this.store, ['destroy', 'save', 'update']);
+    this.tbar = this.buildTopToolBar();
     this.buttons = this.buildUI();
-
-    YASE.SettingsGrid.initComponent.call(this);
+    YASE.SettingsGrid.superclass.initComponent.call(this);
   },
 
   buildTopToolBar : function () {
@@ -44,9 +41,12 @@ YASE.SettingsGrid = Ext.extend(Ext.grid.EditorGridPanel, {
   },
 
   onSave: function (btn, ev) {
+   // alert('save'); 
     this.store.save();
   },
+
   onAdd: function (btn, ev) {
+    alert('add');
     var s = new this.store.recordType({
        iID: '',
        sName: '',
@@ -57,6 +57,7 @@ YASE.SettingsGrid = Ext.extend(Ext.grid.EditorGridPanel, {
     this.store.insert(0, s);
     this.startEditing(0,1); 
   },
+
   onDelete : function(btn, ev) {
     var index = this.getSelectionModel().getSelectedCell();
     if (!index) {

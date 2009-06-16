@@ -15,7 +15,7 @@
  if(isset($_GET['page'])){ $iPage = $_GET['page']; } 
 ?>
 
-<form action="yase.php" method="get">
+<form action="search.php" method="get">
  <input type="hidden" name="account" value="<?php echo $sAccount?>"/>
  <input type="text" name="query"/>
  <input type="submit" name="search" value="yase"/>
