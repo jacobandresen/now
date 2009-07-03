@@ -1,6 +1,5 @@
 <?php 
 
-//NOTE: pdftotext is available with xpdf from ftp.foolabs.com
 class PDFFilter {
   public $iAccountId;     
 

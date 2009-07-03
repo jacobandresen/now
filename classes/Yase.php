@@ -8,7 +8,6 @@ function __autoload($class_name) {
 }
 
 class Yase{ 
-
   public    $indexer;
   public    $crawler;
   public    $searcher;
@@ -50,9 +49,11 @@ class Yase{
    
     $results = $this->searcher->aSearch($query, $page);
     $pages = (int) ((($total-1)/$this->searcher->iLimit))+1;
-   
-    print '<div class="summary_info">The search for  <b>'.$query.'</b> returned <b>'.$iTotal.'</b> results </div>';
-   
+  
+    if ($query!=""){ 
+     print '<div class="summary_info">The search for  <b>'.$query.'</b> returned <b>'.$total.'</b> results </div>';
+    }  
+  
     print '<div class="navigation">';
    
     $paging->sNavigationFloat($page, $pages, 'account='.$REQUEST['account'].'&query='.$query, $this->searcher->iLimit );
@@ -66,7 +67,6 @@ class Yase{
     $paging->sNavigationFloat($page, $pages, '&query='.$query, $this->searcher->iLimit );
    print '</div>';
   }
-
 };
 ?>
 

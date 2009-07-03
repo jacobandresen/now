@@ -31,11 +31,8 @@ class Indexer {
 
   public function index(){
     $this->clear(); 
-
     print "start INDEX\r\n";
-
     $res = mysql_query("select max(retrieved),url,html,level from dump where account_id='".$this->iAccountId."' group by account_id,url") or die (mysql_error());
-    
     while($row=mysql_fetch_array($res)){
       try{ 
         $this->add(urldecode($row['url']),
@@ -70,12 +67,11 @@ class Indexer {
         print "duplicate: $url <br>  -> ".$row['url']."\r\n"; 
         return false;
       }
- 
       //process content
       $orig=$body;
-      if ($this->isUTF8($body)){
-        $body = iconv("UTF-8", "ISO-8859-1", $body);
-      }
+     // if ($this->isUTF8($body)){
+     //   $body = iconv("UTF-8", "ISO-8859-1", $body);
+     // }
 
       $timestmp=time();
       $sFound='';

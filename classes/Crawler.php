@@ -195,7 +195,6 @@ class Crawler {
         return true; 
       } 
      }
-   
     return false;
   }
 };

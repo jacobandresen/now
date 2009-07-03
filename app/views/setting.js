@@ -50,3 +50,12 @@ var settingsStore = new Ext.data.Store({
 });
 
 
+
+var textField = new Ext.form.TextField();
+
+var settingsColumns =  [
+   {header: "name", width:120, sortable:true,
+     dataIndex:'sName', editor:textField},
+   {header: "value", width:120, sortable:true,
+     dataIndex: 'sValue', editor:textField}
+  ];

@@ -5,10 +5,6 @@
   require_once("app/models/Setting.php");
   require_once("app/models/Account.php");
 
-  //HACK: we only want to  display settings for a single account
-  //  set account id for now. account should be chosen using combobox later
-  $_SESSION['account_id']=12;
-
   //controller
   $request = new REST_Request(array('restful' => true));
   if (isset($request->controller)) {

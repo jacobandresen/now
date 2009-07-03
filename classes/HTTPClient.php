@@ -111,16 +111,13 @@ class HTTPClient {
     } 
   }  
 
-  // 
-  //TODO: MAX SIZE should be a configuration setting 
-  // 
   protected function getReply () {
     $this->sReply=""; 
    
     if(!$this->oSocket){ return(""); } 
     
     //status 
-    $sStatus=fgets($this->oSocket,512);
+    $sStatus=fgets($this->oSocket,24);
     $aStatus=split(" ",$sStatus, 3);
     if( preg_match("/http/i",$aStatus[0])){
       if($aStatus[1]!="200"){
@@ -139,7 +136,7 @@ class HTTPClient {
         $this->getHeaders(); 
        
         //number
-        $iNumber=fgets($this->oSocket,512);
+       // $iNumber=fgets($this->oSocket,512);
         $this->sReply=""; 
         try{
           while( !feof($this->oSocket ) ) {

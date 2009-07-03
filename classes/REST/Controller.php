@@ -1,7 +1,5 @@
 <?php
 
-//TODO: find a way to update php attributes from json
-//			(and keep the methods on REST_Model)
 
 class REST_Controller {
   public $sTable;
@@ -34,7 +32,13 @@ class REST_Controller {
         } 
         break;  
       case 'create':
-        $this->model = json_decode($this->params['data']); 
+        $this->model = new Setting(); 
+			  $this->model->iAccountID = $this->params['iAccountID'];
+	      $this->model->sTablename = $this->params['sTablename'];	
+        $this->model->sName=$this->params['sName'];
+        $this->model->sValue=$this->params['sValue'];
+        $this->model->sType=$this->params['sType'];        
+        $this->model->update(); 
         $res->data = $this->model; 
         $res->message = "create"; 
         $res->success = true;
@@ -42,10 +46,14 @@ class REST_Controller {
         break;
       case 'update':
         $this->model = new Setting(); 
-				$this->model->sName=$this->params['sName'];
+		    $this->model->iID = $this->params['iID'];
+			  $this->model->iAccountID = $this->params['iAccountID'];
+	      $this->model->sTablename = $this->params['sTablename'];	
+        $this->model->sName=$this->params['sName'];
         $this->model->sValue=$this->params['sValue'];
         $this->model->sType=$this->params['sType'];        
         $this->model->update(); 
+
         $res->message = "update"; 
         $res->data = $this->model;
         $res->success = true;

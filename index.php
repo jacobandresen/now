@@ -1,30 +1,21 @@
-<html>
-<head>
-  <title>Yet another search engine</title>
+<?
+ require_once("app/template.php"); 
+ require_once("app/views/setting.php");
 
-  <link rel="stylesheet"  href="js/ext-3.0-rc2/resources/css/ext-all.css" type="text/css"/>
-  <script type="text/javascript" src="js/ext-3.0-rc2/adapter/ext/ext-base.js"></script>
-  <script type="text/javascript" src="js/ext-3.0-rc2/ext-all.js"></script>
-  <script type="text/javascript" src="js/SettingsGrid.js"></script>
-  <script type="text/javascript" src="js/Admin.js"></script>
-  <script type="text/javascript" src="js/RowEditor.js"></script>
+ head("Yet another search engine");
+ 
+ ?>
 
-  <style type="text/css">
-    .add {
-      background-image:url(resources/icons/fam/add.gif) !important;
-    }
+ <dig id="setting">
+  <div id="crawler"></div>
+  <div id="indexer"></div>
+ </div>
+<?php
+ settingGrid("crawler", "filter", "crawler");
+ settingGrid("indexer", "filter", "indexer");
+ ?>
 
-    .save {
-      background-image:url(resources/icons/save.gif) !important;
-    }
-  </style>
-</head>
-<body>	
+<?php
+ bottom();
+?>
 
-
-<div id="crawler-grid">
-</div>
-
-<body>
-</html>
-	
