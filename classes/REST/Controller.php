@@ -1,6 +1,5 @@
 <?php
 
-
 class REST_Controller {
   public $sTable;
   public $request, $id, $params;

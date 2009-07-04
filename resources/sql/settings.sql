@@ -32,6 +32,24 @@ create table setting (
  FOREIGN KEY(account_id) references account(id)
 );
 
+create table crawlerfilter {
+ id             int NOT NULL primary key auto_increment, 
+ account_id     int,
+ name		varchar(256), 
+ value          LONGTEXT,
+ FOREIGN KEY(account_id) references account(id)
+};
+
+create table indexerfilter {
+ id             int NOT NULL primary key auto_increment, 
+ account_id     int,
+ name		varchar(256), 
+ value          LONGTEXT,
+ FOREIGN KEY(account_id) references account(id)
+};
+
+
+
 --
 -- domains to be crawled for accounts
 --

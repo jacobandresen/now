@@ -11,7 +11,7 @@
  </div>
 
 <?php
- grid("indexerFilter", "indexer", "{}");
+ grid("indexerfilter", "indexer", "{}");
  ?>
 
 <?php

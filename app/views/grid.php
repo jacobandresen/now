@@ -1,11 +1,11 @@
 
 
 <?php
- function grid($model, $div) {
+ function grid($model, $div, $jsonDef) {
  ?>
 <script type="text/javascript">
 var <?php print $model; ?>Store = new Ext.data.Store({
-  id: 'setting',
+  id: '<?php print $model;?> setting',
   proxy: new Ext.data.HttpProxy({
   api: {
     read    : 'app.php/<?php print $model;?>/view', 
@@ -20,8 +20,6 @@ var <?php print $model; ?>Store = new Ext.data.Store({
     root:'data'
     }, [
     {name: 'iID'}, 
-    {name: 'iAccountID'}, 
-    {name: 'sTablename'}, 
     {name: 'sName'},
     {name: 'sValue'},
     {name: 'sType'}
@@ -41,7 +39,7 @@ var <?php print $model;?>Columns =  [
   ];
 
 Ext.onReady( function(){
-   settingsStore.load();
+   <?php print $model;?>Store.load();
 });
 
 
@@ -84,7 +82,6 @@ var <?php print $model."Grid" ;?> = Ext.extend(Ext.grid.EditorGridPanel, {
      }];
    },
 
-
   onSave: function(btn, ev) {
    this.store.save();
   },
@@ -112,8 +109,8 @@ var <?php print $model."Grid" ;?> = Ext.extend(Ext.grid.EditorGridPanel, {
 });
 
 Ext.onReady(function() {
-   var <?php print $table.$filter;?> = 
-     new <?php print $table.$filter."Grid";?>( {
+   var <?php print $model;?> = 
+     new <?php print $model."Grid";?>( {
       renderTo: '<?php print $div;?>',
       store: <?php print $model;?>Store,
      columns: <?php print $model;?>Columns

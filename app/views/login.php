@@ -1,8 +1,6 @@
- <?php 
- require_once("app/template.php");  
- head("login");
+<?php
+function loginForm() {
 ?>
-
 <form class="userform" action="index.php" method="POST">
  <div class="fieldlabel">name </div>
  <div class="fieldvalue"> 
@@ -16,5 +14,6 @@
  <input type="submit" value="login"></input>
 </form>
 
-bottom();
+<?php
+}
 ?>

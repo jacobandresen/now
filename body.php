@@ -11,7 +11,7 @@
  </div>
 
 <?php
- grid("bodyFilter", "bodyfilter", "{}");
+ grid("bodyfilter", "bodyfilter", "{}");
  ?>
 
 <?php

@@ -1,19 +1,20 @@
 <?
  require_once("app/template.php"); 
- require_once("app/views/setting.php");
+ require_once("app/views/grid.php");
 
  head("Yet another search engine");
- 
+ leftbar();
  ?>
 
- <dig id="setting">
-  <div id="crawler"></div>
-  <div id="indexer"></div>
- </div>
-<?php
- settingGrid("crawler", "filter", "crawler");
- settingGrid("indexer", "filter", "indexer");
- ?>
+<br>
+
+<H1> About YASE </H1>
+
+<br><br>
+<p>
+YASE lets you put your webpages into a database where you can search them.
+</p>
+
 
 <?php
  bottom();
