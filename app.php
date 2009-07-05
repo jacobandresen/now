@@ -1,5 +1,9 @@
 <?php
-  require_once("classes/Yase.php");
+  require_once("classes/Global.php");
+
+  require_once("classes/REST/Model.php");
+  require_once("classes/REST/Request.php");
+  require_once("classes/REST/Controller.php");
  
   //model
   require_once("app/models/Setting.php");

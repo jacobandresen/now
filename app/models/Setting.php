@@ -1,8 +1,6 @@
 <?php
 
-
-//TODO: howto discern Crawler and Indexer filter settings
-class Setting extends REST_Model implements IModel{
+class Setting extends REST_Model{
   protected  $sTable = "setting";
 
   public function fetchArray() {

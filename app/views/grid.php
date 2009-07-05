@@ -1,5 +1,3 @@
-
-
 <?php
  function grid($model, $div, $jsonDef) {
  ?>
@@ -121,6 +119,3 @@ Ext.onReady(function() {
 <?php
 }
 ?>
-
-
-

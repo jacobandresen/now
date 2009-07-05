@@ -14,15 +14,9 @@ class REST_Model {
     }
    }
 
-   protected function loggedin () {
-     return ( true ); 
-   } 
-
    public function get ( $iID ) {
-     if (!$this->loggedin() ) return;
      $sSQL = 'SELECT * FROM ' . $this->sTable . ' WHERE id=' . $iID . '';
       $oRs = mysql_query($sSQL);
-    
      if($aRow = mysql_fetch_array($oRs)) {
         return $this->bFetchObject($aRow);
      } else {
@@ -31,8 +25,6 @@ class REST_Model {
    }
 
    public function post( ){
-     if (!$this->loggedin() ) return;
-     
      $sSQL = 'SHOW columns FROM '.$this->sTable;
      $oRs = mysql_query( $sSQL ); 
      while($aRow = mysql_fetch_assoc($oRs)) {
@@ -105,9 +97,9 @@ class REST_Model {
   }
  
   public function fetchArray ( $sFilter = ' ORDER BY id ') {
-    if (!$this->loggedin() ) return;
     $aRet = array();
     $sSQL = "SELECT id FROM $this->sTable $sFilter ;";
+    print $sSQL; 
     $oRs = mysql_query( $sSQL ) ; 
     while($aRow = mysql_fetch_assoc($oRs)) {
       $aRet[] = new $this->sClass( (int)$aRow['id'] );

@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 function head($title) {
 ?>
 <html>
@@ -9,10 +9,8 @@ function head($title) {
   
   <link rel="stylesheet" href="/jacob/yase/resources/css/main.css" type="text/css" /> 
   <link rel="stylesheet" href="/jacob/yase/resources/css/yase.css" type="text/css" /> 
-  
   <script type="text/javascript" src="/jacob/yase/js/ext-3.0-rc2/adapter/ext/ext-base.js"></script>
   <script type="text/javascript" src="/jacob/yase/js/ext-3.0-rc2/ext-all.js"></script>
-
   <style type="text/css">
     .add {
       background-image:url(/jacob/yase/resources/icons/fam/add.gif) !important;
@@ -33,7 +31,6 @@ function head($title) {
    <?php print $title ?>
   </div>
   <div id="container"> 
-
 <?php
 }
 
@@ -41,21 +38,23 @@ function leftbar(){
 ?>
 <div id="leftbar">
   <div id="innerleftbar">
-
+<?php
+  session_start();
+  if (isset($_SESSION['login'])) {
+?>
   <select id="account" name="account" style="width:100px" 
     onchange="alert('changed account')">
    <option value="pedant.dk">pedant.dk</option>
    <option value="johanbackstrom.se">johanbackstrom.se</option>
   </select>
-
   <br><br>
-
    <ul>
+    <li><a href="/jacob/yase/logout.php">logout</a></li> 
     <li><a href="/jacob/yase/account.php">account info</a></li> 
+    <li><a href="/jacob/yase/crawler.php">crawl setup</a></li>
+    <li><a href="/jacob/yase/indexer.php">index setup</a></li>
+    <li><a href="/jacob/yase/body.php">refine setup </a></li>
     <li><a href="/jacob/yase/search.php">search test</a></li>
-    <li><a href="/jacob/yase/crawler.php">crawler filter</a></li>
-    <li><a href="/jacob/yase/indexer.php">indexer filter</a></li>
-    <li><a href="/jacob/yase/body.php">body filter </a></li>
   </ul>
    <br><br>
 
@@ -63,6 +62,16 @@ function leftbar(){
   <ul>  
    <li><a href="/jacob/yase/admin.php">admin</a></li>
    </ul>
+<?php
+ }else {
+  ?>
+  <ul>
+   <li><a href="/jacob/yase/login.php">login</a></li>
+  </ul>
+  <?php
+ }
+?>
+
 
   </div> 
 </div>

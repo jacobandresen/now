@@ -1,7 +1,7 @@
 <?php
 function loginForm() {
 ?>
-<form class="userform" action="index.php" method="POST">
+<form class="userform" action="login.php" method="POST">
  <div class="fieldlabel">name </div>
  <div class="fieldvalue"> 
  <input type="text" name="username"></input>
@@ -13,6 +13,8 @@ function loginForm() {
  <div>
  <input type="submit" value="login"></input>
 </form>
+
+<a href="signup.php>signup</a>
 
 <?php
 }

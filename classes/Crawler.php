@@ -1,16 +1,13 @@
 <?php
 
 class Crawler {
-
-  //admin settings (not set by the user)
-  protected $iAccountId;        //customer number in database
+  //admin settings 
+  protected $sDomain;					  //string identifying the domain 
   protected $iMaxLevel;         //maximum distance from front page
   protected $iCrawlLimit;       //maximum number of urls to be crawled
-  protected $iMaxDomains;       //maximum number of domains to be crawled
  
-  //user configurable settings (Model based)
-  public  $filterSettings;      //regexes to be skipped
-  public  $aDomains;					  //domains to be crawled
+  //user configurable settings 
+  public  $filterSettings;      //regexes describing pages to be skipped
 
   //runtime information
   protected $iLevel;            //distance from front page
@@ -20,33 +17,32 @@ class Crawler {
   protected $aCrawled;          //urls crawled so far 
   protected $aProcess;          //urls to be processed
 
+  protected function setup($iAccountId) {
+    $res = mysql_query('select level_limit, crawl_limit,domain from account where id="'.$iAccountId.'"');
+    $row =  mysql_fetch_array($res);
+    $this->iLevelLimitl = $row['level_limit'] ; 
+    $this->iCrawlLimit = $row['crawl_limit'] ;
+    $this->sDomain = $row['domain'] ; 
+
+    $res = mysql_query('select name,value from setting where section="crawlerfilter" and account_id="'.$this->iAccountId.'";');
+    $filters=array();
+    while($row = mysql_fetch_array($res)) {
+      $setting = new Setting();
+      $setting->sName = $row[0];
+      $setting->sValue = $row[1]; 
+      array_push($filters , $setting);
+    }
+    $this->filterSettings=$filters; 
+  }
+
   public function __construct($iAccountId){
-    $this->iAccountId = $iAccountId;
- 
-    //runtime information 
     $this->iCrawled = 0;
     $this->iSeen=0 ;
     $this->aFound=array();
     $this->aCrawled=array();
     $this->aProcess=array();
- 
-    //hardcoded settings  (this should not be tweakable by the user)
-    $this->iMaxLevel=40;
-    $this->iCrawlLimit = 5000;
-
-    //domains to be crawled 
-    $aDomains = array(); 
-    $res = mysql_query("SELECT * from domain where account_id='".$iAccountId."'");
-    while ($row =mysql_fetch_array($res) ) {
-       $sName = $row['name'];
-       array_push( $aDomains, $sName ) ;
-    }
-    $this->aDomains = $aDomains; 
-
-    //configurable settings (to be tweaked by the user in the UI) 
-    $s=new Setting();
-    $this->filterSettings = 
-		  $s->fetchArray(' WHERE account_id='.$this->iAccountId.' AND tablename="filters"');
+    
+    $this->setup($iAccountId);
   }
 
   public function reset () {
@@ -67,14 +63,62 @@ class Crawler {
       print "FILE TOO BIG: $url \r\n"; 
       return; 
     } 
- 
     $html = urlencode($html);
     
     mysql_query("INSERT IGNORE into dump(account_id, url, html, level) values('".$this->iAccountId."','$url', '$html', '$level')") or die (" failed to insert into dump:".mysql_error());
-   
     return; 
   }
 
+  public function start(){
+    $this->crawl( "http://".$this->sDomain, 0 , "http://".$this->sDomain);
+  }  
+
+  public function crawl($sUrl, $iLevel, $sParent){
+    print "crawl [$iLevel] - $sUrl \r\n";
+    array_push( ($this->aCrawled), $sUrl);
+    $this->iLevel=$iLevel; 
+    if ($this->iLevel > $this->iMaxLevel){ return false;}
+    if ($this->iCrawled>$this->iCrawlLimit){return false; } 
+
+    //random wait (firewall buster)
+    sleep(rand(0,3)); 	
+	
+    //grab contents of url
+    preg_match("|\.pdf|i", $sUrl, $aMatch);
+    if(count($aMatch)>0){
+      $p=new PDFFilter();
+      $sResponse = $p->filter($sUrl);
+    }else{ 
+      $sResponse= $this->getUrl($sUrl);
+      $this->add($sUrl, $sResponse, $iLevel);
+ 
+      preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
+      foreach($aMatches[1] as $sItem){
+        $sFullUrl = $this->expandUrl($sItem, $sUrl);
+        if (!in_array($sFullUrl, $this->aFound) 
+          and $this->checkUrl($sFullUrl)){
+            $oDoc = new Document();
+            $oDoc->sUrl = $sFullUrl;
+            $oDoc->iLevel = $iLevel+1;
+            array_push($this->aFound, $oDoc);
+            array_push($this->aProcess, $oDoc);
+        }
+      }
+      $this->iCrawled++;
+
+      //crawl links 
+      while($sChildUrl=array_shift($this->aProcess)){ 
+        if($sChildUrl->sUrl!=""){ 
+          if(!in_array($sChildUrl->sUrl, ($this->aCrawled))){  
+            print "connect [$sChildUrl->iLevel] $sUrl -> $sChildUrl->sUrl \r\n"; 
+            array_push($this->aCrawled, $sChildUrl->sUrl); 
+            $this->crawl($sChildUrl->sUrl, ($sChildUrl->iLevel), $sUrl);
+          }   
+        } 
+      }
+    } 
+  }
+  
   public function getUrl ($sUrl) {
     $c=new HTTPClient();
     $sHost = $c->extractHost($sUrl);
@@ -90,54 +134,6 @@ class Crawler {
     return($sContent); 
   } 
 
-  public function crawler($sUrl, $iLevel, $sParent){
-    print "crawler [$iLevel] - $sUrl \r\n";
-    array_push( ($this->aCrawled), $sUrl);
-    $this->iLevel=$iLevel; 
-    if ($this->iLevel > $this->iMaxLevel){ return false;}
-    if ($this->iCrawled>$this->iCrawlLimit){return false; } 
-
-    //random wait (firewall buster)
-    //sleep(rand(0,3)); 	
-	
-    //grab contents of url
-    //TODO: use HTML header instead 
-    preg_match("|\.pdf|i", $sUrl, $aMatch);
-    if(count($aMatch)>0){
-      $p=new PDFFilter();
-      $sResponse = $p->filter($sUrl);
-    }else{ 
-      $sResponse= $this->getUrl($sUrl);
-    
-      $this->add($sUrl, $sResponse, $iLevel);
- 
-      preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
-      foreach($aMatches[1] as $sItem){
-        $sFullUrl = $this->expandUrl($sItem, $sUrl);
-        if (!in_array($sFullUrl, $this->aFound) 
-            and $this->bValidUrl($sFullUrl)){
-              $oDoc = new Document();
-              $oDoc->sUrl = $sFullUrl;
-              $oDoc->iLevel = $iLevel+1;
-              array_push($this->aFound, $oDoc);
-              array_push($this->aProcess, $oDoc);
-        }
-      }
-      $this->iCrawled++;
-
-      //crawl links 
-      while($sChildUrl=array_shift($this->aProcess)){ 
-        if($sChildUrl->sUrl!=""){ 
-          if(!in_array($sChildUrl->sUrl, ($this->aCrawled))){  
-            print "connect [$sChildUrl->iLevel] $sUrl -> $sChildUrl->sUrl \r\n"; 
-            array_push($this->aCrawled, $sChildUrl->sUrl); 
-            $this->crawler($sChildUrl->sUrl, ($sChildUrl->iLevel), $sUrl);
-          }   
-        } 
-      }
-    } 
-  }
-  
   public function expandUrl($sItem, $sParent){
     $sPage="";	  
     if ($sItem == './'){
@@ -175,12 +171,11 @@ class Crawler {
     return $sUrl;
   }
 
-  public function bValidUrl($sUrl){
+  public function checkUrl($sUrl){
     preg_match("|\@|",$sUrl, $aMatch);
     if ( count($aMatch) > 0 ){
       return false;
     }
-
     foreach( $this->filterSettings as $setting){
       $oItem = $setting->sValue; 
       preg_match("|$oItem|", $sUrl, $aMatch);
@@ -188,12 +183,9 @@ class Crawler {
         return false; 
       } 
     }
-
-    foreach( $this->aDomains as $oItem){
-      preg_match("|$oItem|", $sUrl, $aMatch);
-      if( count($aMatch) > 0){
+    preg_match("|".$this->sDomain."|", $sUrl, $aMatch);
+    if (count($aMatch) > 0) {
         return true; 
-      } 
      }
     return false;
   }

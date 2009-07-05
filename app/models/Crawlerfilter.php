@@ -1,17 +1,22 @@
 <?php
 
-class CrawlerFilterSetting extends REST_Model implements IModel{
-  protected  $sTable = "crawlerfilter";
-
+class Crawlerfilter extends REST_Model{
+  protected $sTable  = "setting";
+  protected $sSection = "crawlerfilter";
+ 
   public function fetchArray() {
-   
     if ( isset($_SESSION['account_id']) ) { 
-    return ( REST_Model::fetchArray(" WHERE account_id=".$_SESSION['account_id']." ORDER by id") );
+    return ( parent::fetchArray(" WHERE section='".$this->sSection."' AND account_id=".$_SESSION['account_id']." ORDER by id") );
     } 
-   else {
-     return ( REST_Model::fetchArray() );
-     } 
    }
+ 
+  public function post() {
+    if ( isset($_SESSION['account_id'])) {
+      $this->iAccountID = $_SESSION['account_id']; 
+//      $this->sName="jacob"; 
+      parent::post();
+    }
+  }
 };
 
 ?>

@@ -3,7 +3,6 @@
 
 Yase lets you crawl webpages and put them into a database where you can search them.
 
-crawler settings are controlled by the settings table.
 
 
 dependencies:
@@ -26,12 +25,6 @@ usage:
 ------
 call yase.php from an embedded iframe on your webpage
 
-
-Feedback:
----------
-
-Please report bugs at :
-http://yase.lighthouseapp.com
 
 License:
 --------
