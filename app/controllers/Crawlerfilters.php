@@ -1,6 +1,6 @@
 <?php
 
-class Crawlerfilter extends REST_Controller {
+class Crawlerfilters extends REST_Controller {
    public $sTable = "crawlerfilter";
 };
 

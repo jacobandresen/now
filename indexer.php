@@ -19,7 +19,7 @@
  </div>
 
 <?php
- grid("indexerfilter", "indexer", "{}");
+ grid("indexerfilters", "indexer", "{}");
  ?>
 
 <?php

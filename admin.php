@@ -15,8 +15,6 @@
 <ul>
  <li>TODO: add new account</li>
  <li>TODO: delete existing account</li>
- <li>TODO: add new user </li>
- <li>TODO: delete existing user </li>
 </ul>
 
 <?php

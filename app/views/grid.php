@@ -40,7 +40,6 @@ Ext.onReady( function(){
    <?php print $model;?>Store.load();
 });
 
-
 var <?php print $model."Grid" ;?> = Ext.extend(Ext.grid.EditorGridPanel, {
     renderTo: '<?php print $div ; ?>' ,
     iconCls: 'silk-grid',
@@ -66,9 +65,10 @@ var <?php print $model."Grid" ;?> = Ext.extend(Ext.grid.EditorGridPanel, {
     }, '-', {
       text: 'Delete',
       iconCls: 'icon-save',
-      handler: this.onSave,
+      handler: this.onDelete,
       scope: this
-    }];
+    }
+   ];
   },
 
   buildUI: function () {
@@ -97,7 +97,7 @@ var <?php print $model."Grid" ;?> = Ext.extend(Ext.grid.EditorGridPanel, {
   },
 
   onDelete : function(btn, ev) {
-    var index = this.getSelectionModel().getSelectedCell();
+   var index = this.getSelectionModel().getSelectedCell();
     if (!index) {
       return false;
     }

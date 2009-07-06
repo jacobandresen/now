@@ -22,10 +22,17 @@ class Indexer {
     mysql_query("DELETE FROM document where account_id='".$this->iAccountId."'") or die (mysql_error());
   }
 
+  public function start(){
+    $this->index();
+  }
+
   public function index(){
     $this->clear(); 
     print "start INDEX\r\n";
-    $res = mysql_query("select max(retrieved),url,html,level from dump where account_id='".$this->iAccountId."' group by account_id,url") or die (mysql_error());
+    $sSQL="select max(retrieved),url,html,level from dump where account_id='".$this->iAccountId."' group by account_id,url";
+    print "SQL:".$sSQL."\r\n"; 
+    $res = mysql_query($sSQL) or die (mysql_error());
+    
     while($row=mysql_fetch_array($res)){
       try{ 
         $this->add(urldecode($row['url']),

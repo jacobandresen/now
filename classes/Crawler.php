@@ -20,11 +20,11 @@ class Crawler {
   protected function setup($iAccountId) {
     $res = mysql_query('select level_limit, crawl_limit,domain from account where id="'.$iAccountId.'"');
     $row =  mysql_fetch_array($res);
-    $this->iLevelLimitl = $row['level_limit'] ; 
+    $this->iMaxLevel = $row['level_limit'] ; 
     $this->iCrawlLimit = $row['crawl_limit'] ;
     $this->sDomain = $row['domain'] ; 
 
-    $res = mysql_query('select name,value from setting where section="crawlerfilter" and account_id="'.$this->iAccountId.'";');
+    $res = mysql_query('select name,value from setting where section="crawlerfilter" and account_id="'.$iAccountId.'";');
     $filters=array();
     while($row = mysql_fetch_array($res)) {
       $setting = new Setting();
@@ -41,7 +41,7 @@ class Crawler {
     $this->aFound=array();
     $this->aCrawled=array();
     $this->aProcess=array();
-    
+    $this->iAccountId=$iAccountId; 
     $this->setup($iAccountId);
   }
 
@@ -76,13 +76,15 @@ class Crawler {
   public function crawl($sUrl, $iLevel, $sParent){
     print "crawl [$iLevel] - $sUrl \r\n";
     array_push( ($this->aCrawled), $sUrl);
+
+    //TODO: report crawl state to database
     $this->iLevel=$iLevel; 
     if ($this->iLevel > $this->iMaxLevel){ return false;}
     if ($this->iCrawled>$this->iCrawlLimit){return false; } 
 
     //random wait (firewall buster)
     sleep(rand(0,3)); 	
-	
+    
     //grab contents of url
     preg_match("|\.pdf|i", $sUrl, $aMatch);
     if(count($aMatch)>0){
@@ -95,8 +97,7 @@ class Crawler {
       preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
       foreach($aMatches[1] as $sItem){
         $sFullUrl = $this->expandUrl($sItem, $sUrl);
-        if (!in_array($sFullUrl, $this->aFound) 
-          and $this->checkUrl($sFullUrl)){
+        if ( (!in_array($sFullUrl, $this->aFound)) and $this->checkUrl($sFullUrl)){
             $oDoc = new Document();
             $oDoc->sUrl = $sFullUrl;
             $oDoc->iLevel = $iLevel+1;
@@ -177,7 +178,7 @@ class Crawler {
       return false;
     }
     foreach( $this->filterSettings as $setting){
-      $oItem = $setting->sValue; 
+      $oItem = urldecode($setting->sValue); 
       preg_match("|$oItem|", $sUrl, $aMatch);
       if( count($aMatch) > 0){
         return false; 
@@ -185,6 +186,7 @@ class Crawler {
     }
     preg_match("|".$this->sDomain."|", $sUrl, $aMatch);
     if (count($aMatch) > 0) {
+
         return true; 
      }
     return false;

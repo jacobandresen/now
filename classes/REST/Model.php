@@ -81,13 +81,11 @@ class REST_Model {
   }
 
   public function delete( ) {
-    if (!$this->loggedin() ) return;
     $sSQL = "DELETE FROM $this->sTable WHERE id = '".(int)$this->iID ."' LIMIT 1";
     mysql_query( $sSQL );
   }
 
   public function fetchCount ( $sFilter = '') {
-    if (!$this->loggedin() ) return;
     $sSQL = "SELECT count(id) as cnt FROM $this->sTable $sFilter";
     $oRs = mysql_query( $sSQL ) ; 
     while($aRow = mysql_fetch_assoc($oRs)) {
@@ -99,7 +97,6 @@ class REST_Model {
   public function fetchArray ( $sFilter = ' ORDER BY id ') {
     $aRet = array();
     $sSQL = "SELECT id FROM $this->sTable $sFilter ;";
-    print $sSQL; 
     $oRs = mysql_query( $sSQL ) ; 
     while($aRow = mysql_fetch_assoc($oRs)) {
       $aRet[] = new $this->sClass( (int)$aRow['id'] );
@@ -143,7 +140,7 @@ class REST_Model {
      $oRs = mysql_query( $sSQL ); // or die ( $this->sql_failure_handler($sSQL, mysql_error()));
      while($aRow = mysql_fetch_assoc($oRs)) {
         $sFieldName = $this->sGetFieldName($aRow['Field'], $aRow['Type']);
-        $this->$sFieldName = $aObject[$aRow['Field']];
+        $this->$sFieldName = urldecode($aObject[$aRow['Field']]);
      }
      return true;
    }

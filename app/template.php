@@ -39,7 +39,6 @@ function leftbar(){
 <div id="leftbar">
   <div id="innerleftbar">
 <?php
-  session_start();
   if (isset($_SESSION['login'])) {
 ?>
   <select id="account" name="account" style="width:100px" 
@@ -51,9 +50,9 @@ function leftbar(){
    <ul>
     <li><a href="/jacob/yase/logout.php">logout</a></li> 
     <li><a href="/jacob/yase/account.php">account info</a></li> 
-    <li><a href="/jacob/yase/crawler.php">crawl setup</a></li>
-    <li><a href="/jacob/yase/indexer.php">index setup</a></li>
-    <li><a href="/jacob/yase/body.php">refine setup </a></li>
+    <li><a href="/jacob/yase/crawler.php">crawl filter</a></li>
+    <li><a href="/jacob/yase/indexer.php">index filter</a></li>
+    <li><a href="/jacob/yase/body.php">body filter </a></li>
     <li><a href="/jacob/yase/search.php">search test</a></li>
   </ul>
    <br><br>
@@ -71,7 +70,6 @@ function leftbar(){
   <?php
  }
 ?>
-
 
   </div> 
 </div>

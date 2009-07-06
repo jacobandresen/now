@@ -21,7 +21,7 @@
  </div>
 
 <?php
- grid("crawlerfilter", "crawler", "{}");
+ grid("crawlerfilters", "crawler", "{}");
  ?>
 
 <?php

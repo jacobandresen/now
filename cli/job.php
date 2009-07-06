@@ -5,6 +5,8 @@
  require_once('../classes/Indexer.php');
  require_once('../classes/HTTPClient.php');
  require_once('../classes/Document.php');
+ require_once('../classes/PDFFilter.php');
+ require_once('../classes/Setting.php');
 
  $account = $argv[1];
  if ($argv[1] == "") {
@@ -16,6 +18,6 @@
  $c = new Crawler(Account::getId($argv[1]));
  $c->start();
 
-// $i = new Indexer(Account::getId($argv[1]));
-// $i->start();
+ $i = new Indexer(Account::getId($argv[1]));
+ $i->start();
 ?>

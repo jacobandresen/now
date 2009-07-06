@@ -14,7 +14,7 @@ class REST_Controller {
     $this->request = $request;
     $this->id      = $request->id;
     $this->params  = $request->params;
-    
+ 
     $res = new REST_Response();  
     switch ($this->request->action) {
       case 'view' :
@@ -31,12 +31,8 @@ class REST_Controller {
         } 
         break;  
       case 'create':
-        $this->model = new Setting(); 
-			  $this->model->iAccountID = $this->params['iAccountID'];
-	      $this->model->sTablename = $this->params['sTablename'];	
         $this->model->sName=$this->params['sName'];
         $this->model->sValue=$this->params['sValue'];
-        $this->model->sType=$this->params['sType'];        
         $this->model->update(); 
         $res->data = $this->model; 
         $res->message = "create"; 
@@ -44,13 +40,9 @@ class REST_Controller {
         return ($res->to_json()); 
         break;
       case 'update':
-        $this->model = new Setting(); 
 		    $this->model->iID = $this->params['iID'];
-			  $this->model->iAccountID = $this->params['iAccountID'];
-	      $this->model->sTablename = $this->params['sTablename'];	
         $this->model->sName=$this->params['sName'];
         $this->model->sValue=$this->params['sValue'];
-        $this->model->sType=$this->params['sType'];        
         $this->model->update(); 
 
         $res->message = "update"; 
