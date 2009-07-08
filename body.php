@@ -8,7 +8,6 @@
  ?>
 
  <H1>Body filter </h1>
-
  <br><br>
   Identify regular expressions that can be used to extract content from known page types 
 

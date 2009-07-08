@@ -7,7 +7,7 @@
  //check user login
   if ( User::login ($_REQUEST['username'], $_REQUEST['password']) ){
     session_start(); 
-    $_SESSION['login']=$_REQUEST['username']; 
+    $_SESSION['account_id']=$_REQUEST['username']; 
      header ('Location: index.php');
    } else {
      if( isset($_REQUEST['username'])){ 
