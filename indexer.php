@@ -8,7 +8,6 @@
  ?>
 
  <H1> Indexer filter </H1>
- 
  <br><br>
  Edit this list with regular expressions that identifies pages to be skipped during indexing.
 

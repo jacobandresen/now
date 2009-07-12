@@ -3,8 +3,6 @@
 
 Yase lets you crawl webpages and put them into a database where you can search them.
 
-
-
 dependencies:
 -------------
  php: http://php.net  
@@ -20,11 +18,9 @@ installation:
 
  to index large files then you will need to alter the max mem settings for php and the max packet size for mysql
 
-
 usage:
 ------
 call yase.php from an embedded iframe on your webpage
-
 
 License:
 --------

@@ -8,7 +8,6 @@
  ?>
 
  <H1>Crawler filter</H1>
- 
  <br><br>
  
  Edit this list with regular expressions that identifies

@@ -12,7 +12,6 @@
   Identify regular expressions that can be used to extract content from known page types 
 
 <br><br>
-
  <div id="setting">
   <div id="bodyfilter"></div>
  </div>

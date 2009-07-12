@@ -5,11 +5,9 @@
  head("Yet another search engine");
  leftbar();
  ?>
-
 <br>
 
 <H1> Administration </H1>
-
 <br><br>
 
 <ul>

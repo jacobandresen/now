@@ -21,7 +21,6 @@ class User {
 
   // list accounts associated with user
   function getAccounts() {
-
   }
 
 };

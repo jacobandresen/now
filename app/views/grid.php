@@ -1,6 +1,6 @@
 <?php
  function grid($model, $div, $jsonDef) {
- ?>
+  ?>
 <script type="text/javascript">
 var <?php print $model; ?>Store = new Ext.data.Store({
   id: '<?php print $model;?> setting',
