@@ -1,6 +1,0 @@
-AuthType Basic
-AuthName "Jacos L33t hacker files"
-AuthGroupFile /dev/null
-AuthUserFile /home/jacob/.htpass
-require valid-user
-
