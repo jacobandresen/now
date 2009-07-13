@@ -8,30 +8,6 @@ class Searcher {
     $this->iAccountId=$iAccountId;
   }
 
-/*
-  function search($query) {
-    if($query!=""){
-      $result = mysql_query("SELECT *, MATCH(content) AGAINST('$query') AS score FROM document WHERE MATCH(content) AGAINST('$query') and account_id='".$this->iAccountId."' ORDER BY score DESC"); 
-      print "<ul>\r\n";     
-      while ($row=mysql_fetch_array($result)){
-        $title=$row['title'];
-        $title=html_entity_decode($title); 
-        $url=urldecode($row['url']); 
-        $title=trim($title); 
-        if(strlen($title)<2){
-          $title=$url;
-        } 
-        $content=$row['content'];
-        $content=html_entitydecode($content);
-       	$content = preg_replace('s/\&.*?\;/is',' ', $content); 
-	print "\t<li><a href=\"".$url."\">".$title."</a><br/>\r\n";       print substr($content, 1, 400);
-        print "</li>\r\n";
-      }
-      print "</ul>\r\n";   
-    } 
-  }
- */ 
-
  function aSearch ($query, $iPage) {
     $aRet = array();
 		$sLimit = '';
