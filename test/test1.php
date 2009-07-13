@@ -1,8 +1,7 @@
 <?php
  
  require_once('../classes/Global.php'); 
- require_once('../classes/Searcher.php');
- require_once('../classes/Paging.php');
+ require_once('../classes/Yase.php');
  require_once('../classes/REST/Model.php'); 
  require_once('../app/models/Crawlerfilter.php');
  require_once('../app/models/Indexerfilter.php');

@@ -1,4 +1,5 @@
 <?
+ require_once("classes/Yase.php"); 
  require_once("app/template.php"); 
  head("Yet another search engine");
  leftbar();

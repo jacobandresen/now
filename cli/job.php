@@ -1,12 +1,6 @@
 <?
- require_once('../classes/Global.php'); 
- require_once('../classes/Account.php'); 
- require_once('../classes/Crawler.php');
- require_once('../classes/Indexer.php');
- require_once('../classes/HTTPClient.php');
- require_once('../classes/Document.php');
- require_once('../classes/PDFFilter.php');
- require_once('../classes/Setting.php');
+ require_once('../classes/Global.php');
+ require_once('../classes/Yase.php');
 
  $account = $argv[1];
  if ($argv[1] == "") {

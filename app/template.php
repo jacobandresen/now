@@ -1,5 +1,7 @@
 <?php
+
 session_start();
+
 function head($title) {
 ?>
 <html>
@@ -11,6 +13,7 @@ function head($title) {
   <link rel="stylesheet" href="/jacob/yase/resources/css/yase.css" type="text/css" /> 
   <script type="text/javascript" src="/jacob/yase/js/ext-3.0-rc2/adapter/ext/ext-base.js"></script>
   <script type="text/javascript" src="/jacob/yase/js/ext-3.0-rc2/ext-all.js"></script>
+  <script type="text/javascript" src="/jacob/yase/js/Account.js"></script> 
   <style type="text/css">
     .add {
       background-image:url(/jacob/yase/resources/icons/fam/add.gif) !important;
@@ -38,15 +41,19 @@ function leftbar(){
 ?>
 <div id="leftbar">
   <div id="innerleftbar">
+
 <?php
-  if (isset($_SESSION['login'])) {
+  if (isset($_SESSION['user_id'])) {
 ?>
-  <select id="account" name="account" style="width:100px" 
-    onchange="alert('changed account')">
-   <option value="pedant.dk">pedant.dk</option>
-   <option value="johanbackstrom.se">johanbackstrom.se</option>
+  <select id="accountSelect" name="account" style="width:100px">
+<?php
+  foreach (User::getAccounts($_SESSION['account_id']) as $a ) {
+    print "<option value=\"".$a->iId."\">".$a->sDomain."</a>\r\n"; 
+    }
+?>
+
   </select>
-  <br><br>
+ <br><br>
    <ul>
     <li><a href="/jacob/yase/logout.php">logout</a></li> 
     <li><a href="/jacob/yase/account.php">account info</a></li> 
@@ -55,7 +62,7 @@ function leftbar(){
     <li><a href="/jacob/yase/body.php">body filter </a></li>
     <li><a href="/jacob/yase/search.php">search test</a></li>
   </ul>
-   <br><br>
+  <br><br>
 
   <!-- TODO: only render this when user is superuser -->
   <ul>  
@@ -70,7 +77,6 @@ function leftbar(){
   <?php
  }
 ?>
-
   </div> 
 </div>
 

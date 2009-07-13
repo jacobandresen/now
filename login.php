@@ -1,19 +1,23 @@
 <?
  require_once("classes/Global.php"); 
- require_once("classes/User.php"); 
- require_once("classes/Account.php");  
+ require_once("classes/Yase.php");
  require_once("app/template.php"); 
  require_once("app/views/login.php");
 
- //check user login
+
+ //perform login and redirect to index page
   if ( User::login ($_REQUEST['username'], $_REQUEST['password']) ){
-    $_SESSION['account_id']=Account::getId($_REQUEST['username']); 
-     header ('Location: index.php');
+    $_SESSION['user_id']=User::getId($_REQUEST['username']); 
+    $_SESSION['account_id']=User::getFirstAccountId(); 
+    $_SESSION['account_domain']=Account::getDomain( $_SESSION['account_id']);
+    header ('Location: index.php');
    } else {
      if( isset($_REQUEST['username'])){ 
        $message="login failed"; 
      }
   } 
+
+ //the page to show if the login fails
  head("Yet another search engine");
 
  leftbar();

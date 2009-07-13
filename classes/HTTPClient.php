@@ -81,7 +81,8 @@ class HTTPClient {
       $sKey=strtolower($sKey); 
       $sValue=substr($sLine,$indx+1, strlen($sLine)-$indx); 
       $sValue=trim($sValue); 
-      $sValue=strtolower($sValue);
+  // svalue can contain urls where casing can be important   
+  //  $sValue=strtolower($sValue);
       $this->aHeaders[$sKey]=$sValue; 
       if($sLine=="\r\n") break; 
     }
@@ -90,8 +91,8 @@ class HTTPClient {
   protected function Redirect() {
     $this->iRedirects++;
   	print "redirects#:".$this->iRedirects."\r\n";	
-	  if($this->iRedirects<3){ 
-      $sNewUrl=$this->aHeaders['location'];
+	  if($this->iRedirects<5){ 
+      $sNewUrl=chop($this->aHeaders['location']);
       print "redirecting to:".$sNewUrl."\r\n"; 
       $this->Connect($this->sHost);
            
@@ -103,6 +104,7 @@ class HTTPClient {
           print "NEW URL:".$sNewUrl."\r\n";
         }
       $this->sFinalUrl=$sNewUrl;           
+    // $this->sUrl = $this->sFinalUrl; 
       print "[".$this->sFinalUrl."]\r\n"; 
       return($this->Get($sNewUrl));
     }else{
@@ -149,7 +151,8 @@ class HTTPClient {
           print "failed retrieving:".$this->ssUrl."\r\n";
         }
       }
-   } 
+   }
+   //print $this->sReply; 
    return($this->sReply);
   }  
  
@@ -160,6 +163,7 @@ class HTTPClient {
     } 
     $sUrl=$this->extractRelativeUrl($sIncomingUrl); 
     $this->sUrl=$sUrl; 
+   // print "GET :".$this->sUrl."\r\n"; 
     $this->SendRequest("GET $sUrl");
     return($this->getReply()); 
   }

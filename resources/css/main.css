@@ -3,7 +3,7 @@ body {
   font-family: Verdana, sans-serif;
   font-size: 12px;
   color: #000000;
-  background: #ffffff url(../graphics/bakgrund.jpg);
+/*  background: #ffffff url(../graphics/bakgrund.jpg);*/
 
   height: 100%;
 
@@ -73,7 +73,7 @@ th {
 }
 #top {
   height: 70px;
-  background: #009900 url(../graphics/top.jpg) no-repeat left;
+  background: #009900 no-repeat left;
   color: #ffffff;
   font-size: 14px;
   text-align: right;

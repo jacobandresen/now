@@ -1,4 +1,5 @@
 <?php
+  require_once("Global.php"); 
   require_once("User.php");
   require_once("Account.php");
   require_once("Crawler.php");

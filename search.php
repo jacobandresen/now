@@ -1,10 +1,7 @@
 <?php
+ require_once("classes/Yase.php"); 
  require_once("app/template.php");
- require_once("app/login.php");
- require_once("classes/Global.php");
- require_once("classes/Result.php");
- require_once("classes/Searcher.php");
- require_once("classes/Paging.php"); 
+ require_once("app/login.php"); //this page requires a login
   
  head("Yet Another Search Engine");
  leftbar();

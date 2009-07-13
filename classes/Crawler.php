@@ -1,7 +1,7 @@
 <?php
 
 class Crawler {
-  //admin settings 
+  //account settings 
   protected $sDomain;					  //string identifying the domain 
   protected $iMaxLevel;         //maximum distance from front page
   protected $iCrawlLimit;       //maximum number of urls to be crawled
@@ -70,6 +70,7 @@ class Crawler {
   }
 
   public function start(){
+    $this->reset();
     $this->crawl( "http://".$this->sDomain, 0 , "http://".$this->sDomain);
   }  
 
@@ -77,7 +78,6 @@ class Crawler {
     print "crawl [$iLevel] - $sUrl \r\n";
     array_push( ($this->aCrawled), $sUrl);
 
-    //TODO: report crawl state to database
     $this->iLevel=$iLevel; 
     if ($this->iLevel > $this->iMaxLevel){ return false;}
     if ($this->iCrawled>$this->iCrawlLimit){return false; } 
@@ -179,15 +179,17 @@ class Crawler {
     }
     foreach( $this->filterSettings as $setting){
       $oItem = urldecode($setting->sValue); 
-      preg_match("|$oItem|", $sUrl, $aMatch);
-      if( count($aMatch) > 0){
-        return false; 
+      if ($oItem!=""){  //do not attempt negative match on empty string
+        preg_match("|$oItem|", $sUrl, $aMatch);
+        if( count($aMatch) > 0){
+          return false; 
+        } 
       } 
     }
     preg_match("|".$this->sDomain."|", $sUrl, $aMatch);
     if (count($aMatch) > 0) {
-
-        return true; 
+      // print "FOUND"; 
+       return true; 
      }
     return false;
   }

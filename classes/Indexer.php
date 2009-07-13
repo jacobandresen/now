@@ -1,16 +1,15 @@
 <?php
-
 class Indexer { 
-
-  //admin settings
   protected $iAccountId;         //account number in database
 
-  //user configurable settings (Model based)
+  //user configurable settings 
   public $aFilterSkip;		
   public $sBodyFilter;
 
   protected function setup () {
     $this->sBodyFilter=""; 
+  
+    //TODO:setup aFilterSkip
   }
 
   public function __construct($iAccountId){
@@ -23,14 +22,13 @@ class Indexer {
   }
 
   public function start(){
+    $this->clear() ; //TODO:we should still be able to search while indexing 
     $this->index();
   }
 
   public function index(){
-    $this->clear(); 
     print "start INDEX\r\n";
     $sSQL="select max(retrieved),url,html,level from dump where account_id='".$this->iAccountId."' group by account_id,url";
-    print "SQL:".$sSQL."\r\n"; 
     $res = mysql_query($sSQL) or die (mysql_error());
     
     while($row=mysql_fetch_array($res)){
@@ -69,9 +67,9 @@ class Indexer {
       //process content
       $orig=$body;
      
-     // if ($this->isUTF8($body)){
-     //   $body = iconv("UTF-8", "ISO-8859-1", $body);
-     // }
+      if ($this->isUTF8($body)){
+        $body = iconv("UTF-8", "ISO-8859-1", $body);
+      }
 
       $timestmp=time();
       $sFound='';
@@ -131,7 +129,7 @@ class Indexer {
 
      $title = strip_tags($title);	
      $title = html_entity_decode($title); 
-     print "TITLE:".$title."\r\n";
+     //print "TITLE:".$title."\r\n";
 
      //remove clutter 
      $body = preg_replace("/<script.*?<\/script>/is", ' ', $body);
@@ -209,6 +207,4 @@ class Indexer {
     return $sWord;
   }
 };
-
 ?>
-

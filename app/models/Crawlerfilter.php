@@ -2,7 +2,7 @@
 
 class Crawlerfilter extends REST_Model{
   protected $sTable  = "setting";
-//  protected $sSection = "crawlerfilter";
+  protected $sSection = "crawlerfilter";
  
   public function fetchArray() {
    if (isset($_SESSION['account_id'])) { 

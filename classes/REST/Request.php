@@ -30,7 +30,6 @@ class REST_Request {
       $this->id = (isset($_REQUEST['id'])) ? json_decode(stripslashes($_REQUEST['id']), true) : null; 
     }
 
-
     if (isset($_SERVER["PATH_INFO"])) {
         $cai = '/^\/([a-z]+\w)\/([a-z]+)\/([0-9]+)$/'; // /controller/action/id
         $ca  = '/^\/([a-z]+\w)\/([a-z]+)$/';   	       // /controller/action
@@ -57,4 +56,3 @@ class REST_Request {
    }
 };
 ?>
-
