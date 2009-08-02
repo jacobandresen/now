@@ -21,7 +21,6 @@
  
  $s=new Paging($_SESSION['account_id'], "search.php");
  $s->page($sQuery, $iPage);
-
  bottom();
 ?>
 

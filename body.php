@@ -24,8 +24,3 @@
 <?php
  bottom();
 ?>
-
-<?php
- bottom();
-?>
-

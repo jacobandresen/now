@@ -1,7 +1,6 @@
 <?
  require_once("app/template.php"); 
  require_once("app/login.php");
-
  head("Yet another search engine");
  leftbar();
  ?>

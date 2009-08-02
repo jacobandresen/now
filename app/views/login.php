@@ -15,7 +15,6 @@ function loginForm() {
 </form>
 
 <a href="signup.php>signup</a>
-
 <?php
 }
 ?>

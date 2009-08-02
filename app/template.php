@@ -1,30 +1,12 @@
 <?php
-
-session_start();
-
+require_once("include.php");
 function head($title) {
 ?>
 <html>
 <head>
   <title> <?php print $title ?> </title>
-  <link rel="stylesheet"  href="/jacob/yase/js/ext-3.0-rc2/resources/css/ext-all.css" type="text/css"/>
-  
-  <link rel="stylesheet" href="/jacob/yase/resources/css/main.css" type="text/css" /> 
-  <link rel="stylesheet" href="/jacob/yase/resources/css/yase.css" type="text/css" /> 
-  <script type="text/javascript" src="/jacob/yase/js/ext-3.0-rc2/adapter/ext/ext-base.js"></script>
-  <script type="text/javascript" src="/jacob/yase/js/ext-3.0-rc2/ext-all.js"></script>
-  <script type="text/javascript" src="/jacob/yase/js/Account.js"></script> 
-  <style type="text/css">
-    .add {
-      background-image:url(/jacob/yase/resources/icons/fam/add.gif) !important;
-    }
-    .delete {
-      background-image:url(/jacob/yase/resources/icons/fam/delete.gif) !important;
-    }
-    .save {
-      background-image:url(/jacob/yase/resources/icons/save.gif) !important;
-    }
-  </style>
+  <?php include_css() ; ?>
+  <?php include_js(); ?>
 </head>
 <body>
 
@@ -36,7 +18,6 @@ function head($title) {
   <div id="container"> 
 <?php
 }
-
 function leftbar(){
 ?>
 <div id="leftbar">
@@ -45,14 +26,20 @@ function leftbar(){
 <?php
   if (isset($_SESSION['user_id'])) {
 ?>
-  <select id="accountSelect" name="account" style="width:100px">
+
+  <form action="/jacob/yase/account.php" onchange="this.submit()" method="post" >
+  <select id="accountSelect" name="account_id" style="width:100px">
 <?php
-  foreach (User::getAccounts($_SESSION['account_id']) as $a ) {
-    print "<option value=\"".$a->iId."\">".$a->sDomain."</a>\r\n"; 
+  foreach (User::getAccounts($_SESSION['user_id']) as $a ) {
+     if ( trim($a->sDomain) == trim($_SESSION["account_domain"])) {
+      print "<option value=\"".$a->iId."\" selected>".trim($a->sDomain); 
+     }else{ 
+       print "<option value=\"".$a->iId."\">".trim($a->sDomain); 
+     }
     }
 ?>
-
   </select>
+  </form>
  <br><br>
    <ul>
     <li><a href="/jacob/yase/logout.php">logout</a></li> 
@@ -82,7 +69,6 @@ function leftbar(){
 
 <?php
 }
-
 
 function bottom(){
 ?>

@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 class Crawlerfilter extends REST_Model{
   protected $sTable  = "setting";
   protected $sSection = "crawlerfilter";

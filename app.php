@@ -8,7 +8,6 @@
   require_once("app/models/Crawlerfilter.php");
   require_once("app/models/Indexerfilter.php");
 
-  require_once("app/template.php"); //for session
 
   $request = new REST_Request(array('restful' => true));
   if (isset($request->controller)) {

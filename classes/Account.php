@@ -1,6 +1,7 @@
 <?php
 
 class Account {
+  
   public $iId; 
   public $sDomain; 
   public $iLevelLimit;
@@ -18,5 +19,15 @@ class Account {
     $row = mysql_fetch_row($res);
     return($row[0]);
   }
+
+  public static function changeAccount($iAccountId){
+    //TODO:check if the user has access to change to that account
+    //change account id in session to $iAccountId
+   
+    $_SESSION['account_id']=$iAccountId;
+    $_SESSION['account_domain']=Account::getDomain( $_SESSION['account_id']);
+
+  }
+
 };
 ?>

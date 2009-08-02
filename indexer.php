@@ -13,7 +13,6 @@
  Edit this list with regular expressions that identifies pages to be skipped during indexing.
 
 <br><br>
-
  <div id="setting">
   <div id="indexer"></div>
  </div>
