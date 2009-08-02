@@ -1,5 +1,5 @@
 <?
- require_once("classes/Yase.php");
+ require_once("YASE/Framework.php");
  require_once("app/template.php"); 
  require_once("app/login.php"); //this page requires a login 
  require_once("app/views/grid.php");

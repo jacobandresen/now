@@ -2,7 +2,7 @@
  require_once("app/template.php"); 
  require_once("app/views/grid.php");
 
- Template::head("Yet another search engine");
+ Template::head();
  Template::leftbar();
  ?>
 
@@ -13,7 +13,7 @@
 <br><br>
 
 <p>
-TODO: accept user email here
+ contact  <a href="mailto:jacob.andresen@gmail.com">me</a> to get an account </
 </p>
 
 

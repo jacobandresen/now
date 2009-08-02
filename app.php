@@ -1,10 +1,9 @@
 <?php
-  require_once("classes/Global.php"); 
-  require_once("classes/Yase.php");
-  require_once("classes/REST/Model.php");
-  require_once("classes/REST/Request.php");
-  require_once("classes/REST/Controller.php");
-  require_once("classes/REST/Response.php");
+  require_once("YASE/Framework.php");
+  require_once("REST/Model.php");
+  require_once("REST/Request.php");
+  require_once("REST/Controller.php");
+  require_once("REST/Response.php");
   require_once("app/models/Crawlerfilter.php");
   require_once("app/models/Indexerfilter.php");
 

@@ -1,7 +1,8 @@
 <?
- require_once("classes/Yase.php"); 
+ require_once("YASE/Framework.php"); 
 
  $iAccountID=$_REQUEST['account_id'];
+ 
  require_once("app/template.php"); 
  require_once("app/login.php"); //this page requires a login
 
@@ -10,8 +11,6 @@
  
  if(isset($iAccountID)){
    Account::changeAccount($iAccountID); 
-   $_SESSION["account_id"]=$iAccountID;
-   $_SESSION["account_domain"]=Account::getDomain( $_SESSION['account_id']);
  } 
 ?>
 

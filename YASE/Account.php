@@ -1,12 +1,9 @@
 <?php
 
 class Account {
-  
   public $iId; 
   public $sDomain; 
-  public $iLevelLimit;
-  public $iCrawlLimit; 
-
+ 
   public function getId($sDomain){
     $res = mysql_query("select id from account where domain='".$sDomain."';");
     $row = mysql_fetch_array($res);
@@ -25,6 +22,7 @@ class Account {
     //change account id in session to $iAccountId
     $_SESSION['account_id']=$iAccountId;
     $_SESSION['account_domain']=Account::getDomain( $_SESSION['account_id']);
+
   }
 
 };

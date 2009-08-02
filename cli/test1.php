@@ -1,10 +1,9 @@
 <?php
  
- require_once('../classes/Global.php'); 
- require_once('../classes/Yase.php');
- require_once('../classes/REST/Model.php'); 
- require_once('../app/models/Crawlerfilter.php');
- require_once('../app/models/Indexerfilter.php');
+ require_once('YASE/Framework.php');
+ require_once('REST/Model.php'); 
+ require_once('app/models/Crawlerfilter.php');
+ require_once('app/models/Indexerfilter.php');
 
  $s = new Paging(1, "search.php");
  $c = new Crawlerfilter();

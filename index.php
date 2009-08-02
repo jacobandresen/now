@@ -1,5 +1,5 @@
 <?
- require_once("classes/Yase.php"); 
+ require_once("YASE/Framework.php"); 
  require_once("app/template.php"); 
  Template::head();
  Template::leftbar();

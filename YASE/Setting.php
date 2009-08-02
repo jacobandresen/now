@@ -12,9 +12,7 @@
       $setting->sValue = $row[1];
       array_push($filters, $setting);
     }
-  print_r($filters);
     return ($filters);
- 
    }
  }
 ?>

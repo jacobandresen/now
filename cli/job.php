@@ -1,6 +1,5 @@
 <?
- require_once('../classes/Global.php');
- require_once('../classes/Yase.php');
+ require_once('../YASE/Framework.php');
 
  $account = $argv[1];
  if ($argv[1] == "") {
