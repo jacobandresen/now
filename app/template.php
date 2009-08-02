@@ -43,7 +43,7 @@ function leftbar(){
  <br><br>
    <ul>
     <li><a href="/jacob/yase/logout.php">logout</a></li> 
-    <li><a href="/jacob/yase/account.php">account info</a></li> 
+    <li><a href="/jacob/yase/account.php">account </a></li> 
     <li><a href="/jacob/yase/crawler.php">crawl filter</a></li>
     <li><a href="/jacob/yase/indexer.php">index filter</a></li>
     <li><a href="/jacob/yase/body.php">body filter </a></li>

@@ -23,10 +23,8 @@ class Account {
   public static function changeAccount($iAccountId){
     //TODO:check if the user has access to change to that account
     //change account id in session to $iAccountId
-   
     $_SESSION['account_id']=$iAccountId;
     $_SESSION['account_domain']=Account::getDomain( $_SESSION['account_id']);
-
   }
 
 };

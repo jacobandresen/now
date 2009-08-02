@@ -8,7 +8,6 @@
   require_once("app/models/Crawlerfilter.php");
   require_once("app/models/Indexerfilter.php");
 
-
   $request = new REST_Request(array('restful' => true));
   if (isset($request->controller)) {
     $controller_name = ucfirst($request->controller);

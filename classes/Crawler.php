@@ -83,7 +83,7 @@ class Crawler {
     if ($this->iCrawled>$this->iCrawlLimit){return false; } 
 
     //random wait (firewall buster)
-    sleep(rand(0,3)); 	
+    //sleep(rand(0,3)); 	
     
     //grab contents of url
     preg_match("|\.pdf|i", $sUrl, $aMatch);

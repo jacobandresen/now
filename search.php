@@ -18,9 +18,16 @@
  $iPage="";
  if(isset($_GET['query'])){ $sQuery=$_GET['query']; } 
  if(isset($_GET['page'])){ $iPage = $_GET['page']; } 
- 
+?>
+
+<span>
+<?php 
  $s=new Paging($_SESSION['account_id'], "search.php");
  $s->page($sQuery, $iPage);
+?>
+</span>
+<?php
+
  bottom();
 ?>
 
