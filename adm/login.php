@@ -1,6 +1,6 @@
 <?
- require_once("YASE/Framework.php");
- require_once("app/template.php"); 
+ require_once("../YASE/Framework.php");
+ require_once("../template.php"); 
  
  //perform login and redirect to index page
   if ( User::login ($_REQUEST['username'], $_REQUEST['password']) ){
@@ -16,7 +16,7 @@
  Template::head();
  Template::leftbar();
  
-  loginForm();
+ loginForm();
 
  ?>
  <p>

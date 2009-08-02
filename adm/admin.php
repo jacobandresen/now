@@ -1,7 +1,8 @@
 <?
- require_once("YASE/Framework.php"); 
- require_once("app/template.php"); 
- require_once("app/login.php");
+ require_once("../YASE/Framework.php"); 
+ require_once("../template.php"); 
+
+ Template::login();
  Template::head();
  Template::leftbar();
  ?>

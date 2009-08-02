@@ -1,5 +1,5 @@
 <?php
-  require_once("YASE/Framework.php");
+  require_once("../YASE/Framework.php");
   require_once("REST/Model.php");
   require_once("REST/Request.php");
   require_once("REST/Controller.php");

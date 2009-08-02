@@ -1,9 +1,9 @@
 <?php
- require_once("YASE/Framework.php"); 
- require_once("app/template.php");
- require_once("app/login.php"); //this page requires a login
+ require_once("../YASE/Framework.php"); 
+ require_once("../template.php");
   
- Template::head("Yet Another Search Engine");
+ Template::login(); 
+ Template::head();
  Template::leftbar();
 ?>
 

@@ -1,11 +1,11 @@
 <?
- require_once("YASE/Framework.php"); 
+ require_once("../YASE/Framework.php"); 
+ require_once("../template.php"); 
 
  $iAccountID=$_REQUEST['account_id'];
  
- require_once("app/template.php"); 
- require_once("app/login.php"); //this page requires a login
 
+ Template::login(); 
  Template::head();
  Template::leftbar();
  

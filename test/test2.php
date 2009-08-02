@@ -1,6 +1,6 @@
 <?php
  
- require_once('YASE/Framework.php');
+ require_once('../YASE/Framework.php');
 
 
  $id = User::getId("pedant.dk");

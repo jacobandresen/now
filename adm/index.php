@@ -1,6 +1,6 @@
 <?
- require_once("YASE/Framework.php"); 
- require_once("template.php"); 
+ require_once("../YASE/Framework.php"); 
+ require_once("../template.php"); 
  Template::head();
  Template::leftbar();
  ?>
