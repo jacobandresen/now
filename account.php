@@ -4,8 +4,10 @@
  $iAccountID=$_REQUEST['account_id'];
  require_once("app/template.php"); 
  require_once("app/login.php"); //this page requires a login
- head("Yet another search engine");
- leftbar();
+
+ Template::head();
+ Template::leftbar();
+ 
  if(isset($iAccountID)){
    Account::changeAccount($iAccountID); 
    $_SESSION["account_id"]=$iAccountID;
@@ -20,6 +22,6 @@ account id:[<?php print $_SESSION["account_domain"];?>]
 
 <?php
  print "[".$_SESSION["account_id"]."]"; 
- bottom();
+ Template::bottom();
 ?>
 

@@ -1,8 +1,9 @@
 <?
+ require_once("classes/Yase.php"); 
  require_once("app/template.php"); 
  require_once("app/login.php");
- head("Yet another search engine");
- leftbar();
+ Template::head();
+ Template::leftbar();
  ?>
 <br>
 
@@ -15,6 +16,6 @@
 </ul>
 
 <?php
- bottom();
+ Template::bottom();
 ?>
 

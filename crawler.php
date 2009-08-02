@@ -4,8 +4,8 @@
  require_once("app/login.php"); //this page requires a login 
  require_once("app/views/grid.php");
 
- head("Yet another search engine");
- leftbar();
+ Template::head();
+ Template::leftbar();
  ?>
 
  <H1>Crawler filter for <?php print $_SESSION['account_domain'];?></H1>
@@ -24,6 +24,6 @@
  ?>
 
 <?php
- bottom();
+ Template::bottom();
 ?>
 

@@ -13,9 +13,15 @@ make sure that the binaries from php,mysql and xpdf are available on your PATH b
 
 installation:
 -------------
- load ./data/tables.sql into mysql
+ load the following files into mysql:
+
+  ./resources/sql/settings.sql
+  ./resources/sql/index.sql
+
  configure ./classes/Global.php for your mysql user
 
+notes:
+------
  to index large files then you will need to alter the max mem settings for php and the max packet size for mysql
 
 usage:

@@ -3,7 +3,7 @@
  require_once("classes/Ting/Client.php");
  require_once("app/template.php");
  
- head("ting search");
+ Template::head("ting search");
 
  $query = $_REQUEST['query'];
  $t=new Ting_Client();
@@ -26,7 +26,7 @@
   }
  }
 
- bottom();
+ Template::bottom();
 ?>
 
 

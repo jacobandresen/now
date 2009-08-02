@@ -4,8 +4,8 @@
  require_once("app/login.php"); //this page requires a login 
  require_once("app/views/grid.php");
 
- head("Yet Another Search Engine");
- leftbar();
+ Template::head();
+ Template::leftbar();
  ?>
 
  <H1>Body filter </h1>
@@ -25,5 +25,5 @@
  ?>
 
 <?php
- bottom();
+ Template::bottom();
 ?>

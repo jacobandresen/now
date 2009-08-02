@@ -2,8 +2,8 @@
  require_once("app/template.php"); 
  require_once("app/views/grid.php");
 
- head("Yet another search engine");
- leftbar();
+ Template::head("Yet another search engine");
+ Template::leftbar();
  ?>
 
 <br>
@@ -18,6 +18,6 @@ TODO: accept user email here
 
 
 <?php
- bottom();
+ Template::bottom();
 ?>
 

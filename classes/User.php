@@ -11,6 +11,10 @@ class User {
     $sLoggedIn = $row[0];
     if ( isset($sLoggedIn) ){
       $_SESSION['login'] = $sLoggedIn; 
+      $_SESSION['user_id']=User::getId($_REQUEST['username']); 
+      $_SESSION['account_id']=User::getFirstAccountId(); 
+      $_SESSION['account_domain']=Account::getDomain( $_SESSION['account_id']);
+
       return true;
     }else{
       return false;

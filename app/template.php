@@ -1,10 +1,25 @@
 <?php
 require_once("include.php");
-function head($title) {
-?>
+
+class Template{
+
+  public static $root="/jacob/yase";
+  public static $title="Yet another search engine";
+
+  private static function getTitle($tit){
+    if($tit!=""){
+     return $tit;
+   }else {
+     return Template::$title;
+   }   
+  }
+
+  public static function head($tit="") {
+
+ ?>
 <html>
 <head>
-  <title> <?php print $title ?> </title>
+   <title> <?=Template::getTitle($tit) ?> </title>
   <?php include_css() ; ?>
   <?php include_js(); ?>
 </head>
@@ -13,12 +28,13 @@ function head($title) {
 <div id="main">
   <div id="page">
    <div id="top">
-   <?php print $title ?>
+   <?=Template::getTitle($tit) ?>
   </div>
   <div id="container"> 
 <?php
 }
-function leftbar(){
+
+  public static function leftbar(){
 ?>
 <div id="leftbar">
   <div id="innerleftbar">
@@ -27,7 +43,7 @@ function leftbar(){
   if (isset($_SESSION['user_id'])) {
 ?>
 
-  <form action="/jacob/yase/account.php" onchange="this.submit()" method="post" >
+  <form action="<?=Template::$root?>/account.php" onchange="this.submit()" method="post" >
   <select id="accountSelect" name="account_id" style="width:100px">
 <?php
   foreach (User::getAccounts($_SESSION['user_id']) as $a ) {
@@ -42,24 +58,24 @@ function leftbar(){
   </form>
  <br><br>
    <ul>
-    <li><a href="/jacob/yase/logout.php">logout</a></li> 
-    <li><a href="/jacob/yase/account.php">account </a></li> 
-    <li><a href="/jacob/yase/crawler.php">crawl filter</a></li>
-    <li><a href="/jacob/yase/indexer.php">index filter</a></li>
-    <li><a href="/jacob/yase/body.php">body filter </a></li>
-    <li><a href="/jacob/yase/search.php">search test</a></li>
+    <li><a href="<?=Template::$root?>/logout.php">logout</a></li> 
+    <li><a href="<?=Template::$root?>/account.php">account </a></li> 
+    <li><a href="<?=Template::$root?>/crawler.php">crawl filter</a></li>
+    <li><a href="<?=Template::$root?>/indexer.php">index filter</a></li>
+    <li><a href="<?=Template::$root?>/body.php">body filter </a></li>
+    <li><a href="<?=Template::$root?>/search.php">search test</a></li>
   </ul>
   <br><br>
 
   <!-- TODO: only render this when user is superuser -->
   <ul>  
-   <li><a href="/jacob/yase/admin.php">admin</a></li>
+   <li><a href="<?=Template::$root?>/admin.php">admin</a></li>
    </ul>
 <?php
  }else {
   ?>
   <ul>
-   <li><a href="/jacob/yase/login.php">login</a></li>
+   <li><a href="<?=Template::$root?>/login.php">login</a></li>
   </ul>
   <?php
  }
@@ -78,5 +94,7 @@ function bottom(){
 </body>
 </html>
 <?php
+}
+
 }
 ?>

@@ -3,8 +3,8 @@
  require_once("app/template.php");
  require_once("app/login.php"); //this page requires a login
   
- head("Yet Another Search Engine");
- leftbar();
+ Template::head("Yet Another Search Engine");
+ Template::leftbar();
 ?>
 
 <form action="#" method="get">
@@ -28,6 +28,6 @@
 </span>
 <?php
 
- bottom();
+ Template::bottom();
 ?>
 
