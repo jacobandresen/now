@@ -10,9 +10,12 @@
 
  <H1>Body filter </h1>
  <br><br>
+<p>
   Identify regular expressions that can be used to extract content from known page types 
-
-<br><br>
+</p>
+<p>
+<i>NOTE: this page is not finished</i>
+</p>
  <div id="setting">
   <div id="bodyfilter"></div>
  </div>

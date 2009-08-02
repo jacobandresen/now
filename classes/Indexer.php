@@ -3,14 +3,14 @@ class Indexer {
   protected $iAccountId;         //account number in database
 
   //user configurable settings 
-  public $aFilterSkip;		
-  public $sBodyFilter;
+  public $filterSettings; 
+//  public $sBodyFilter;
+  public $bodyFilter;
 
   protected function setup () {
     $this->sBodyFilter=""; 
-  
-    //TODO:setup aFilterSkip
-  }
+    $this->filterSettings=Setting::mkFilters("indexerfilter", $this->iAccountId);
+ }
 
   public function __construct($iAccountId){
     $this->iAccountId=$iAccountId; 
@@ -48,13 +48,15 @@ class Indexer {
       $title="";
       $url= urlencode($url);
  
-      //process skip filters
-      if($this->aFilterSkip) {
-        foreach ($this->aFilterSkip as $oItem){
-          preg_match("|$oItem|", $url, $aMatch);
-          if ( count($aMatch) > 0){
-      	    print "SKIP DUE TO :".$oItem."\r\n"; 
-	          return false;
+      if($this->filterSettingsp) {
+        foreach ($this->filterSettingsp as $setting){
+          $oItem = urldecode($setting->sValue); 
+          if ($oItem!="") { //do not attempt negative match on empty string 
+            preg_match("|$oItem|", $url, $aMatch);
+            if ( count($aMatch) > 0){
+      	      print "SKIP DUE TO :".$oItem."\r\n"; 
+	            return false;
+           }
           }
         }
       }

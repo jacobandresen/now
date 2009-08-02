@@ -23,16 +23,9 @@ class Crawler {
     $this->iMaxLevel = $row['level_limit'] ; 
     $this->iCrawlLimit = $row['crawl_limit'] ;
     $this->sDomain = $row['domain'] ; 
+    
+    $this->filterSettings=Setting::mkFilters("crawlerfilter", $iAccountId);
 
-    $res = mysql_query('select name,value from setting where section="crawlerfilter" and account_id="'.$iAccountId.'";');
-    $filters=array();
-    while($row = mysql_fetch_array($res)) {
-      $setting = new Setting();
-      $setting->sName = $row[0];
-      $setting->sValue = $row[1]; 
-      array_push($filters , $setting);
-    }
-    $this->filterSettings=$filters; 
   }
 
   public function __construct($iAccountId){
