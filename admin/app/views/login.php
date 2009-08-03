@@ -1,13 +1,13 @@
 <?php
 function loginForm() {
 ?>
-<form class="userform" action="login.php" method="POST">
- <div class="fieldlabel">name </div>
- <div class="fieldvalue"> 
+<form class="login" action="login.php" method="POST">
+ <div >name </div>
+ <div> 
  <input type="text" name="username"></input>
  </div>
- <div class="fieldlabel">password </div>
- <div class="fieldvalue"> 
+ <div>password </div>
+ <div> 
  <input type="password" name="password"></input>
  </div> 
  <div>

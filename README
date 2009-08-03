@@ -15,12 +15,12 @@ installation:
 -------------
  load the following files into mysql:
 
-  ./resources/sql/settings.sql
-  ./resources/sql/index.sql
+  ./sql/settings.sql
+  ./sql/index.sql
 
- configure ./YASE/Global.php for your mysql user
+ configure ./classes/YASE/Global.php for your mysql user
 
- include ./YASE/Framework.php in your code
+ include ./classes/YASE/Framework.php in your code
 
 notes:
 ------

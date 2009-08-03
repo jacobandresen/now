@@ -5,7 +5,8 @@ session_start();
 class Template{
 
     public static $root="/jacob/yase";
-    public static $title="Yet another search engine";
+    public static $title='searchzen.org';
+    public static $link='<a href="http://searchzen.org">searchzen.org</a>';
 
 
     public function login () {
@@ -16,9 +17,9 @@ class Template{
 
     public function include_js(){
 ?>
-    <script type="text/javascript" src="<?=Template::$root?>/js/ext-3.0.0/adapter/ext/ext-base.js"></script>
-    <script type="text/javascript" src="<?=Template::$root?>/js/ext-3.0.0/ext-all.js"></script>
     <script type="text/javascript" src="<?=Template::$root?>/js/jquery-1.3.2.min.js"></script> 
+    <script type="text/javascript" src="<?=Template::$root?>/js/ext-3.0.0/adapter/jquery/ext-jquery-adapter.js"></script>
+    <script type="text/javascript" src="<?=Template::$root?>/js/ext-3.0.0/ext-all.js"></script>
 
 <?php
 }
@@ -57,10 +58,10 @@ class Template{
 <body>
 
 <div id="main">
-  <div id="page">
    <div id="top">
-   <?=Template::getTitle($tit) ?>
+   <?=Template::$link ?>
   </div>
+ <div id="page">
   <div id="container"> 
 <?php
     }
@@ -93,9 +94,13 @@ class Template{
     <li><a href="<?=Template::$root?>/admin/account.php">account </a></li> 
     <li><a href="<?=Template::$root?>/admin/crawler.php">crawl filter</a></li>
     <li><a href="<?=Template::$root?>/admin/indexer.php">index filter</a></li>
+<!--
     <li><a href="<?=Template::$root?>/admin/body.php">body filter </a></li>
+-->
     <li><a href="<?=Template::$root?>/admin/search.php">search test</a></li>
+<!--
     <li><a href="<?=Template::$root?>/admin/admin.php">admin</a></li>
+-->
   </ul>
   <br><br>
 <?php
