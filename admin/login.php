@@ -1,16 +1,16 @@
 <?
- require_once("../YASE/Framework.php");
- require_once("../template.php"); 
+ require_once("../classes/YASE/Framework.php");
+ require_once("../classes/Template.php"); 
+ require_once("app/views/login.php");
  
  //perform login and redirect to index page
-  if ( User::login ($_REQUEST['username'], $_REQUEST['password']) ){
+  if ( YASE_User::login ($_REQUEST['username'], $_REQUEST['password']) ){
     header ('Location: index.php');
    } else {
      if( isset($_REQUEST['username'])){ 
        $message="login failed"; 
      }
   } 
- require_once("app/views/login.php");
 
  //the page to show if the login fails
  Template::head();

@@ -1,6 +1,7 @@
 <?php
+require_once("Result.php");
 
-class Searcher {
+class YASE_Searcher {
   protected $iAccountId;
   public $iLimit = 5;
 
@@ -22,7 +23,7 @@ class Searcher {
         $content=$row['content'];
        	$content = preg_replace('/\&.*?\;/is',' ', $content); 
         
-	      $oResult = new Result();
+	      $oResult = new YASE_Result();
         $oResult->sUrl = urldecode($row['url']);
         $oResult->sTitle = trim(html_entity_decode($title));
         if($oResult->sTitle==""){ $oResult->sTitle = $oResult->sUrl; }  

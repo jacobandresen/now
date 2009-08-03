@@ -1,10 +1,9 @@
 <?
- require_once("../YASE/Framework.php"); 
- require_once("../template.php"); 
+ require_once("../classes/YASE/Framework.php"); 
+ require_once("../classes/Template.php"); 
 
- Template::login();
- Template::head();
- Template::leftbar();
+ Template::admintop();
+
  ?>
 <br>
 

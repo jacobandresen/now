@@ -1,11 +1,9 @@
 <?
- require_once("../YASE/Framework.php");
- require_once("../template.php"); 
+ require_once("../classes/YASE/Framework.php");
+ require_once("../classes/Template.php"); 
  require_once("app/views/grid.php");
 
- Template::login();
- Template::head();
- Template::leftbar();
+ Template::admintop();
  ?>
 
  <H1>Body filter </h1>

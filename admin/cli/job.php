@@ -1,5 +1,5 @@
 <?
- require_once('../YASE/Framework.php');
+ require_once('../../YASE/Framework.php');
 
  $account = $argv[1];
  if ($argv[1] == "") {

@@ -1,10 +1,8 @@
 <?php
- require_once("../YASE/Framework.php"); 
- require_once("../template.php");
+ require_once("../classes/YASE/Framework.php"); 
+ require_once("../classes/Template.php");
   
- Template::login(); 
- Template::head();
- Template::leftbar();
+ Template::admintop();
 ?>
 
 <form action="#" method="get">
@@ -22,12 +20,11 @@
 
 <span>
 <?php 
- $s=new Paging($_SESSION['account_id'], "search.php");
+ $s=new YASE_Paging($_SESSION['account_id'], "search.php");
  $s->page($sQuery, $iPage);
 ?>
 </span>
 <?php
-
  Template::bottom();
 ?>
 

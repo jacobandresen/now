@@ -1,5 +1,5 @@
 <?
- require_once("../template.php"); 
+ require_once("../classes/Template.php"); 
  require_once("app/views/grid.php");
 
  Template::head();
