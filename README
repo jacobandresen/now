@@ -19,7 +19,6 @@ installation:
   ./sql/index.sql
 
  configure ./classes/YASE/Global.php for your mysql user
-
  include ./classes/YASE/Framework.php in your code
 
 notes:

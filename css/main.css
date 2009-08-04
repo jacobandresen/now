@@ -89,23 +89,23 @@ th {
 	overflow: hidden;
 	border: 2px solid #33AACC;
 	/*background: #ffff99;*/
-  height: 100%;
+  height: 800px;
   -moz-border-radius-bottomleft: 6px;
   -moz-border-radius-bottomright: 6px;
 }
 #leftbar {
-  display: inline;
-  width: 130px;
+ /* display: inline;*/
+  width: 150px;
   float: left;
   height: 100%;
-  /*height: 400px;*/
-  /*border-right: 1px dotted #000000;*/
-  background: #ffffff;
+  border-right: 1px dotted #000000;
+  background: #CCBBCC;
 }
 #content{
   display: inline;
   float: left;
   width: 500px;/*470px;*/
+  overflow: auto;
 }
 #rightbar{
   /*position: relative;*/
@@ -139,13 +139,11 @@ th {
 	font-size: 0.8em;
   bottom:0;
   /*background: #99ffff;*/
-
 }
 #footer a {
   text-decoration: none;
   color: #000000;
 }
-
 #menu {
   font-size: 12px;
   
@@ -172,7 +170,6 @@ th {
 	text-decoration: none;
 	color: #009900;
 }
-
 .error {
   font-size: 0.8em;
   color: #990000;

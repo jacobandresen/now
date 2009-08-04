@@ -1,5 +1,5 @@
 <?
- require_once('../../YASE/Framework.php');
+ require_once('../../classes/YASE/Framework.php');
 
  $account = $argv[1];
  if ($argv[1] == "") {
@@ -7,10 +7,11 @@
    print "  job.php [account name] \r\n";
    exit -1;
  }
+ $iAccountID=YASE_Account::getId($argv[1]);
 
- $c = new Crawler(Account::getId($argv[1]));
+ $c = new YASE_Crawler($iAccountID);
  $c->start();
 
- $i = new Indexer(Account::getId($argv[1]));
+ $i = new YASE_Indexer($iAccountID);
  $i->start();
 ?>

@@ -86,7 +86,7 @@ class YASE_Crawler {
         //if(count($aMatch)>0 || $this->sLastContentType=="application/pdf"){
         if((trim($this->sLastContentType))=="application/pdf"){
             print "found pdf\r\n"; 
-            $p=new PDFFilter($this->iAccountId);
+            $p=new YASE_PDFFilter($this->iAccountId);
             $sResponse = $p->filter($sUrl);
         }else{ 
             $this->add($sUrl, $sResponse, $iLevel);
@@ -95,7 +95,7 @@ class YASE_Crawler {
             foreach($aMatches[1] as $sItem){
                 $sFullUrl = $this->expandUrl($sItem, $sUrl);
                 if ( (!in_array($sFullUrl, $this->aFound)) and $this->checkUrl($sFullUrl)){
-                    $oDoc = new Document();
+                    $oDoc = new YASE_Document();
                     $oDoc->sUrl = $sFullUrl;
                     $oDoc->iLevel = $iLevel+1;
                     array_push($this->aFound, $oDoc);
@@ -118,7 +118,7 @@ class YASE_Crawler {
     }
   
     public function getUrl ($sUrl) {
-        $c=new HTTPClient();
+        $c=new YASE_HTTPClient();
         $sHost = $c->extractHost($sUrl);
         if($sHost!=""){
             $c->connect($sHost);

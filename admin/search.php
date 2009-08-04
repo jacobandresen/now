@@ -5,6 +5,9 @@
  Template::admintop();
 ?>
 
+<br>
+<h1> Search Test for <?=$_SESSION['account_domain'];?></h1>
+<br><br>
 <form action="#" method="get">
  <input type="hidden" name="account" value="<?php echo $sAccount?>"/>
  <input type="text" name="query"/>

@@ -6,7 +6,7 @@ class Template{
 
     public static $root="/jacob/yase";
     public static $title='searchzen.org';
-    public static $link='<a href="http://searchzen.org">searchzen.org</a>';
+    public static $link='<a href="http://searchzen.org/jacob">jacob@searchzen.org</a>';
 
 
     public function login () {
@@ -90,7 +90,7 @@ class Template{
   </form>
  <br><br>
    <ul>
-    <li><a href="<?=Template::$root?>/admin/logout.php">logout</a></li> 
+    <li><a href="<?=Template::$root?>/admin/index.php">front page </a></li> 
     <li><a href="<?=Template::$root?>/admin/account.php">account </a></li> 
     <li><a href="<?=Template::$root?>/admin/crawler.php">crawl filter</a></li>
     <li><a href="<?=Template::$root?>/admin/indexer.php">index filter</a></li>
@@ -101,6 +101,7 @@ class Template{
 <!--
     <li><a href="<?=Template::$root?>/admin/admin.php">admin</a></li>
 -->
+    <li><a href="<?=Template::$root?>/admin/logout.php">logout</a></li> 
   </ul>
   <br><br>
 <?php
