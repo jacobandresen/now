@@ -4,7 +4,7 @@
 
 #Introduction 
 
-Yase lets you crawl webpages and put them into a database where you can search them.
+YASE lets you crawl webpages and put them into a database where you can search them.
 
 #dependencies
 

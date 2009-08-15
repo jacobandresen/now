@@ -1,8 +1,12 @@
 <?php
 
-require_once("Searcher.php");
-class YASE_Paging extends YASE_Searcher{
-
+/**
+ * Split search results into several pages
+ *
+ * @author: Johan Bäckström <johbac@gmail.com>
+ */
+class YASE_Paging extends YASE_Searcher
+{
     public $iOffset     = 0;
     public $iLimit      = 20;
     public $iCount      = 0;
@@ -12,12 +16,14 @@ class YASE_Paging extends YASE_Searcher{
     public $aColumns     = array();
     public $sPage = "";
 
-    function __construct($sAccount, $sPage ){
+    public function __construct($sAccount, $sPage )
+    {
         parent::__construct($sAccount); 
         $this->sPage = $sPage; 
     }
   
-    public function sNavigationFloat($iPage, $iPages, $sParams="", $iLimit=15 ){
+    public function sNavigationFloat($iPage, $iPages, $sParams="", $iLimit=15 )
+    {
         if ($iPages < 2){
             return '';
         }
@@ -63,7 +69,8 @@ class YASE_Paging extends YASE_Searcher{
         print $sNavigation;
     }
   
-    public function page($query, $page) {
+    public function page($query, $page) 
+    {
         $total = $this->iSearch($query); 
         if(!isset($_REQUEST['page']) || $_GET['page'] < 1){
             $page = 1;
@@ -85,6 +92,5 @@ class YASE_Paging extends YASE_Searcher{
         $this->sNavigationFloat($page, $pages, '&query='.$query, $this->searcher->iLimit );
         print '</div>';
     }
-
 };
 ?>

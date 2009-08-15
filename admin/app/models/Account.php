@@ -1,6 +1,5 @@
 <?php
- class Account extends REST_Model {
-   public $sTable="account";
- };
-
+class Account extends Model {
+    public $sTable="account";
+};
 ?>

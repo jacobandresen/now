@@ -1,6 +1,4 @@
 <?php
-//"namespace" YASE
-require_once("Global.php");  //assume mysql global settings
 require_once("User.php");
 require_once("Account.php");
 require_once("Crawler.php");

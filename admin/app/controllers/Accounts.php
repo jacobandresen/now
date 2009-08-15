@@ -1,6 +1,6 @@
 <?php
 
-class Accounts extends REST_Controller {
+class Accounts extends Controller {
    public $sTable = "account";
 
    public function change($id) {

@@ -2,14 +2,14 @@
  function grid($model, $div, $jsonDef) {
   ?>
 <script type="text/javascript">
-var <?php print $model; ?>Store = new Ext.data.Store({
-  id: '<?php print $model;?> setting',
+var <?= $model; ?>Store = new Ext.data.Store({
+  id: '<?= $model;?> setting',
   proxy: new Ext.data.HttpProxy({
   api: {
-    read    : 'app.php/<?php print $model;?>/view', 
-    create  : 'app.php/<?php print $model;?>/create',
-    update  : 'app.php/<?php print $model;?>/update',
-    destroy : 'app.php/<?php print $model;?>/destroy'
+    read    : 'app.php/<?=$model;?>/view', 
+    create  : 'app.php/<?=$model;?>/create',
+    update  : 'app.php/<?=$model;?>/update',
+    destroy : 'app.php/<?=$model;?>/destroy'
   }
   }) , 
   reader: new Ext.data.JsonReader({
@@ -29,7 +29,7 @@ var <?php print $model; ?>Store = new Ext.data.Store({
   autoSave: true
 });
 
-var <?php print $model;?>Columns =  [
+var <?=$model;?>Columns =  [
    {header: "name", width:120, sortable:true,
      dataIndex:'sName', editor:new Ext.form.TextField()},
    {header: "value", width:120, sortable:true,
@@ -37,15 +37,15 @@ var <?php print $model;?>Columns =  [
   ];
 
 Ext.onReady( function(){
-   <?php print $model;?>Store.load();
+   <?=$model;?>Store.load();
 });
 
-var <?php print $model."Grid" ;?> = Ext.extend(Ext.grid.EditorGridPanel, {
+var <?=$model."Grid" ;?> = Ext.extend(Ext.grid.EditorGridPanel, {
     renderTo: '<?php print $div ; ?>' ,
     iconCls: 'silk-grid',
     frame: true,
     height: 300, 
-    title: '<?php print $model;?> Settings',
+    title: '<?=$model;?> Settings',
     initComponent : function() { 
       this.viewConfig = { 
         forceFit: true 
@@ -53,7 +53,7 @@ var <?php print $model."Grid" ;?> = Ext.extend(Ext.grid.EditorGridPanel, {
     this.relayEvents(this.store, ['write','destroy', 'save', 'update']);
     this.tbar = this.buildTopToolBar();
     this.buttons = this.buildUI();
-    <?php print $model."Grid";?>.superclass.initComponent.call(this); 
+    <?=$model."Grid";?>.superclass.initComponent.call(this); 
   },
 
   buildTopToolBar : function () {
@@ -107,11 +107,11 @@ var <?php print $model."Grid" ;?> = Ext.extend(Ext.grid.EditorGridPanel, {
 });
 
 Ext.onReady(function() {
-   var <?php print $model;?> = 
-     new <?php print $model."Grid";?>( {
-      renderTo: '<?php print $div;?>',
-      store: <?php print $model;?>Store,
-     columns: <?php print $model;?>Columns
+   var <?=$model;?> = 
+     new <?=$model."Grid";?>( {
+      renderTo: '<?=$div;?>',
+      store: <?=$model;?>Store,
+     columns: <?=$model;?>Columns
    });
  });
 </script>

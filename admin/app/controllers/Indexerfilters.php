@@ -1,6 +1,6 @@
 <?php
 
-class Indexerfilters extends REST_Controller {
+class Indexerfilters extends Controller {
    public $sTable = "indexerfilter";
 };
 

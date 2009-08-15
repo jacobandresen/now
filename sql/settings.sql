@@ -29,8 +29,8 @@ drop table if exists setting;
 create table setting (
  id             int NOT NULL primary key auto_increment, 
  account_id     int,
- section        varchar(256),
- name			 	    varchar(256), 
+ tablenamen     varchar(256),
+ name			varchar(256), 
  value          LONGTEXT,
  FOREIGN KEY(account_id) references account(id)
 ); 

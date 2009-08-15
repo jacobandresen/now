@@ -1,6 +1,6 @@
 <?php
 
-class Bodyfilter extends REST_Controller {
+class Bodyfilter extends Controller {
    public $sTable = "bodyfilter";
 };
 

@@ -1,7 +1,13 @@
 <?php
 
-class YASE_HTTPClient {
-   
+/**
+ * Retrieve content from a given HTTP server
+ * NOTE:this currently only handles HTTP 1.0 request 
+ *
+ * @author: Jacob Andresen <jacob.andresen@gmail.com>
+ */
+class YASE_HTTPClient 
+{
     public $sStatus;
     public $sFinalUrl;
     public $sContentType;
@@ -18,12 +24,14 @@ class YASE_HTTPClient {
     protected $sReply;
     protected $aHeaders;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->iPort=80; 
         $this->iRedirects=0; 
     }
 
-    public function Connect($sHost ){
+    public function connect($sHost )
+    {
         $this->sHost=$sHost;    
         if($this->sHost==""){
             die("missing host name!\r\n");
@@ -37,11 +45,13 @@ class YASE_HTTPClient {
         $this->aHeaders=array(); 
     }
 
-    public function Close(){
+    public function close()
+    {
         fclose($this->oSocket);
     }
  
-    private function SendRequest( $sRequest ){
+    private function sendRequest( $sRequest )
+    {
         $sRequest.=" HTTP/1.0"; 
         $sRequest.="\r\nUser-Agent: YASE alpha2"; 
         $sRequest.="\r\nHost: ".$this->sHost;
@@ -52,7 +62,8 @@ class YASE_HTTPClient {
            fputs( $this->oSocket, $sRequest."\r\n"); 
     }  
 
-    public function extractHost($sUrl) {
+    public function extractHost($sUrl) 
+    {
         preg_match("@(http\s?\://([^\/].*?))(\/|$)@", $sUrl, $aMatch);
         if ( count($aMatch) > 1 ){
             $sHost = $aMatch[2];
@@ -62,7 +73,8 @@ class YASE_HTTPClient {
         return($this->sHost); 
     } 
 
-    public function extractRelativeUrl($sUrl) {
+    public function extractRelativeUrl($sUrl) 
+    {
         $sUrl=preg_replace("/http\:\/\//i","", $sUrl);
         $sUrl=str_replace($this->sHost, "", $sUrl);
         if($sUrl==""){      
@@ -71,7 +83,8 @@ class YASE_HTTPClient {
         return($sUrl); 
     } 
   
-    protected function getHeaders () {
+    protected function getHeaders () 
+    {
         while( !feof($this->oSocket ) ) {
             $sLine=fgets($this->oSocket,512);
             $indx=strpos($sLine,":"); 
@@ -88,20 +101,21 @@ class YASE_HTTPClient {
         }
     }
  
-    protected function Redirect() {
+    protected function redirect() 
+    {
         $this->iRedirects++;
-  	    print "redirects#:".$this->iRedirects."\r\n";	
-	    if($this->iRedirects<5){ 
+        print "redirects#:".$this->iRedirects."\r\n";	
+        if($this->iRedirects<5){ 
             $sNewUrl=chop($this->aHeaders['location']);
             print "redirecting to:".$sNewUrl."\r\n"; 
             $this->Connect($this->sHost);
            
             //make sure we have a full url
-	        if(!(strpos($sNewUrl, $this->sHost)) &&
-	            !(strpos($sNewUrl, "/"))){
-                print "EXPAND:".$this->sHost."\r\n";
-                $sNewUrl="http://".$this->sHost.$sNewUrl;
-                print "NEW URL:".$sNewUrl."\r\n";
+            if(!(strpos($sNewUrl, $this->sHost)) &&
+               !(strpos($sNewUrl, "/"))){
+                    print "EXPAND:".$this->sHost."\r\n";
+                    $sNewUrl="http://".$this->sHost.$sNewUrl;
+                    print "NEW URL:".$sNewUrl."\r\n";
             }
         
             $this->sFinalUrl=$sNewUrl;           
@@ -113,7 +127,8 @@ class YASE_HTTPClient {
         } 
     }  
 
-    protected function getReply () {
+    protected function getReply () 
+    {
         $this->sReply=""; 
         
         if(!$this->oSocket){ return(""); } 
@@ -150,7 +165,8 @@ class YASE_HTTPClient {
         return($this->sReply);
     }  
  
-    public function Get ($sIncomingUrl) {
+    public function get ($sIncomingUrl) 
+    {
         $sHost = $this->extractHost($sIncomingUrl);
         if($sHost!=""){ 
             $this->sHost=$sHost;
@@ -161,11 +177,13 @@ class YASE_HTTPClient {
         return($this->getReply()); 
     }
 
-    public function Post ($sUrl, $sParams) {
+    public function post ($sUrl, $sParams) 
+    {
         throw new Exception("not implemented yet");
     }
 
-    public function Delete ($sUrl, $sParams) {
+    public function delete ($sUrl, $sParams) 
+    {
         throw new Exception("not implemented yet");
     }
 };

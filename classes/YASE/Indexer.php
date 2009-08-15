@@ -1,29 +1,45 @@
 <?php
-class YASE_Indexer { 
-    protected $iAccountId;         //account number in database
+
+/**
+ * Interpret content from dump into text input for database
+ *
+ * @author: Jacob Andresen <jacob.andresen@gmail.com>
+ * @author: Johan Bäckström <johbac@gmail.com>
+ */
+class YASE_Indexer 
+{ 
+    //domain info 
+    protected $iAccountId;         
+ 
+    //settings 
     protected $filterSettings; 
     protected $bodyFilter;
 
-    protected function setup () {
+    protected function setup () 
+    {
         $this->sBodyFilter=""; 
-        $this->filterSettings=Setting::mkSettings("indexerfilter", $this->iAccountId);
+        $this->filterSettings=YASE_Setting::mkSettings("indexerfilter", $this->iAccountId);
     }
 
-    public function __construct($iAccountId){
+    public function __construct($iAccountId)
+    {
         $this->iAccountId=$iAccountId; 
         $this->setup();  
     }
 
-    public function clear(){
+    public function clear()
+    {
         mysql_query("DELETE FROM document where account_id='".$this->iAccountId."'") or die (mysql_error());
     }
 
-    public function start(){
-        $this->clear() ; //TODO:we should still be able to search while indexing 
+    public function start()
+    {
+        $this->clear();  
         $this->index();
     }
 
-    public function index(){
+    public function index()
+    {
         print "start INDEX\r\n";
         $sSQL="select max(retrieved),url,html,level from dump where account_id='".$this->iAccountId."' group by account_id,url";
         $res = mysql_query($sSQL) or die (mysql_error());
@@ -39,7 +55,8 @@ class YASE_Indexer {
         }
     }
 
-    public function add($url, $body, $level ) {
+    public function add($url, $body, $level ) 
+    {
         print "ADD: $url \r\n";
         try{
             $title="";
@@ -159,12 +176,14 @@ class YASE_Indexer {
         } 
     } 
 
-    public function reset() {
+    public function reset() 
+    {
         $sSQL = "DELETE from document where account_id='".$this->iAccountId."'";  
         mysql_query( $sSQL ) or die(mysql_error());
     } 
 
-    function isUTF8($str) {
+    public function isUTF8($str) 
+    {
         $c=0; $b=0;
         $bits=0;
         $len=strlen($str);
@@ -190,7 +209,8 @@ class YASE_Indexer {
         return true;
     }
   
-    function sHtmlToRawText($sWord, $bNewLines=false, $bCleanHtml=false){
+    public function sHtmlToRawText($sWord, $bNewLines=false, $bCleanHtml=false)
+    {
         if ($bCleanHtml) {
             $sWord = preg_replace("/<br\s*?\/\>/", "\n", $sWord);
             $sWord = preg_replace("/<[^>]*?\>/", " ", $sWord);  // Remove all htmltags

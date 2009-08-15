@@ -1,5 +1,5 @@
 <?php
-class REST_Request {
+class Request {
   public $restful, $method, $controller, $action, $id, $params;
   
   public function __construct($params) {
@@ -14,20 +14,20 @@ class REST_Request {
 
   protected function parseRequest() {
      if ($this->method == 'PUT'){
-      $raw = '';
-      $httpContent = fopen('php://input', 'r');
-      while ( $kb = fread($httpContent, 1024)) {
-        $raw .= $kb;      
-      }
-      fclose($httpContent);
-      $params = array();
+        $raw = '';
+        $httpContent = fopen('php://input', 'r');
+        while ( $kb = fread($httpContent, 1024)) {
+            $raw .= $kb;      
+        }
+        fclose($httpContent);
+        $params = array();
 
-      parse_str($raw, $params);
-      $this->id = (isset($params['id'])) ?$params['id'] : null;
-      $this->params = (isset($params['data'])) ? json_decode(stripslashes($params['setting']), true) : null;
+        parse_str($raw, $params);
+        $this->id = (isset($params['id'])) ?$params['id'] : null;
+        $this->params = (isset($params['data'])) ? json_decode(stripslashes($params['setting']), true) : null;
     } else {
-      $this->params = (isset($_REQUEST['data'])) ? json_decode(stripslashes($_REQUEST['data']), true) : null;
-      $this->id = (isset($_REQUEST['id'])) ? json_decode(stripslashes($_REQUEST['id']), true) : null; 
+        $this->params = (isset($_REQUEST['data'])) ? json_decode(stripslashes($_REQUEST['data']), true) : null;
+        $this->id = (isset($_REQUEST['id'])) ? json_decode(stripslashes($_REQUEST['id']), true) : null; 
     }
 
     if (isset($_SERVER["PATH_INFO"])) {

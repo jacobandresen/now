@@ -1,6 +1,6 @@
 <?php
 
-class Settings extends REST_Controller {
+class Settings extends Controller {
    public $sTable = "setting";
 };
 

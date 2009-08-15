@@ -1,21 +1,16 @@
 <?
- require_once("../classes/YASE/Framework.php"); 
- require_once("../classes/Template.php"); 
+require_once("class_autoload.php"); 
 
- Template::admintop();
-
- ?>
-<br>
-
+Template::admintop();
+?>
 <H1> Administration </H1>
-<br><br>
 
 <ul>
- <li>TODO: add new account</li>
- <li>TODO: delete existing account</li>
+    <li>TODO: add new account</li>
+    <li>TODO: delete existing account</li>
 </ul>
 
 <?php
- Template::bottom();
+Template::bottom();
 ?>
 

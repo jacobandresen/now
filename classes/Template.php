@@ -1,12 +1,13 @@
 <?php
-
-session_start();
-
+/**
+ * Small templating system
+ * @author  Jacob Andresen
+ */
 class Template{
 
     public static $root="/jacob/yase";
     public static $title='searchzen.org';
-    public static $link='<a href="http://searchzen.org/jacob">jacob@searchzen.org</a>';
+    public static $link='<a href="http://searchzen.org/jacob">Jacobs pages</a>';
 
 
     public function login () {

@@ -1,25 +1,20 @@
 <?
- require_once("../classes/YASE/Framework.php"); 
- require_once("../classes/Template.php"); 
- require_once("app/views/grid.php");
+require_once("class_autoload.php"); 
+require_once("app/grid.php");
 
- Template::admintop();
- ?>
+Template::admintop();
+?>
 
- <H1> Indexer filter for <?php print $_SESSION['account_domain'];?></H1>
- <br><br>
- Edit this list with regular expressions that identifies pages to be skipped during indexing.
+<H1> Indexer filter for <?php print $_SESSION['account_domain'];?></H1>
+Edit this list with regular expressions that identifies pages to be skipped during indexing.
 
-<br><br>
- <div id="setting">
-  <div id="indexer"></div>
- </div>
+<div id="indexer" class="setting"></div>
 
 <?php
- grid("indexerfilters", "indexer", "{}");
- ?>
+grid("indexerfilters", "indexer", "{}");
+?>
 
 <?php
- Template::bottom();
+Template::bottom();
 ?>
 
