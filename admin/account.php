@@ -10,10 +10,20 @@ if(isset($iAccountID)){
 ?>
 
 <H1> Account information </H1>
-account id:[<?=$_SESSION["account_domain"]?>]
+<p>
+account domain:<?=$_SESSION["account_domain"]?>
+</p>
+
+<p>
+accound id:<?=$_SESSION["account_id"]?>
+</p>
+
+<ul>
+ <li> TODO: export settings </li>
+ <li> TODO: import settings </li>
+</ul>
 
 <?php
-print "[".$_SESSION["account_id"]."]"; 
 Template::bottom();
 ?>
 

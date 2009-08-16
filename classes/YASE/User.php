@@ -3,6 +3,9 @@
 /**
  * a YASE_User handles several YASE_Account's 
  *
+ *
+ * TODO: we should be able to add a new Account
+ * 
  * @author: Jacob Andresen <jacob.andresen@gmail.com>
  */
 class YASE_User 

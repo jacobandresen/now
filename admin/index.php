@@ -1,8 +1,7 @@
 <?
 require_once("class_autoload.php"); 
- 
-Template::head();
-Template::leftbar();
+
+Template::admintop();
 ?>
 <H1> About YASE </H1>
 

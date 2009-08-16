@@ -19,6 +19,7 @@ load the following files into mysql:
 
 - ./sql/settings.sql
 - ./sql/index.sql
+- ./sql/job.sql
 
 configure ./classes/YASE/Global.php for your mysql user
 include ./classes/YASE/Framework.php in your code
@@ -32,7 +33,7 @@ to index large files then you will need to alter the max mem settings for php an
 #usage
 
 *crawl+index*
-setup a cronjob using cron/job.php for your account
+setup a cronjob using cron/daemon.php for your user 
 
 *search*
 call yase.php from an embedded iframe on your webpage

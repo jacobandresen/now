@@ -3,38 +3,55 @@
  * Small templating system
  * @author  Jacob Andresen
  */
-class Template{
-
+class Template
+{
     public static $root="/jacob/yase";
     public static $title='searchzen.org';
     public static $link='<a href="http://searchzen.org/jacob">Jacobs pages</a>';
 
-
-    public function login () {
-        if(!(isset($_SESSION['user_id'])) ){
+    /**
+     * perform a login check
+     * if we are not logged in then we are redirected to login.php
+     */
+    public function login () 
+    {
+        if(!(isset($_SESSION['user_id'])) )
+        {
             header( 'Location: login.php');
         } 
     }
 
-    public function include_js(){
+    /**
+     * include javascript files
+     */ 
+    public function include_js()
+    {
 ?>
     <script type="text/javascript" src="<?=Template::$root?>/js/jquery-1.3.2.min.js"></script> 
     <script type="text/javascript" src="<?=Template::$root?>/js/ext-3.0.0/adapter/jquery/ext-jquery-adapter.js"></script>
     <script type="text/javascript" src="<?=Template::$root?>/js/ext-3.0.0/ext-all.js"></script>
 
 <?php
-}
+    }
 
-    public function include_css() { 
+    /** 
+     * include css files
+     */ 
+    public function include_css() 
+    { 
 ?>
     <link rel="stylesheet"  href="<?=Template::$root?>/js/ext-3.0.0/resources/css/ext-all.css" type="text/css"/>
   
     <link rel="stylesheet" href="<?=Template::$root?>/css/main.css" type="text/css" /> 
     <link rel="stylesheet" href="<?=Template::$root?>/css/yase.css" type="text/css" /> 
 <?php
-}
+    }
 
-    private static function getTitle($tit){
+    /**
+     * get a title to display 
+     */ 
+    private static function getTitle($tit)
+    {
         if($tit!=""){
             return $tit;
         }else {
@@ -42,13 +59,19 @@ class Template{
         }   
     }
 
-    public static function admintop() {
+    
+    /**
+     * top of template for adminstrator views
+     */
+    public static function admintop() 
+    {
         Template::login();
         Template::head();
         Template::leftbar();
     }
 
-    public static function head($tit="") {
+    public static function head($tit="") 
+    {
  ?>
 <html>
 <head>
@@ -67,7 +90,8 @@ class Template{
 <?php
     }
 
-    public static function leftbar(){
+    public static function leftbar()
+    {
 ?>
 <div id="leftbar">
   <div id="innerleftbar">
@@ -115,7 +139,8 @@ class Template{
 <?php
     }
 
-    function bottom(){
+    function bottom()
+    {
 ?>
   </div> 
   </div>

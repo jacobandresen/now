@@ -29,7 +29,7 @@ drop table if exists setting;
 create table setting (
  id             int NOT NULL primary key auto_increment, 
  account_id     int,
- tablenamen     varchar(256),
+ tablename      varchar(256),
  name			varchar(256), 
  value          LONGTEXT,
  FOREIGN KEY(account_id) references account(id)

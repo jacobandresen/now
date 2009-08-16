@@ -15,7 +15,6 @@ class YASE_Searcher
         $this->iAccountId=$iAccountId;
     }
 
-    
     /**
      * Perform a search and obtain the result
      * @param $query : query string issued from UI

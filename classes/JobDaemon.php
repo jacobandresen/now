@@ -4,7 +4,6 @@
 require_once("CrawlerJob.php");
 require_once("IndexerJob.php");
 
-
 /**
  * Jobs that should run on the JobDaemon should implement this interface
  */
@@ -24,7 +23,6 @@ interface IJob
  */
 class JobDaemon 
 {
- 
     /**
      * clear all jobs on queue for $iAccountID
      * @param iAccountID the internal Account identiefier
@@ -55,15 +53,20 @@ class JobDaemon
      */ 
     public static function executePending($iAccountID)
     {
-        $sSQL="select jobtype,jobstart from job where account_id='".$iAccountID."' and pending='true' order by id asc";
+        $sSQL="select id,jobtype,jobstart from job where account_id='".$iAccountID."' and jobstart<='".date('Y-m-d H:i:s')."' and pending='true' order by id asc";
+        
         $res = mysql_query($sSQL) or die (mysql_error());
         while ($row = mysql_fetch_array($res)) {
-            $sName=$row[0];
+            $iID=$row[0]; 
+            $sName=$row[1];
             try
             {
                 $sName=ucfirst($sName)."Job";
                 $job= new $sName($iAccountID); 
                 $job->execute($iAccountID);    
+
+                mysql_query("update job where id='".$iID."' set pending='false',jobfinish='".date('Y-m-d H:i:s')."'");
+
             }catch(Exception $err)
             {
                 print "ERROR\r\n";
