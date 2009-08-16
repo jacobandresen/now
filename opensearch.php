@@ -20,9 +20,6 @@ $s=new YASE_Searcher("1");  //TODO: how to pass the account number?
     </author>
     <rights>copyleft</right>
 <?php   
-
-
-
 foreach ($s->aSearch("java",0) as $res ){
     print "<entry>\r\n";
     print "<title>".$res->sTitle."</title>\r\n"; 

@@ -1,9 +1,10 @@
 <?php
  
- require_once('classes/YASE/Framework.php');
- require_once('admin/REST/Model.php'); 
- require_once('admin/app/models/Crawlerfilter.php');
- require_once('admin/app/models/Indexerfilter.php');
+ require_once('global.php'); 
+ require_once('../classes/YASE/Framework.php');
+ require_once('../admin/app/lib/Model.php'); 
+ require_once('../admin/app/models/Crawlerfilter.php');
+ require_once('../admin/app/models/Indexerfilter.php');
 
  $s = new YASE_Paging(1, "search.php");
  $c = new Crawlerfilter();

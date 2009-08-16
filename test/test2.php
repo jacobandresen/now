@@ -1,6 +1,7 @@
 <?php
  
- require_once('classes/YASE/Framework.php');
+ require_once('global.php'); 
+ require_once('../classes/YASE/Framework.php');
 
 
  $id = YASE_User::getId("pedant.dk");

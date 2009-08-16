@@ -20,6 +20,8 @@ Template::leftbar();
  The index filters lets you determine which pages are not indexed
 </p>
 
+
+
 <?php
 Template::bottom();
 ?>
