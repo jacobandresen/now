@@ -18,11 +18,6 @@ account domain:<?=$_SESSION["account_domain"]?>
 accound id:<?=$_SESSION["account_id"]?>
 </p>
 
-<ul>
- <li> TODO: export settings </li>
- <li> TODO: import settings </li>
-</ul>
-
 <?php
 Template::bottom();
 ?>

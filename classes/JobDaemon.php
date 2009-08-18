@@ -14,7 +14,23 @@ interface IJob
      * @param $iAccountID the internal account identifier
      */ 
     public function execute($iAccountID); 
+
 };
+
+
+/**
+ * Information about a job
+ * (Job Value Object) 
+ */
+class JobVO
+{
+    public $iID;
+    public $sType;
+    public $dJobStart;
+    public $dJobFinish;
+    public $bPending;
+};
+
 
 /**
  * scheduling of longrunning tasks
@@ -23,14 +39,32 @@ interface IJob
  */
 class JobDaemon 
 {
+    protected $iAccountID; 
+    protected $sPendingSQL;
+ 
+    public function __construct () 
+    {
+    } 
+
     /**
      * clear all jobs on queue for $iAccountID
      * @param iAccountID the internal Account identiefier
      */ 
-    public static function clear($iAccountID)
+    public function clear($iAccountID)
     {
         mysql_query("delete from job where account_id='".$iAccountID."'");
     }
+
+
+    /**
+     * cancel pending job
+     * $param $iJobID the Job ID
+     */
+    public function cancel($iJobID)
+    {
+        mysql_query("delete from job where id='".$iJobID."'");
+    }
+
 
 
     /**
@@ -40,22 +74,47 @@ class JobDaemon
      * @param $sType  The job type (currently "crawler" or "indexer" )
      * @param $dDateTime the date and time when the job should run
      */
-    public static function schedule($iAccountID, $sType, $dDateTime)
+    public function schedule($iAccountID, $sType, $dDateTime)
     {
         $sSQL="insert into job(account_id,jobtype,jobstart,pending) values('".$iAccountID."','".$sType."','".$dDateTime."','true')";
         $res = mysql_query($sSQL) or die("JobDaemon schedule failed:".mysql_error());
     }
 
     /**
+     * List jobs that will be executed for the account
+     * 
+     * @param $iAccountID The internal Account identifier
+     */
+    public function listPending($iAccountID)
+    {
+        $this->sPendingSQL ="select id,jobtype,jobstart,jobfinish,pending from job where account_id='".$iAccountID."' and jobstart<='".date('Y-m-d H:i:s')."' and pending='true' order by id asc";
+
+        $jobs = array(); 
+        $res= mysql_query($this->sPendingSQL);
+        while ($row = mysql_fetch_array($res)) {
+            $j=new JobVO(); 
+            $j->iID         =$row[0]; 
+            $j->sType       =$row[1];
+            $j->dJobStart   =$row[2];
+            $j->dJobFinish  =$row[3];
+            $j->bPending    =$row[4];
+            array_push($jobs, $j); 
+        }
+        return($jobs); 
+    }
+
+    /**
      * Find out which jobs are supposed to run and run them
+     * 
+     * TODO: error handling . what should happen if a job fails?
      * 
      * @param $iAccountID the internal Account identifier
      */ 
-    public static function executePending($iAccountID)
+    public function executePending($iAccountID)
     {
-        $sSQL="select id,jobtype,jobstart from job where account_id='".$iAccountID."' and jobstart<='".date('Y-m-d H:i:s')."' and pending='true' order by id asc";
-        
-        $res = mysql_query($sSQL) or die (mysql_error());
+        print "JobDaemon: pending jobs for $iAccountID \r\n";
+        $this->sPendingSQL ="select id,jobtype,jobstart from job where account_id='".$iAccountID."' and jobstart<='".date('Y-m-d H:i:s')."' and pending='true' order by id asc";
+        $res = mysql_query($this->sPendingSQL) or die (mysql_error());
         while ($row = mysql_fetch_array($res)) {
             $iID=$row[0]; 
             $sName=$row[1];
@@ -63,6 +122,8 @@ class JobDaemon
             {
                 $sName=ucfirst($sName)."Job";
                 $job= new $sName($iAccountID); 
+                
+                mysql_query("update job where id='".$iID."' set pending='false'");
                 $job->execute($iAccountID);    
 
                 mysql_query("update job where id='".$iID."' set pending='false',jobfinish='".date('Y-m-d H:i:s')."'");

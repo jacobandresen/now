@@ -2,27 +2,38 @@
 require_once("class_autoload.php"); 
 require_once("../classes/JobDaemon.php");
 
-$iAccountID=$_SESSION['account_id'];
-$sType=$_REQUEST['type'];
+$sAction        =$_REQUEST['action'];
+$iJobID         =$_REQUEST['job_id'];
+$iAccountID     =$_SESSION['account_id'];
+$sType          =$_REQUEST['type'];
 
+$jd=new JobDaemon();
 Template::admintop();
 ?>
 <H1>Control crawler and indexer for <?=$_SESSION['account_domain'];?></H1>
 
-
 <?php
 
-//TODO: list pending jobs
+if ( (isset($sAction)) && ($sAction=="cancel") && (isset($iJobID)) ){
+    print "<p>cancelled job ".$iJobID."</p>";
+    $jd->cancel($iJobID);
+}
 
 if (isset($iAccountID) && isset($sType) ){
-  JobDaemon::schedule($iAccountID, $sType, date('Y-m-d H:i:s') );
-  print "scheduled job for ".$sType;
+  $jd->schedule($iAccountID, $sType, date('Y-m-d H:i:s') );
+  print "<p>scheduled job for ".$sType."</p>";
  }
-
+print "Pending jobs:";
+print "<ul>";
+foreach( $jd->listPending($iAccountID) as $jobVO ) {
+    print "<li>[".$jobVO->iID."]".$jobVO->sType." -> ".$jobVO->dJobStart;
+    print " <a href=\"control.php?action=cancel&job_id=".$jobVO->iID."\">cancel</a></li> ";
+}
+print "</ul>";
 ?>
 
 <br>
-Schedule jobs:
+start new jobs:
 <br>
 
 <ul>
@@ -30,9 +41,6 @@ Schedule jobs:
     <li><a href="control.php?type=indexer">start indexer</a></li>
 </ul>
 
-
 <?php
 Template::bottom();
 ?>
-
-
