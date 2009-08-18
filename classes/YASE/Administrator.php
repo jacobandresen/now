@@ -22,7 +22,6 @@ class YASE_Administrator extends YASE_User
     {
         mysql_query("INSERT INTO account(user_id, domain, level_limit, crawl_limit) values($iUserId, $sDomain, 15, 5000);");
     }
-
 };
 ?>
 

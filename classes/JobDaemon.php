@@ -76,7 +76,7 @@ class JobDaemon
      */
     public function schedule($iAccountID, $sType, $dDateTime)
     {
-        $sSQL="insert into job(account_id,jobtype,jobstart,pending) values('".$iAccountID."','".$sType."','".$dDateTime."','true')";
+        $sSQL="insert into job(account_id,jobtype,jobstart,pending) values('".$iAccountID."','".$sType."','".$dDateTime."','1')";
         $res = mysql_query($sSQL) or die("JobDaemon schedule failed:".mysql_error());
     }
 
@@ -87,7 +87,7 @@ class JobDaemon
      */
     public function listPending($iAccountID)
     {
-        $this->sPendingSQL ="select id,jobtype,jobstart,jobfinish,pending from job where account_id='".$iAccountID."' and jobstart<='".date('Y-m-d H:i:s')."' and pending='true' order by id asc";
+        $this->sPendingSQL ="select id,jobtype,jobstart,jobfinish,pending from job where account_id='".$iAccountID."' and jobstart<='".date('Y-m-d H:i:s')."' and pending='1' order by id asc";
 
         $jobs = array(); 
         $res= mysql_query($this->sPendingSQL);
@@ -123,10 +123,10 @@ class JobDaemon
                 $sName=ucfirst($sName)."Job";
                 $job= new $sName($iAccountID); 
                 
-                mysql_query("update job where id='".$iID."' set pending='false'");
+                mysql_query("update job where id='".$iID."' set pending='0'");
                 $job->execute($iAccountID);    
 
-                mysql_query("update job where id='".$iID."' set pending='false',jobfinish='".date('Y-m-d H:i:s')."'");
+                mysql_query("update job where id='".$iID."' set pending='0',jobfinish='".date('Y-m-d H:i:s')."'");
 
             }catch(Exception $err)
             {
