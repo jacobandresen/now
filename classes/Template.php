@@ -120,7 +120,6 @@ class Template
     <li><a href="<?=Template::$root?>/admin/crawler.php">crawl filter</a></li>
     <li><a href="<?=Template::$root?>/admin/indexer.php">index filter</a></li>
     <li><a href="<?=Template::$root?>/admin/search.php">search test</a></li>
-    <li><a href="<?=Template::$root?>/admin/control.php">job control</a></li>
     <li><a href="<?=Template::$root?>/admin/logout.php">logout</a></li> 
   </ul>
   <br><br>
