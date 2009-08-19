@@ -113,7 +113,7 @@ class JobDaemon
     public function executePending($iAccountID)
     {
         print "JobDaemon: pending jobs for $iAccountID \r\n";
-        $this->sPendingSQL ="select id,jobtype,jobstart from job where account_id='".$iAccountID."' and jobstart<='".date('Y-m-d H:i:s')."' and pending='true' order by id asc";
+        $this->sPendingSQL ="select id,jobtype,jobstart from job where account_id='".$iAccountID."' and jobstart<='".date('Y-m-d H:i:s')."' and pending='1' order by id asc";
         $res = mysql_query($this->sPendingSQL) or die (mysql_error());
         while ($row = mysql_fetch_array($res)) {
             $iID=$row[0]; 
