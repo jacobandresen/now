@@ -18,7 +18,7 @@ $jd=new JobDaemon();
 <H1>Control panel for <?=$_SESSION['account_domain'];?></H1>
 
 <br><br>
-<i>There can be a 5 minute delay before your crawler starts</i>
+<i>it can take up to 1 hr before your crawler starts</i>
 
 
 </br></br>

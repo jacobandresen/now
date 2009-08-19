@@ -3,6 +3,7 @@
 //jobs that can run on the JobDaemon
 require_once("CrawlerJob.php");
 require_once("IndexerJob.php");
+require_once("UpdateJob.php");
 
 /**
  * Jobs that should run on the JobDaemon should implement this interface
