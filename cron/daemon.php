@@ -1,6 +1,6 @@
 <?php
 require_once("global.php");
-require_once("../classes/YASE/Framework.php");
+require_once("../classes/Framework.php");
 require_once("../classes/JobDaemon.php");
 
 $sUser = $argv[1];
@@ -16,13 +16,8 @@ set_time_limit(0);
 
 $jd=new JobDaemon();
 
-//execute pending jobs for all accounts for user
-//when running from cron every 5 minutes we assume that the job 
-//is cleared from "pending" upon startup , and that one job 
-//includes all dependencies
-
-$iUserID=YASE_User::getId($sUser);
-foreach( YASE_User::getAccounts($iUserID) as $acc) {
+$iUserID=User::getId($sUser);
+foreach( User::getAccounts($iUserID) as $acc) {
       $jd->executePending($acc->iId);
 }
 ?>

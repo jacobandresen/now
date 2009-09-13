@@ -1,11 +1,5 @@
 <?php
-/**
- * Search the YASE database and return results in the internal YASE format 
- * 
- * author: Johan Bäckström
- * author: Jacob Andresen
- */
-class YASE_Searcher 
+class Searcher 
 {
     protected $iAccountId;
     public $iLimit = 5;
@@ -15,12 +9,6 @@ class YASE_Searcher
         $this->iAccountId=$iAccountId;
     }
 
-    /**
-     * Perform a search and obtain the result
-     * @param $query : query string issued from UI
-     * @param $iPage : result listing paging number (optional)  
-     * @return: a list of YASE_Result
-     */   
     public function aSearch ($query, $iPage) 
     {
         $aRet = array();
@@ -37,7 +25,7 @@ class YASE_Searcher
                 $content=$row['content'];
        	        $content = preg_replace('/\&.*?\;/is',' ', $content); 
         
-	            $oResult = new YASE_Result();
+	            $oResult = new Result();
                 $oResult->sUrl = urldecode($row['url']);
                 $oResult->sTitle = trim(html_entity_decode($title));
                 if($oResult->sTitle==""){ $oResult->sTitle = $oResult->sUrl; }  
@@ -48,11 +36,6 @@ class YASE_Searcher
         return $aRet;
     }
 
-    /**
-     *obtain the number of search results for the query
-     *
-     *NOTE: could we just use the length of the array returned in aSearch? /jka 
-     */
     public function iSearch ($query) 
     {
         $aRet = array();

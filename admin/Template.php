@@ -1,18 +1,10 @@
 <?php
-/**
- * Small templating system
- * @author  Jacob Andresen
- */
 class Template
 {
     public static $root="/jacob/yase";
     public static $title='searchzen.org';
     public static $link='<a href="http://searchzen.org/jacob">Jacobs pages</a>';
 
-    /**
-     * perform a login check
-     * if we are not logged in then we are redirected to login.php
-     */
     public function login () 
     {
         if(!(isset($_SESSION['user_id'])) )
@@ -21,9 +13,6 @@ class Template
         } 
     }
 
-    /**
-     * include javascript files
-     */ 
     public function include_js()
     {
 ?>
@@ -34,9 +23,6 @@ class Template
 <?php
     }
 
-    /** 
-     * include css files
-     */ 
     public function include_css() 
     { 
 ?>
@@ -47,9 +33,6 @@ class Template
 <?php
     }
 
-    /**
-     * get a title to display 
-     */ 
     private static function getTitle($tit)
     {
         if($tit!=""){
@@ -59,10 +42,6 @@ class Template
         }   
     }
 
-    
-    /**
-     * top of template for adminstrator views
-     */
     public static function admintop() 
     {
         Template::login();
@@ -103,7 +82,7 @@ class Template
   <form action="<?=Template::$root?>/admin/account.php" onchange="this.submit()" method="post" >
   <select id="accountSelect" name="account_id" style="width:100px">
 <?php
-    foreach (YASE_User::getAccounts($_SESSION['user_id']) as $a ) {
+    foreach (User::getAccounts($_SESSION['user_id']) as $a ) {
         if ( trim($a->sDomain) == trim($_SESSION["account_domain"])) {
             print "<option value=\"".$a->iId."\" selected>".trim($a->sDomain); 
         }else{ 

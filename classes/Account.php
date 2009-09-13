@@ -1,12 +1,6 @@
 <?php
 
-/**
- * a YASE_Account is used to operate a domain 
- * 
- * NOTE: a YASE_User can contain several YASE_Account
- * @author   Jacob Andresen <jacob.andresen@gmail.com> 
- */ 
-class YASE_Account {
+class Account {
     public $iId; 
     public $sDomain; 
  
@@ -25,7 +19,7 @@ class YASE_Account {
 
     public static function changeAccount($iAccountId){
         $_SESSION['account_id']=$iAccountId;
-        $_SESSION['account_domain']=YASE_Account::getDomain( $_SESSION['account_id']);
+        $_SESSION['account_domain']=Account::getDomain( $_SESSION['account_id']);
     }
 };
 ?>

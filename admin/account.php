@@ -6,7 +6,7 @@ Template::admintop();
  
 $iAccountID=$_REQUEST['account_id'];
 if(isset($iAccountID)){
-    YASE_Account::changeAccount($iAccountID); 
+    Account::changeAccount($iAccountID); 
 } 
 $sAction        =$_REQUEST['action'];
 $iJobID         =$_REQUEST['job_id'];
@@ -33,7 +33,6 @@ if (isset($iAccountID) && isset($sType) ){
   $jd->schedule($iAccountID, $sType, date('Y-m-d H:i:s') );
   print "<p>scheduled job for ".$sType."</p>";
  }
-
 
 
 print "Pending jobs:";

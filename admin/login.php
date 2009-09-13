@@ -2,7 +2,7 @@
 require_once("class_autoload.php"); 
  
 //perform login and redirect to index page
-if ( YASE_User::login ($_REQUEST['username'], $_REQUEST['password']) ){
+if ( User::login ($_REQUEST['username'], $_REQUEST['password']) ){
     header ('Location: index.php');
 } else {
     if( isset($_REQUEST['username'])){ 

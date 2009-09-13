@@ -1,19 +1,7 @@
 <?php
 
-/**
- * a YASE_User handles several YASE_Account's 
- *
- *
- * TODO: we should be able to add a new Account
- * 
- * @author: Jacob Andresen <jacob.andresen@gmail.com>
- */
-class YASE_User 
+class User 
 {
-    
-    /**
-     * Perform a login check
-     */
     public static function login($sLogin, $sPassword) 
     {
         $res = mysql_query("SELECT login from user where login='".$sLogin."' and password='".$sPassword."'");
@@ -21,18 +9,15 @@ class YASE_User
         $sLoggedIn = $row[0];
         if ( isset($sLoggedIn) ){
             $_SESSION['login'] = $sLoggedIn; 
-            $_SESSION['user_id']=YASE_User::getId($_REQUEST['username']); 
-            $_SESSION['account_id']=YASE_User::getFirstAccountId(); 
-            $_SESSION['account_domain']=YASE_Account::getDomain( $_SESSION['account_id']);
+            $_SESSION['user_id']=User::getId($_REQUEST['username']); 
+            $_SESSION['account_id']=User::getFirstAccountId(); 
+            $_SESSION['account_domain']=Account::getDomain( $_SESSION['account_id']);
             return true;
         }else{
             return false;
         } 
     }
 
-    /** 
-     * Get the user id for the given login name
-     */ 
     public static function getId($sUser)
     {
         $res=mysql_query("SELECT id from user where login='".$sUser."'");
@@ -40,9 +25,6 @@ class YASE_User
         return($row[0]);
     }
 
-    /**
-     * get a default account for the YASE_user to startup with
-     */ 
     public static function getFirstAccountId() 
     {
         $iUserId=$_SESSION['user_id'];
@@ -55,15 +37,12 @@ class YASE_User
         }
     }
 
-    /**
-     * Retrieve alle the accounts associated with a given YASE_User    
-     */
     public static function getAccounts($iUserId) 
     {
         $accounts=array(); 
         $res=mysql_query("SELECT id,domain,level_limit,crawl_limit from account where user_id='$iUserId'");
         while ( $row=mysql_fetch_row($res) ) {
-            $a=new YASE_Account(); 
+            $a=new Account(); 
             $a->iId          =$row[0]; 
             $a->sDomain      =$row[1];
             $a->iLevelLimit  =$row[2];

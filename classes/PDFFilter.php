@@ -1,14 +1,6 @@
 <?php 
 
-/**
- * filter pdf filers to text
- * 
- * this class stores one tmp file pr account while running
- * NOTE: this requires pdftotext from xpdf (get it from foolabs.com)
- *
- * @author: Jacob Andresen <jacob.andresen@gmail.com>
- */
-class YASE_PDFFilter 
+class PDFFilter 
 {
     protected $iAccountId;     
 

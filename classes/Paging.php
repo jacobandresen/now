@@ -1,11 +1,6 @@
 <?php
 
-/**
- * Split search results into several pages
- *
- * @author: Johan Bäckström <johbac@gmail.com>
- */
-class YASE_Paging extends YASE_Searcher
+class Paging extends Searcher
 {
     public $iOffset     = 0;
     public $iLimit      = 20;

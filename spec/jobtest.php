@@ -1,16 +1,20 @@
 <?php
-require_once("global.php");
-require_once("../classes/YASE/Framework.php");
+require_once("../classes/YASE.php");
 require_once("../classes/JobDaemon.php");
 
-$jd=new JobDaemon();
 
-$jd->clear(1);
+class JobsShouldWork extends PHPSpec_Context
+{
+   private $jd ;
 
-$jd->schedule(1, "crawler", date('Y-m-d H:i:s'));
-$jd->schedule(1, "indexer", date('Y-m-d H:i:s')); 
+   public function before()
+   {   
+     $this->jd=new JobDaemon();
+   }
 
-print_r($jd->listPending(1));
-//$jd->executePending(1);
-//print_r($jd->listPending(1));
+ //  public function itShouldBeAbleToStartTheJobDaemon()
+ //  { 
+ //    $this->spec($this->jd)->shouldBeAJobDaemon()
+ //  }
+}
 ?>

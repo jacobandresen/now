@@ -1,7 +1,3 @@
-
---
--- raw storage for crawler
---
 create table dump (
  account_id 	int, 
  url 		varchar(256),
@@ -12,9 +8,6 @@ create table dump (
 );
 
 
---
--- storage 
---
 create table document (
  id int NOT NULL primary key auto_increment,
  account_id      int,

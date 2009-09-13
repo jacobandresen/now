@@ -1,12 +1,6 @@
 <?php
 
-/**
- * Retrieve content from a given HTTP server
- * NOTE:this currently only handles HTTP 1.0 request 
- *
- * @author: Jacob Andresen <jacob.andresen@gmail.com>
- */
-class YASE_HTTPClient 
+class HTTPClient 
 {
     public $sStatus;
     public $sFinalUrl;

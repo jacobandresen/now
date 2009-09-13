@@ -1,7 +1,6 @@
 <?
 require_once("global.php");
-require_once("../classes/Template.php");
-require_once("../classes/YASE/Framework.php");
+require_once("../classes/YASE.php");
 
 session_start();
 

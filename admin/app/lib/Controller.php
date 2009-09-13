@@ -1,7 +1,6 @@
 <?php
-/**
- * this code started out as an extjs example
- */
+
+
 class Controller 
 {
     public $sTable;

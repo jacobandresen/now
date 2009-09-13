@@ -1,14 +1,8 @@
 <?php
 
-/**
- * Crawl a domain given from a YASE_Domain
- *
- * @author: Jacob Andresen <jacob.andresen@gmail.com>
- * @author: Johan Bäckström <johbac@gmail.com>
- */
-class YASE_Crawler 
+class Crawler 
 {
-    protected $sDomain;			  //string identifying the domain 
+    protected $sDomain;		  //string identifying the domain 
     protected $iMaxLevel;         //maximum distance from front page
     protected $iCrawlLimit;       //maximum number of urls to be crawled
     protected $filterSettings;    //regexes describing pages to be skipped
@@ -21,11 +15,6 @@ class YASE_Crawler
     protected $sLastContentType;  //last content type seen by crawler
 
     
-    /**
-     *read configuration settings
-     *@param $iAccountId: account id 
-     * 
-     */
     protected function setup($iAccountId) 
     {
         $res = mysql_query('select level_limit, crawl_limit,domain from account where id="'.$iAccountId.'"');
@@ -34,7 +23,7 @@ class YASE_Crawler
         $this->iCrawlLimit = $row['crawl_limit'] ;
         $this->sDomain = $row['domain'] ;  //note: one domain pr acocunt
     
-        $this->filterSettings=YASE_Setting::mkSettings("crawlerfilter", $iAccountId);
+        $this->filterSettings=Setting::mkSettings("crawlerfilter", $iAccountId);
     }
 
     public function __construct($iAccountId)
@@ -48,18 +37,11 @@ class YASE_Crawler
         $this->setup($iAccountId);
     }
 
-    /**
-     * clear all content in dump for the given account
-     */
     public function reset () 
     {
         mysql_query ("DELETE from dump where account_id='".$this->iAccountId."'") or die(mysql_error());
     }
 
-    /**
-     * store the retrieved content to the dump
-     * TODO: we need to store the content-type
-     */ 
     public function add ( $url, $html, $level )
     {
         print "  add [$level] - $url ".strlen($html)."\r\n";
@@ -70,12 +52,6 @@ class YASE_Crawler
             print "URL too long \r\n";
             return;
         } 
-   
-//        if(strlen($html)>4000000){
-//            print "FILE TOO BIG: $url \r\n"; 
-//            return; 
-//        } 
-
         $html = urlencode($html);
     
         mysql_query("INSERT IGNORE into dump(account_id, url, html, level) values('".$this->iAccountId."','$url', '$html', '$level')") or die (" failed to insert into dump:".mysql_error());
@@ -84,10 +60,6 @@ class YASE_Crawler
     }
 
     
-    /**
-     * Start the crawler on the domain
-     * TODO: implement custom start links 
-     */
     public function start()
     {
         $this->reset();
@@ -95,17 +67,6 @@ class YASE_Crawler
     }  
 
     
-    /**
-     * scan the document and find all links , continue along links 
-     * that are not filtered away
-     * 
-     * We crawl Depth First  (recursively)
-     *
-     * @param $sUrl: url to be analyzed
-     * @param $iLevel: distance to frontpage of domain
-     * @param $sParent: parent page in crawl graph
-     *  
-     */
     public function crawl($sUrl, $iLevel, $sParent)
     {
         print "crawl [$iLevel] - $sUrl \r\n";
@@ -126,7 +87,7 @@ class YASE_Crawler
         //if(count($aMatch)>0 || $this->sLastContentType=="application/pdf"){
         if((trim($this->sLastContentType))=="application/pdf"){
             print "found pdf\r\n"; 
-            $p=new YASE_PDFFilter($this->iAccountId);
+            $p=new PDFFilter($this->iAccountId);
             $sResponse = $p->filter($sUrl);
         }else{ 
             $this->add($sUrl, $sResponse, $iLevel);
@@ -135,7 +96,7 @@ class YASE_Crawler
             foreach($aMatches[1] as $sItem){
                 $sFullUrl = $this->expandUrl($sItem, $sUrl);
                 if ( (!in_array($sFullUrl, $this->aFound)) and $this->checkUrl($sFullUrl)){
-                    $oDoc = new YASE_Document();
+                    $oDoc = new Document();
                     $oDoc->sUrl = $sFullUrl;
                     $oDoc->iLevel = $iLevel+1;
                     array_push($this->aFound, $oDoc);
@@ -158,15 +119,9 @@ class YASE_Crawler
     }
   
     
-    /**
-     * retrieve content of the url and note the content type
-     * 
-     * @param $sUrl : url to be retrieved
-     * @return : content of url  
-     */
     public function getUrl ($sUrl) 
     {
-        $c=new YASE_HTTPClient();
+        $c=new HTTPClient();
         $sHost = $c->extractHost($sUrl);
         if($sHost!=""){
             $c->connect($sHost);
@@ -181,9 +136,6 @@ class YASE_Crawler
         return($sContent); 
     } 
 
-    /**
-     * Make sure that we do not store relative urls in database
-     */ 
     public function expandUrl($sItem, $sParent)
     {
         $sPage="";	  
@@ -223,9 +175,6 @@ class YASE_Crawler
         return $sUrl;
     }
 
-    /**
-     * check if we want to retrieve the content of the url
-     */
     public function checkUrl($sUrl)
     {
         preg_match("|\@|",$sUrl, $aMatch);
@@ -252,9 +201,7 @@ class YASE_Crawler
             return true; 
         }
         array_push($this->aCrawled, $sUrl); 
-       // print "\t ".$sUrl." - NOT in domain \r\n";
         return false;
     }
 };
-
 ?>

@@ -1,12 +1,6 @@
 <?php
 
-/**
- * Interpret content from dump into text input for database
- *
- * @author: Jacob Andresen <jacob.andresen@gmail.com>
- * @author: Johan Bäckström <johbac@gmail.com>
- */
-class YASE_Indexer 
+class Indexer 
 { 
     //domain info 
     protected $iAccountId;         
@@ -18,7 +12,7 @@ class YASE_Indexer
     protected function setup () 
     {
         $this->sBodyFilter=""; 
-        $this->filterSettings=YASE_Setting::mkSettings("indexerfilter", $this->iAccountId);
+        $this->filterSettings=Setting::mkSettings("indexerfilter", $this->iAccountId);
     }
 
     public function __construct($iAccountId)

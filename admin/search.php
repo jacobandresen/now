@@ -21,7 +21,7 @@ if(isset($_GET['page'])){ $iPage = $_GET['page']; }
 
 <span>
 <?php 
-$s=new YASE_Paging($_SESSION['account_id'], "search.php");
+$s=new Paging($_SESSION['account_id'], "search.php");
 $s->page($sQuery, $iPage);
 ?>
 </span>

@@ -1,10 +1,5 @@
 <?php
-/**
- * Document stored as seen by indexer
- * TODO: introduce use of facets
- *
- */
-class YASE_Document
+class Document
 {
     public $sUrl = "";
     public $sContent = "";

@@ -1,9 +1,5 @@
 <?php
-/** 
- * This is a mixture of code from Johan Bäckström and a extjs example
- * 
- * @author: Jacob Andresen <jacob.andresen@gmail.com> 
- */
+
 class Model 
 {
     public function __construct( $uInput=false )
