@@ -6,7 +6,7 @@ class Describemysql extends PHPSpec_Context
 {
   public function itShouldHaveAConnection()
   {
-    $this->spec($link)->should->equal(true);
+    $this->spec(true)->should->equal(false);
   }
 }
 ?>
