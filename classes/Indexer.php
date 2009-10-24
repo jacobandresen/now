@@ -127,7 +127,7 @@ class Indexer
           $body= $aMatches[1];
         }
       }
-      $title = strip_tags($title)
+      $title = strip_tags($title);
       $title = html_entity_decode($title);
 
       //remove clutter

@@ -2,6 +2,7 @@
 require_once('../classes/YASE.php');
 
 $account = $argv[1];
+
 if ($argv[1] == "") {
   print "YASE job control\r\n";
   print "usage:\r\n";
