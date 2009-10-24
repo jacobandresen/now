@@ -1,1 +1,0 @@
-0 * * * *  cd /home/jacob/public_html/yase/cron/ && php daemon.php jacob >> jacob.log
