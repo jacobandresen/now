@@ -1,5 +1,5 @@
 <?php
-require_once("Setting.php");
+require_once("Administration.php");
 
 class Searcher
 {

@@ -1,8 +1,21 @@
 <?php
 require_once("Structures.php");
-require_once("Setting.php");
+require_once("Administration.php");
 require_once("HTTPClient.php");
 require_once("Filter.php");
+
+class HTTPRobot
+{
+  public function run($iAccountId) {
+    $c=new Crawler($iAccountId);
+    $c->run();
+
+    $indx=new Indexer($iAccountId);
+    $indx->clear();
+    $indx->index();
+  }
+}
+
 
 class Crawler
 {
@@ -34,6 +47,11 @@ class Crawler
     $this->iMaxLevel = $row['level_limit'] ;
     $this->iCrawlLimit = $row['crawl_limit'] ;
     $this->sDomain = $row['domain'];
+
+    if ($this->sDomain==""){
+       throw new Exception("missing domain");
+    }
+
     $this->filterSettings=Setting::mkSettings("crawlerfilter", $iAccountId);
   }
 

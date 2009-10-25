@@ -14,9 +14,13 @@ set_time_limit(0);
 
 $iAccountID=Account::getId($account);
 
-$c = new Crawler($iAccountID);
-$c->start();
+try{
+  $c = new Crawler($iAccountID);
+  $c->start();
+  $i = new Indexer($iAccountID);
+  $i->start();
+}catch($err){
+  print "failed";
+}
 
-$i = new Indexer($iAccountID);
-$i->start();
 ?>
