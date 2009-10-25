@@ -1,4 +1,6 @@
 <?php
+require_once("Setting.php");
+
 class Searcher
 {
   private $iAccountId;

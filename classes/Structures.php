@@ -2,6 +2,7 @@
 class Document{
   public $iLevel;
   public $sUrl;
+  public $sContentType;
 };
 
 class Result {

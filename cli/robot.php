@@ -1,5 +1,5 @@
 <?php
-require_once('../classes/YASE.php');
+require_once('../classes/HTTPRobot.php');
 
 $account = $argv[1];
 

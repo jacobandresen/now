@@ -1,4 +1,5 @@
 <?php
+require_once("Structures.php");
 
 class HTTPClient
 {
@@ -22,6 +23,7 @@ class HTTPClient
     $this->iRedirects=0;
   }
 
+  //TODO: support custom port
   public function connect($sHost )
   {
     $this->sHost=$sHost;
@@ -156,6 +158,7 @@ class HTTPClient
     return($this->sReply);
   }
 
+  //TODO: return Document (from "Structures.php")
   public function get ($sIncomingUrl)
   {
     $sHost = $this->extractHost($sIncomingUrl);
@@ -168,14 +171,5 @@ class HTTPClient
     return($this->getReply());
   }
 
-  public function post ($sUrl, $sParams)
-  {
-    throw new Exception("not implemented yet");
-  }
-
-  public function delete ($sUrl, $sParams)
-  {
-    throw new Exception("not implemented yet");
-  }
 };
 ?>
