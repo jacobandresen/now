@@ -100,7 +100,7 @@ class Crawler
 
   public function start()
   {
-    $this->reset();
+    //$this->reset();
     $this->crawl( "http://".$this->sDomain, 0 , "http://".$this->sDomain);
   }
 
@@ -198,10 +198,15 @@ class Indexer
   public function __construct($iAccountId)
   {
     $this->iAccountId=$iAccountId;
-    $this->setup();
     $this->sBodyFilter="";
     $this->filterSettings=Setting::mkSettings("indexerfilter", $this->iAccountId);
   }
+  public function reset()
+  {
+    $sSQL = "DELETE from document where account_id='".$this->iAccountId."'";
+    mysql_query( $sSQL ) or die(mysql_error());
+  }
+
 
   public function clear()
   {
@@ -348,12 +353,6 @@ class Indexer
     }catch(Exception $e){
       print "failed adding $url\r\n";
     }
-  }
-
-  public function reset()
-  {
-    $sSQL = "DELETE from document where account_id='".$this->iAccountId."'";
-    mysql_query( $sSQL ) or die(mysql_error());
   }
 
   public function isUTF8($str)
