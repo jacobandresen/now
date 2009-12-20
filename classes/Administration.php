@@ -104,9 +104,11 @@ class Administrator extends User
     mysql_query("INSERT INTO user(login,password) values('".$sUser."','".$sPassword."')") or die(mysql_error());
   }
 
-  public function addAccount($iUserId, $sDomain) 
+  public function addAccount($login, $sDomain) 
   {
-    mysql_query("INSERT INTO account(user_id, domain, level_limit, crawl_limit) values($iUserId, $sDomain, 15, 5000);");
+    $userId=User::getId($login);
+
+    mysql_query("INSERT INTO account(user_id, domain, level_limit, crawl_limit) values($userId, '$sDomain', 15, 5000);") or die (mysql_error());
   }
 };
 

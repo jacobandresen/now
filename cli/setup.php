@@ -2,5 +2,5 @@
 require_once("../classes/Administration.php");
 
 Administrator::addUser("pedant.dk", "test");
-Administrator::addAccount("1","pedant.dk");
+Administrator::addAccount("pedant.dk","pedant.dk");
 ?>

@@ -158,7 +158,6 @@ class HTTPClient
     return($this->sReply);
   }
 
-  //TODO: return Document (from "Structures.php")
   public function get ($sIncomingUrl)
   {
     $sHost = $this->extractHost($sIncomingUrl);
