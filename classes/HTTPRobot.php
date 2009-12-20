@@ -64,8 +64,18 @@ class Crawler
     if ($this->iLevel > $this->iMaxLevel){ return false;}
     if ($this->iCrawled>$this->iCrawlLimit){return false;}
 
-    $sResponse= $this->getUrl($sUrl);
+      $sResponse= $this->getUrl($sUrl);
+    $this->sLastContentType=trim($this->sLastContentType);
     print "content-type:[".$this->sLastContentType."]\r\n";
+
+
+    if (
+      (trim($this->sLastContentType) == "application/x-zip") || 
+      (trim($this->sLastContentType) == "image/jpeg")
+    
+    ){
+      return;
+    }
 
     if((trim($this->sLastContentType))=="application/pdf"){
       print "found pdf\r\n";
@@ -262,7 +272,7 @@ class Indexer
       $url= urlencode($url);
 
       if($this->filterSettingsp) {
-        foreach ($this->filterSettingsp as $setting){
+        foreach ($this->filterSettings as $setting){
           $oItem = urldecode($setting->sValue);
           if ($oItem!="") {
             preg_match("|$oItem|", $url, $aMatch);

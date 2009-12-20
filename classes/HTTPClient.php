@@ -146,7 +146,7 @@ class HTTPClient
         try{
           while( !feof($this->oSocket ) ) {
             $sLine=fgets($this->oSocket,512);
-            if(strlen($this->sReply) < 1500000){
+            if(strlen($this->sReply) < 1000000){
               $this->sReply.=$sLine;
             }
           }
