@@ -1,11 +1,16 @@
 <?php
 require_once('../classes/HTTPRobot.php');
 
+
+if(!isset($argv[1])){
+   $argv[1]="";
+}
+
 $account = $argv[1];
 if ($argv[1] == "") {
   print "YASE job control\r\n";
   print "usage:\r\n";
-  print "  job.php [account name] \r\n";
+  print "  robot.php [account name] \r\n";
   exit -1;
 }
 set_time_limit(0);

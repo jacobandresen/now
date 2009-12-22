@@ -97,14 +97,14 @@ class Account {
   }
 };
 
-class Administrator extends User
+class Administrator
 {
-  public function addUser($sUser, $sPassword)
+  public static function addUser($sUser, $sPassword)
   {
     mysql_query("INSERT INTO user(login,password) values('".$sUser."','".$sPassword."')") or die(mysql_error());
   }
 
-  public function addAccount($login, $sDomain) 
+  public static function addAccount($login, $sDomain) 
   {
     $userId=User::getId($login);
 

@@ -6,10 +6,4 @@ class Document{
   public $sContentType;
   public $sContent;
 };
-
-class Result {
-  public $sUrl;
-  public $sTitle;
-  public $sContent;
-}
 ?>

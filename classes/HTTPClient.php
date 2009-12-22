@@ -1,5 +1,6 @@
 <?php
 require_once("Structures.php");
+require_once("URL.php");
 
 class HTTPClient
 {
@@ -23,8 +24,7 @@ class HTTPClient
     $this->iRedirects=0;
   }
 
-  //TODO: support custom port
-  public function connect($sHost )
+  public function connect($sHost)
   {
     $this->sHost=$sHost;
     if($this->sHost==""){
@@ -56,27 +56,6 @@ class HTTPClient
       fputs( $this->oSocket, $sRequest."\r\n");
   }
 
-  public function extractHost($sUrl)
-  {
-    preg_match("@(http\s?\://([^\/].*?))(\/|$)@", $sUrl, $aMatch);
-    if ( count($aMatch) > 1 ){
-      $sHost = $aMatch[2];
-    }
-    if(isset($sHost))
-      $this->sHost=$sHost;
-    return($this->sHost);
-  }
-
-  public function extractRelativeUrl($sUrl)
-  {
-    $sUrl=preg_replace("/http\:\/\//i","", $sUrl);
-    $sUrl=str_replace($this->sHost, "", $sUrl);
-    if($sUrl==""){
-      $sUrl="/";
-    }
-    return($sUrl);
-  }
-
   protected function getHeaders ()
   {
     while( !feof($this->oSocket ) ) {
@@ -95,12 +74,27 @@ class HTTPClient
     }
   }
 
-  protected function redirect()
+  public function get ($sIncomingUrl)
+  {
+    $sHost = $this->extractHost($sIncomingUrl);
+    if($sHost!=""){
+      $this->sHost=$sHost;
+    }
+    $sUrl=$this->extractRelativeUrl($sIncomingUrl);
+    $this->sUrl=$sUrl;
+    $this->SendRequest("GET $sUrl");
+    return($this->getReply());
+  }
+
+  private function redirect()
   {
     $this->iRedirects++;
     print "redirects#:".$this->iRedirects."\r\n";
     if($this->iRedirects<5){
       $sNewUrl=chop($this->aHeaders['location']);
+
+
+      //TODO: assume that the redirect is on the same host
       print "redirecting to:".$sNewUrl."\r\n";
       $this->Connect($this->sHost);
 
@@ -121,7 +115,7 @@ class HTTPClient
     }
   }
 
-  protected function getReply ()
+  private function getReply ()
   {
     $this->sReply="";
     if(!$this->oSocket){ return(""); }
@@ -157,18 +151,5 @@ class HTTPClient
     }
     return($this->sReply);
   }
-
-  public function get ($sIncomingUrl)
-  {
-    $sHost = $this->extractHost($sIncomingUrl);
-    if($sHost!=""){
-      $this->sHost=$sHost;
-    }
-    $sUrl=$this->extractRelativeUrl($sIncomingUrl);
-    $this->sUrl=$sUrl;
-    $this->SendRequest("GET $sUrl");
-    return($this->getReply());
-  }
-
 };
 ?>
