@@ -1,6 +1,8 @@
 <?php
-require_once("../classes/Administration.php");
+require_once("../classes/YASE.php");
 
-Administrator::addUser("pedant.dk", "test");
-Administrator::addAccount("pedant.dk","pedant.dk");
+$y = new YASE();
+
+$y->addUser("pedant.dk", "test");
+$y->addAccount("pedant.dk","pedant.dk");
 ?>

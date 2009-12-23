@@ -1,41 +1,49 @@
 <?php
 class Crawler
 {
+  private $iAccountId;
   private $sDomain;
   private $iMaxLevel;
   private $iCrawlLimit;
 
-  private $filterSettings;
-
   private $iLevel;
   private $iCrawled;
-  private $iSeen;
   private $aFound;
   private $aCrawled;
   private $aProcess;
 
-  private $sLastContentType;
+  private $filterSettings;
+
+  private $httpClient;
 
   public function __construct($iAccountId)
   {
     $this->iCrawled = 0;
-    $this->iSeen=0 ;
     $this->aFound=array();
     $this->aCrawled=array();
     $this->aProcess=array();
-    $this->iAccountId=$iAccountId;
 
-    $res = mysql_query('select level_limit, crawl_limit,domain from account where id="'.$iAccountId.'"');
+    $this->iAccountId=$iAccountId;
+    $res = mysql_query('select level_limit,crawl_limit,domain from account where id="'.$iAccountId.'"');
     $row =  mysql_fetch_array($res);
     $this->iMaxLevel = $row['level_limit'] ;
     $this->iCrawlLimit = $row['crawl_limit'] ;
     $this->sDomain = $row['domain'];
 
-    if ($this->sDomain==""){
-       throw new Exception("missing domain");
+
+    $res = mysql_query('select name,value from crawlerfilter  where account_id="'.$iAccountId.'"');
+    $this->filterSettings =array();
+    while( $row =  mysql_fetch_array($res) ) {
+      $setting=new Setting();
+      array_push($this->filterSettings, $setting);
     }
 
-    $this->filterSettings=Setting::mkSettings("crawlerfilter", $iAccountId);
+    $this->httpClient = new HTTPClient($this->sDomain);
+  }
+
+  public function start()
+  {
+    $this->crawl( "http://".$this->sDomain, 0 , "http://".$this->sDomain);
   }
 
   public function crawl($sUrl, $iLevel, $sParent)
@@ -43,34 +51,25 @@ class Crawler
     print "crawl [$iLevel] - $sUrl \r\n";
     array_push( ($this->aCrawled), $sUrl);
 
-    $this->iLevel=$iLevel;
-    if ($this->iLevel > $this->iMaxLevel){ return false;}
-    if ($this->iCrawled>$this->iCrawlLimit){return false;}
+    $document = $this->httpClient->getDocument($sUrl);
 
-    $sResponse= $this->getUrl($sUrl);
-    $this->sLastContentType=trim($this->sLastContentType);
-    print "content-type:[".$this->sLastContentType."]\r\n";
+    if($this->shouldWeCrawl($document))
+    {
+      $sResponse = $document->sContent;
 
-    if (
-      (trim($this->sLastContentType) == "application/x-zip") ||
-      (trim($this->sLastContentType) == "image/jpeg")
-    ){
-      return;
-    }
+      if($document->sContentType=="application/pdf"){
+        print "found pdf\r\n";
+        $p=new PDFFilter($this->iAccountId);
+        $sResponse = $p->filter($sUrl);
+      }
 
-    if((trim($this->sLastContentType))=="application/pdf"){
-      print "found pdf\r\n";
-      $p=new PDFFilter($this->iAccountId);
-      $sResponse = $p->filter($sUrl);
-    }else{
-
-      //TODO: we should also add pdfs!
       $this->add($sUrl, $sResponse, $iLevel);
 
       preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
       foreach($aMatches[1] as $sItem){
         $sFullUrl = URL::expandUrl($sItem, $sUrl);
-        if ( (!in_array($sFullUrl, $this->aFound)) and $this->checkUrl($sFullUrl)){
+        if ( (!in_array($sFullUrl, $this->aFound))
+          and $this->filter($sFullUrl)){
           $oDoc = new Document();
           $oDoc->sUrl = $sFullUrl;
           $oDoc->iLevel = $iLevel+1;
@@ -103,38 +102,41 @@ class Crawler
       print "URL too long \r\n";
       return;
     }
-    $html = urlencode($html);
-    mysql_query("INSERT IGNORE into dump(account_id, url, html, level) values('".$this->iAccountId."','$url', '$html', '$level')") or die (" failed to insert into dump:".mysql_error());
+    if (strlen($html)<1000000) {
+      print " data:".strlen($html)."\r\n";
+      $html = urlencode($html);
+      mysql_query("INSERT IGNORE into dump(account_id, url, html, level) values('".$this->iAccountId."','$url', '$html', '$level')") or die (" failed to insert into dump:".mysql_error());
+    }else{
+       print "[$url] : content too big \r\n";
+    }
     return;
   }
 
-  public function start()
+  private function shouldWeCrawl ($document)
   {
-    //$this->reset();
-    $this->crawl( "http://".$this->sDomain, 0 , "http://".$this->sDomain);
+    print "url:[".$document->sUrl."]\r\n";
+    print "content type:[".$document->sContentType."]\r\n";
+    if ($this->iLevel > $this->iMaxLevel){ return false;}
+    if ($this->iCrawled>$this->iCrawlLimit){return false;}
+    if (
+      ($document->sContentType == "application/x-zip") ||
+      ($document->sContentType == "application/xml") ||
+      ($document->sContentType == "image/jpeg") ||
+      ($document->sContentType == "image/jpg") ||
+      ($document->sContentType == "image/gif") ||
+      ($document->sContentType == "image/bmp") ||
+      ($document->sContentType == "image/png") ||
+      ($document->sContentType == "text/css") ||
+      ($document->sContentType == "text/xml")
+    ){
+      print "CONTENT TYPE FAIL:".$document->sContentType."\r\n";
+      return false;
+    }
+    return true;
   }
 
 
-  //TODO: refactor this to HTTPClient
-  public function getUrl ($sUrl)
-  {
-    $c=new HTTPClient();
-    $sHost = $c->extractHost($sUrl);
-    if($sHost!=""){
-      $c->connect($sHost);
-    }
-    $sContent = $c->get($sUrl);
-    if (isset($c->sFinalUrl) && $sUrl!=$c->sFinalUrl){
-      print $sUrl ." -> ".$c->sFinalUrl."\r\n";
-      array_push($this->aCrawled, $sFinalUrl);
-    }
-    $this->sLastContentType=$c->sContentType;
-    $c->Close();
-    return($sContent);
-  }
-
-
-  public function checkUrl($sUrl)
+  private function filter($sUrl)
   {
     preg_match("|\@|",$sUrl, $aMatch);
     if ( count($aMatch) > 0 ){
@@ -154,7 +156,6 @@ class Crawler
         }
       }
     }
-
     preg_match("|".$this->sDomain."|", $sUrl, $aMatch);
     if (count($aMatch) > 0) {
       return true;

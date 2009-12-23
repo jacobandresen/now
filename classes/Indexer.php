@@ -9,24 +9,19 @@ class Indexer
   {
     $this->iAccountId=$iAccountId;
     $this->sBodyFilter="";
-    $this->filterSettings=Setting::mkSettings("indexerfilter", $this->iAccountId);
-  }
-  public function reset()
-  {
-    $sSQL = "DELETE from document where account_id='".$this->iAccountId."'";
-    mysql_query( $sSQL ) or die(mysql_error());
-  }
-
-
-  public function clear()
-  {
-    mysql_query("DELETE FROM document where account_id='".$this->iAccountId."'") or die (mysql_error());
+  //  $this->filterSettings=Setting::mkSettings("indexerfilter", $this->iAccountId);
   }
 
   public function start()
   {
     $this->clear();
     $this->index();
+  }
+
+
+  public function clear()
+  {
+    mysql_query("DELETE FROM document where account_id='".$this->iAccountId."'") or die (mysql_error());
   }
 
   public function index()
@@ -53,7 +48,7 @@ class Indexer
       $title="";
       $url= urlencode($url);
 
-      if($this->filterSettingsp) {
+      if($this->filterSettings) {
         foreach ($this->filterSettings as $setting){
           $oItem = urldecode($setting->sValue);
           if ($oItem!="") {
@@ -74,9 +69,9 @@ class Indexer
       //process content
       $orig=$body;
 
-      if ($this->isUTF8($body)){
-        $body = iconv("UTF-8", "ISO-8859-1", $body);
-      }
+     // if (Document::isUTF8($body)){
+     //   $body = iconv("UTF-8", "ISO-8859-1", $body);
+     // }
 
       $timestmp=time();
       $sFound='';
@@ -139,7 +134,6 @@ class Indexer
       $body = preg_replace("/<\!\-\-.*?\-\->/is", ' ', $body);
       $body = preg_replace("/\(/is", '', $body);
       $body = preg_replace("/\'/is", '', $body);
-      $body = $this->sHtmlToRawText($body);
       $body = preg_replace("/\s+/is", ' ', $body);
       $body = strip_tags($body);
 
@@ -164,47 +158,5 @@ class Indexer
       print "failed adding $url\r\n";
     }
   }
-
-  public function isUTF8($str)
-  {
-    $c=0; $b=0;
-    $bits=0;
-    $len=strlen($str);
-    for($i=0; $i<$len; $i++){
-      $c=ord($str[$i]);
-      if($c > 128){
-        if(($c >= 254)) return false;
-        elseif($c >= 252) $bits=6;
-        elseif($c >= 248) $bits=5;
-        elseif($c >= 240) $bits=4;
-        elseif($c >= 224) $bits=3;
-        elseif($c >= 192) $bits=2;
-        else return false;
-        if(($i+$bits) > $len) return false;
-        while($bits > 1){
-          $i++;
-          $b=ord($str[$i]);
-          if($b < 128 || $b > 191) return false;
-          $bits--;
-        }
-      }
-    }
-    return true;
-  }
-
-  public function sHtmlToRawText($sWord, $bNewLines=false, $bCleanHtml=false)
-  {
-    if ($bCleanHtml) {
-      $sWord = preg_replace("/<br\s*?\/\>/", "\n", $sWord);
-      $sWord = preg_replace("/<[^>]*?\>/", " ", $sWord);  // Remove all htmltags
-    }
-    if (!$bNewLines){
-      $sWord = preg_replace("/\n/", " ", $sWord);
-      $sWord = preg_replace("/\r/", " ", $sWord);
-    }
-    $sWord = preg_replace("/(\¤|\#|\"|\'|\*)/", "", $sWord);  // Remove all nonword characters
-    return $sWord;
-  }
 };
-
 ?>

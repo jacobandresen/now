@@ -15,12 +15,22 @@ create table account (
   FOREIGN KEY(user_id) references user(id)
 );
 
-drop table if exists setting;
-create table setting (
-  id             int NOT NULL primary key auto_increment,
-  account_id     int,
-  tablename      varchar(256),
-  name			     varchar(256),
-  value          LONGTEXT,
+drop table if exists crawlerfiler;
+create table crawlerfilter (
+  id            int NOT NULL primary key auto_increment,
+  account_id    int,
+  name          varchar(256),
+  value         LONGTEXT,
   FOREIGN KEY(account_id) references account(id)
 );
+
+drop table if exists indexerfiler;
+create table indexerfilter (
+  id            int NOT NULL primary key auto_increment,
+  account_id    int,
+  name          varchar(256),
+  value         LONGTEXT,
+  FOREIGN KEY(account_id) references account(id)
+)
+;
+

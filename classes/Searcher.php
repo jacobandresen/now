@@ -12,7 +12,7 @@ class Searcher
   public function search ($query, $iPage)
   {
     $aRet = array();
-    $indexs=0;
+    $index=0;
     $sLimit = '';
     if ($iPage != 0){
       $iOffset = ($iPage*$this->iLimit) - $this->iLimit;
@@ -27,16 +27,19 @@ class Searcher
         $title=$row['title'];
         $content=$row['content'];
         $content = preg_replace('/\&.*?\;/is',' ', $content);
-        $oResult = new Result();
-        $oResult->sUrl = urldecode($row['url']);
-        $oResult->sTitle = trim(html_entity_decode($title));
-        if($oResult->sTitle==""){ $oResult->sTitle = $oResult->sUrl; }
-        $oResult->sContent = substr($content, 1, 400);
-        $aRet[$pos] = $oResult;
+        $document = new Document();
+        $document->sUrl = urldecode($row['url']);
+        $document->sTitle = trim(html_entity_decode($title));
+        if($document->sTitle==""){
+          $document->sTitle = $document->sUrl;
+        }
+         //create excerpt
+       // $document->sContent = substr($content, 1, 400);
+        $document->sContent =$content;
+        $aRet[$pos] = $document;
       }
     }
     return $aRet;
   }
 }
-
 ?>

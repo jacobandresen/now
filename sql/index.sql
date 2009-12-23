@@ -1,3 +1,4 @@
+drop table if exists dump;
 create table dump (
   account_id 	int,
   url 		varchar(256),
@@ -7,6 +8,7 @@ create table dump (
   foreign key(account_id) references account(id)
 );
 
+drop table if exists document;
 create table document (
   id int NOT NULL primary key auto_increment,
   account_id  int,

@@ -1,6 +1,7 @@
 <?php
-require_once("../classes/SearchEngine.php");
+require_once("../classes/YASE.php");
 
-$p = new Paging("pedant.dk", 0);
-$p->page("java", 0);
+$y = new YASE();
+print_r( $y->search("pedant.dk", "YASE"));
+
 ?>

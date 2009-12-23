@@ -3,7 +3,7 @@ class URL
 {
   public static function extractHost($sUrl)
   {
-    preg_match("@(http\s?://([^\/].*?))(\/|$*)@", $sUrl, $amatch);
+    preg_match("@(http\s?\://([^\/].*?))(\/|$)@", $sUrl, $aMatch);
     if ( count($aMatch) > 1 ){
       $sHost = $aMatch[2];
     }
@@ -14,7 +14,7 @@ class URL
   {
     $sUrl=preg_replace("/http\:\/\//i","", $sUrl);
     $sUrl=str_replace($sHost, "", $sUrl);
-    if(($sUrl==""){
+    if($sUrl==""){
       $sUrl="/";
     }
     return $sUrl;
@@ -30,7 +30,7 @@ class URL
     if ( count($aMatch) > 0 ){
       $sBase = $aMatch[1];
     }
-    preg_match("@(http\s?\://[^\/].*?)\/[^\?]*?)(\?|$)@", $sParent, $aMatch);
+    preg_match("@(http\s?\://[^\/].*?)\/([^\?]*?)(\?|$)@", $sParent, $aMatch);
     if ( count($aMatch) > 0 ){
       $sPage = $aMatch[2];
     }
@@ -44,7 +44,7 @@ class URL
       if ( count($aMatch) > 0 ){
         return $sBase.$sItem;
       }
-      preg_match("$|^$sPage|", $sItem, $aMatch);
+      preg_match("|^$sPage|", $sItem, $aMatch);
       if ( count ($aMatch) > 0 ){
         return $sbase.'/'.$sItem;
       }
