@@ -15,5 +15,4 @@ if ($argv[1] == "") {
 
 $s = new YASE();
 $s->crawl($argv[1]);
-
 ?>

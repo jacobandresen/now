@@ -35,6 +35,8 @@ class Crawler
     $this->filterSettings =array();
     while( $row =  mysql_fetch_array($res) ) {
       $setting=new Setting();
+      $setting->name=$row[0];
+      $setting->value=$row[1];
       array_push($this->filterSettings, $setting);
     }
 
@@ -43,100 +45,102 @@ class Crawler
 
   public function start()
   {
+    mysql_query("delete from dump where account_id='".$this->iAccountId."'");
     $this->crawl( "http://".$this->sDomain, 0 , "http://".$this->sDomain);
   }
 
   public function crawl($sUrl, $iLevel, $sParent)
   {
-    print "crawl [$iLevel] - $sUrl \r\n";
-    array_push( ($this->aCrawled), $sUrl);
 
     $document = $this->httpClient->getDocument($sUrl);
+    $sResponse = $document->sContent;
+    if($document->sContentType=="application/pdf"){
+      $p=new PDFFilter($this->iAccountId);
+      $sResponse = $p->filter($sUrl);
+    }
 
-    if($this->shouldWeCrawl($document))
-    {
-      $sResponse = $document->sContent;
+    if(!($this->shouldWeCrawl($document))) {
+      array_push( $this->aFound, $sUrl);
+      array_push( $this->aCrawled, $sUrl);
+      return false;
+    }
+    print "crawl [$iLevel] - $sUrl \r\n";
 
-      if($document->sContentType=="application/pdf"){
-        print "found pdf\r\n";
-        $p=new PDFFilter($this->iAccountId);
-        $sResponse = $p->filter($sUrl);
+    preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
+
+    $sResponse = htmlentities($sResponse,ENT_QUOTES);
+    if(!($this->add($sUrl, $document->sContentType, $sResponse, $iLevel))) return false;
+
+    foreach($aMatches[1] as $sItem){
+      $sFullUrl = URL::expandUrl($sItem, $sUrl);
+      if ( (!in_array($sFullUrl, $this->aFound))
+        and $this->URLFilter($sFullUrl)){
+        $oDoc = new Document();
+        $oDoc->sUrl = $sFullUrl;
+        $oDoc->iLevel = $iLevel+1;
+        array_push($this->aFound, $oDoc);
+        array_push($this->aProcess, $oDoc);
       }
+    }
 
-      $this->add($sUrl, $sResponse, $iLevel);
+    $this->iCrawled++;
 
-      preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
-      foreach($aMatches[1] as $sItem){
-        $sFullUrl = URL::expandUrl($sItem, $sUrl);
-        if ( (!in_array($sFullUrl, $this->aFound))
-          and $this->filter($sFullUrl)){
-          $oDoc = new Document();
-          $oDoc->sUrl = $sFullUrl;
-          $oDoc->iLevel = $iLevel+1;
-          array_push($this->aFound, $oDoc);
-          array_push($this->aProcess, $oDoc);
-        }
-      }
-
-      $this->iCrawled++;
-
-      while($sChildUrl=array_shift($this->aProcess)){
-        if($sChildUrl->sUrl!=""){
-          if(!in_array($sChildUrl->sUrl, ($this->aCrawled))){
-            print "connect [$sChildUrl->iLevel] $sUrl -> $sChildUrl->sUrl \r\n";
-            array_push($this->aCrawled, $sChildUrl->sUrl);
-            $this->crawl($sChildUrl->sUrl, ($sChildUrl->iLevel), $sUrl);
-          }
+    while($sChildUrl=array_shift($this->aProcess)){
+      if($sChildUrl->sUrl!=""){
+        if(!in_array($sChildUrl->sUrl, ($this->aCrawled))){
+          array_push($this->aCrawled, $sChildUrl->sUrl);
+          print "    connect ".$sChildUrl->sUrl."\r\n";
+          $this->crawl($sChildUrl->sUrl, ($sChildUrl->iLevel), $sUrl);
         }
       }
     }
   }
 
-  public function add ( $url, $html, $level )
+  public function add ( $url, $contenttype,$content, $level )
   {
-    print "  add [$level] - $url ".strlen($html)."\r\n";
     $url = utf8_decode($url);
-    $url = urlencode($url);
 
     if(strlen($url)>1028){
-      print "URL too long \r\n";
-      return;
+      print "    skip  - $url 'URL too long'\r\n";
+      return false;
     }
-    if (strlen($html)<1000000) {
-      print " data:".strlen($html)."\r\n";
-      $html = urlencode($html);
-      mysql_query("INSERT IGNORE into dump(account_id, url, html, level) values('".$this->iAccountId."','$url', '$html', '$level')") or die (" failed to insert into dump:".mysql_error());
-    }else{
-       print "[$url] : content too big \r\n";
+    if(strlen($content)>$this->httpClient->MAX_CONTENT_LENGTH){
+      print "    skip - $url 'content too big' \r\n";
+      return false;
     }
-    return;
+    if(strlen($content)<1){
+      print "    skip - $url 'no content' \r\n";
+      return false;
+    }
+    print "  add [$level] - ".$url." ".strlen($content)." ".$this->httpClient->MAX_CONTENT_LENGTH."\r\n";
+    $url = urlencode($url);
+    mysql_query("INSERT IGNORE into dump(account_id, url, contenttype,content, level) values('".$this->iAccountId."','$url','$contenttype', '$content', '$level')") or die (" failed to insert into dump:".mysql_error());
+    return true;
   }
 
   private function shouldWeCrawl ($document)
   {
-    print "url:[".$document->sUrl."]\r\n";
-    print "content type:[".$document->sContentType."]\r\n";
     if ($this->iLevel > $this->iMaxLevel){ return false;}
     if ($this->iCrawled>$this->iCrawlLimit){return false;}
     if (
       ($document->sContentType == "application/x-zip") ||
       ($document->sContentType == "application/xml") ||
+      ($document->sContentType == "application/json") ||
       ($document->sContentType == "image/jpeg") ||
       ($document->sContentType == "image/jpg") ||
       ($document->sContentType == "image/gif") ||
       ($document->sContentType == "image/bmp") ||
       ($document->sContentType == "image/png") ||
       ($document->sContentType == "text/css") ||
-      ($document->sContentType == "text/xml")
+      ($document->sContentType == "text/javascript")
     ){
-      print "CONTENT TYPE FAIL:".$document->sContentType."\r\n";
+      print "    skip - ".$document->sUrl." 'do not crawl ".$document->sContentType."'\r\n";
       return false;
     }
     return true;
   }
 
-
-  private function filter($sUrl)
+  private function URLFilter($sUrl)
   {
     preg_match("|\@|",$sUrl, $aMatch);
     if ( count($aMatch) > 0 ){

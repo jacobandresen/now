@@ -20,13 +20,14 @@ class Searcher
     }
 
     if($query!=""){
-      $result = mysql_query("SELECT *, MATCH(content) AGAINST('$query') AS score FROM document WHERE MATCH(content) AGAINST('$query') and account_id='".$this->iAccountId."' ORDER BY score DESC ".$sLimit); 
+      $result = mysql_query("SELECT *, MATCH(content) AGAINST('$query') AS score FROM document WHERE MATCH(content) AGAINST('$query') and account_id='".$this->iAccountId."' ORDER BY score DESC ".$sLimit) or die(mysql_err()); 
       $pos=0;
       while ($row=mysql_fetch_array($result)){
         $pos++;
         $title=$row['title'];
         $content=$row['content'];
-        $content = preg_replace('/\&.*?\;/is',' ', $content);
+        //$content = preg_replace('/\&.*?\;/is',' ', $content);
+        print $content; 
         $document = new Document();
         $document->sUrl = urldecode($row['url']);
         $document->sTitle = trim(html_entity_decode($title));

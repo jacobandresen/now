@@ -1,5 +1,4 @@
 <?php
-
 class HTTPClient
 {
   public $sStatus;
@@ -16,17 +15,13 @@ class HTTPClient
   private $sReply;
   private $aHeaders;
 
-  private $MAX_CONTENT_LENGTH=500000;
+  public $MAX_CONTENT_LENGTH=500000;
 
   public function __construct($sHost)
   {
     $this->iPort=80;
     $this->iRedirects=0;
     $this->sHost=$sHost;
-  }
-
-  public function __destruct()
-  {
   }
 
   public function get ($sIncomingUrl)
@@ -40,9 +35,6 @@ class HTTPClient
     $this->sUrl=$sUrl;
     $this->SendRequest("GET $sUrl");
     $sResponse = $this->getReply();
-    print  "URL:".$sUrl."\r\n";
-   print_r($this->aHeaders);
-    
     $this->close();
 
     return($sResponse);

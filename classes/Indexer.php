@@ -3,13 +3,19 @@ class Indexer
 {
   private $iAccountId;
   private $filterSettings;
-  private $bodyFilter;
 
   public function __construct($iAccountId)
   {
-    $this->iAccountId=$iAccountId;
-    $this->sBodyFilter="";
-  //  $this->filterSettings=Setting::mkSettings("indexerfilter", $this->iAccountId);
+    $this->iAccountId = $iAccountId;
+
+    $this->filterSettings=array();
+    $res = mysql_query('select name,value from indexerfilter where account_id="'.$this->iAccountId.'"');
+    while ($row = mysql_fetch_array($res) ) {
+      $setting = new Setting();
+      $setting->name=$row[0];
+      $setting->value=$row[1];
+      array_push($this->filterSettings, $setting);
+    }
   }
 
   public function start()
@@ -27,13 +33,14 @@ class Indexer
   public function index()
   {
     print "start INDEX\r\n";
-    $sSQL="select max(retrieved),url,html,level from dump where account_id='".$this->iAccountId."' group by account_id,url";
+    $sSQL="select max(retrieved),url,contenttype,content,level from dump where account_id='".$this->iAccountId."' group by account_id,url";
     $res = mysql_query($sSQL) or die (mysql_error());
 
     while($row=mysql_fetch_array($res)){
       try{
-        $this->add(urldecode($row['url']),
-          urldecode($row['html']),
+        $this->add($row['url'],
+          $row['contenttype'],
+          $row['content'],
           $row['level']);
       }catch(Exception $e){
         print "FAILED: $url \r\n";
@@ -41,122 +48,136 @@ class Indexer
     }
   }
 
-  public function add($url, $body, $level)
+  public function add($url, $contenttype,$content, $level)
   {
-    print "ADD: $url \r\n";
+    print "ADD: ".urldecode($url)." \r\n";
     try{
       $title="";
-      $url= urlencode($url);
 
-      if($this->filterSettings) {
-        foreach ($this->filterSettings as $setting){
-          $oItem = urldecode($setting->sValue);
-          if ($oItem!="") {
-            preg_match("|$oItem|", $url, $aMatch);
-            if ( count($aMatch) > 0){
-              print "SKIP DUE TO :".$oItem."\r\n";
-              return false;
-            }
-          }
-        }
-      }
+      if(!($this->noDuplicateURL($url))) return false;
+      if(!($this->URLFilter($url))) return false;
 
-      $res= mysql_query("SELECT url from document where url='$url' and account_id='".$this->iAccountId."'") or die(mysql_error());
-      if($row=mysql_fetch_array($res)){
-        print "duplicate: $url <br>  -> ".$row['url']."\r\n";
-        return false;
-      }
-      //process content
-      $orig=$body;
+      $content = html_entity_decode($content, ENT_QUOTES);
+      if(!strpos($content,".pdf")){
+        $title = $this->findHTMLTitle($content);
+        $title = htmlentities($title, ENT_QUOTES);
 
-     // if (Document::isUTF8($body)){
-     //   $body = iconv("UTF-8", "ISO-8859-1", $body);
-     // }
-
-      $timestmp=time();
-      $sFound='';
-
-      //find title
-      if ($title == ''){
-        preg_match("|<.*?content_header[^>]*?\>(.*?)<\/[^>]*?\>|is", $body, $aMatches);
-        if(sizeof($aMatches)){
-          $title = $aMatches[1];
-          $sFound = 'h1';
-        }
-      }
-      if ($title == ''){
-        preg_match("|<h1>(.*?)<\/h1>|is", $body, $aMatches);
-        if(sizeof($aMatches)){
-          $title = $aMatches[1];
-          $sFound = 'h1';
-        }
-      }
-      if ($title == ''){
-        preg_match("|<h2>(.*?)<\/h2>|is", $body, $aMatches);
-        if(sizeof($aMatches)){
-          $title = $aMatches[1];
-          $sFound = 'h2';
-        }
-      }
-      if ($title == ''){
-        preg_match("|<title>(.*?)<\/title>|is", $body, $aMatches);
-        if(sizeof($aMatches)){
-          $title = $aMatches[1];
-          $sFound = 'title';
-        }
-      }
-      if ($title == ''){
-        preg_match("|<h3>(.*?)<\/h3>|is", $body, $aMatches);
-        if(sizeof($aMatches)){
-          $title = $aMatches[1];
-          $sFound = 'h3';
-        }
-      }
-      if ($title == ''){
-        preg_match("|<h4>(.*?)<\/h4>|is", $body, $aMatches);
-        if(sizeof($aMatches)){
-          $title = $aMatches[1];
-          $sFound = 'h4';
-        }
+        print "TITLE:".$title."\r\n";
+        $content = $this->cleanHTML($content);
+      } else {
+        $title = $url;
       }
 
-      if($this->sBodyFilter!=""){
-        preg_match($this->sBodyFilter, $body, $aMatches);
-        if(sizeof($aMatches)>0){
-          $body= $aMatches[1];
-        }
-      }
-      $title = strip_tags($title);
-      $title = html_entity_decode($title);
+      $md5 = md5($content);
+      if(!($this->noDuplicateContent($md5))) return false;
 
-      //remove clutter
-      $body = preg_replace("/<script.*?<\/script>/is", ' ', $body);
-      $body = preg_replace("/<\!\-\-.*?\-\->/is", ' ', $body);
-      $body = preg_replace("/\(/is", '', $body);
-      $body = preg_replace("/\'/is", '', $body);
-      $body = preg_replace("/\s+/is", ' ', $body);
-      $body = strip_tags($body);
 
-      //check for duplicates
-      $md5 = md5($body);
-      $result=mysql_query("SELECT url,md5 from document where md5='$md5'") or die(mysql_error());
-      $row=mysql_fetch_row($result);
-      if($row) {
-        print "\r\nduplicate found for ".$url." -> ".$row['url'].", md5:".$row['md5']."\r\n";
-        return false;
-      }
-      //add documents with content
-      $blength=strlen($body);
+      $blength=strlen($content);
       if($blength>5 && strlen($url)>0 ){
-        $sSQL = "INSERT INTO document(account_id,url,title,content,md5, level) values('".$this->iAccountId."','$url','$title', '$body', '$md5', '$level');";
-        print "indexing: [ $blength ] $url \r\n";
-        mysql_query( $sSQL );
+        $sSQL = "INSERT INTO document(account_id,url,title,contenttype,content,md5, level) values('".$this->iAccountId."','$url','$title','$contenttype', '$content', '$md5', '$level');";
+        print "indexing: [ $blength ] ".urldecode($url)." \r\n";
+        mysql_query( $sSQL ) or die (mysql_error());
       }else{
         print $url." empty doc <br />\r\n";
       }
     }catch(Exception $e){
       print "failed adding $url\r\n";
     }
+  }
+
+  private function URLFilter($url)
+  {
+    $url=urldecode($url);
+    if($this->filterSettings) {
+      foreach ($this->filterSettings as $setting){
+        $oItem = urldecode($setting->sValue);
+        if ($oItem!="") {
+          preg_match("|$oItem|", $url, $aMatch);
+          if ( count($aMatch) > 0){
+            print "SKIP DUE TO :".$oItem."\r\n";
+            return false;
+          }
+        }
+      }
+    }
+   return true;
+  }
+
+  private function noDuplicateURL( $url )
+  {
+   $res= mysql_query("SELECT url from document where url='$url' and account_id='".$this->iAccountId."'") or die(mysql_error());
+   if($row=mysql_fetch_array($res)){
+     print "duplicate: $url <br>  -> ".$row['url']."\r\n";
+     return false;
+   }
+   return true;
+  }
+  private function noDuplicateContent($md5)
+  {
+    $result=mysql_query("SELECT url,md5 from document where md5='$md5'") or die(mysql_error());
+    $row=mysql_fetch_row($result);
+    if($row) {
+      print "\r\nduplicate found for ".$url." -> ".$row['url'].", md5:".$row['md5']."\r\n";
+      return false;
+    }
+   return true;
+  }
+
+  private function cleanHTML($html)
+  {
+    $html = preg_replace("/<script.*?<\/script>/is", ' ', $html);
+    $html = preg_replace("/<link.*?\/>/is", ' ', $html);
+    $html = preg_replace("/<style type\=\"text\/css\">.*?<\/style>/is", '', $html);
+    $html = preg_replace("/<\!\-\-.*?\-\->/is", ' ', $html);
+    $html = preg_replace("/\(/is", '', $html);
+    $html = preg_replace("/\'/is", '', $html);
+    $html = preg_replace("/\s+/is", ' ', $html);
+    $html = preg_replace("/<.*?>/is", '', $html);
+    $html = strip_tags($html);
+  //  $html = htmlentities($html, ENT_QUOTES);
+    return $html;
+  }
+
+  private function findHTMLTitle($body)
+  {
+    $title='';
+    if ($title == ''){
+      preg_match("|<.*?content_header[^>]*?\>(.*?)<\/[^>]*?\>|is", $body, $aMatches);
+      if(sizeof($aMatches)){
+        $title = $aMatches[1];
+      }
+    }
+    if ($title == ''){
+      preg_match("|<h1>(.*?)<\/h1>|is", $body, $aMatches);
+      if(sizeof($aMatches)){
+        $title = $aMatches[1];
+      }
+    }
+    if ($title == ''){
+      preg_match("|<h2>(.*?)<\/h2>|is", $body, $aMatches);
+      if(sizeof($aMatches)){
+        $title = $aMatches[1];
+      }
+    }
+    if ($title == ''){
+      preg_match("|<title>(.*?)<\/title>|is", $body, $aMatches);
+      if(sizeof($aMatches)){
+        $title = $aMatches[1];
+      }
+    }
+    if ($title == ''){
+      preg_match("|<h3>(.*?)<\/h3>|is", $body, $aMatches);
+      if(sizeof($aMatches)){
+        $title = $aMatches[1];
+      }
+    }
+    if ($title == ''){
+      preg_match("|<h4>(.*?)<\/h4>|is", $body, $aMatches);
+      if(sizeof($aMatches)){
+        $title = $aMatches[1];
+      }
+    }
+    return ($title);
   }
 };
 ?>
