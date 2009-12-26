@@ -35,8 +35,8 @@ class Searcher
           $document->sTitle = $document->sUrl;
         }
          //create excerpt
-       // $document->sContent = substr($content, 1, 400);
-        $document->sContent =$content;
+        $document->sContent = substr($content, 1, 400);
+       // $document->sContent =$content;
         $aRet[$pos] = $document;
       }
     }

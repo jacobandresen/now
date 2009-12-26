@@ -51,7 +51,6 @@ class Crawler
 
   public function crawl($sUrl, $iLevel, $sParent)
   {
-
     $document = $this->httpClient->getDocument($sUrl);
     $sResponse = $document->sContent;
     if($document->sContentType=="application/pdf"){
@@ -82,7 +81,6 @@ class Crawler
         array_push($this->aProcess, $oDoc);
       }
     }
-
     $this->iCrawled++;
 
     while($sChildUrl=array_shift($this->aProcess)){
@@ -104,7 +102,7 @@ class Crawler
       print "    skip  - $url 'URL too long'\r\n";
       return false;
     }
-    if(strlen($content)>$this->httpClient->MAX_CONTENT_LENGTH){
+    if(strlen($content)>MAX_CONTENT_LENGTH){
       print "    skip - $url 'content too big' \r\n";
       return false;
     }
@@ -112,7 +110,7 @@ class Crawler
       print "    skip - $url 'no content' \r\n";
       return false;
     }
-    print "  add [$level] - ".$url." ".strlen($content)." ".$this->httpClient->MAX_CONTENT_LENGTH."\r\n";
+    print "  add [$level] - ".$url." ".strlen($content)." ".MAX_CONTENT_LENGTH."\r\n";
     $url = urlencode($url);
     mysql_query("INSERT IGNORE into dump(account_id, url, contenttype,content, level) values('".$this->iAccountId."','$url','$contenttype', '$content', '$level')") or die (" failed to insert into dump:".mysql_error());
     return true;

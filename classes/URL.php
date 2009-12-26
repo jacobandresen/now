@@ -46,7 +46,7 @@ class URL
       }
       preg_match("|^$sPage|", $sItem, $aMatch);
       if ( count ($aMatch) > 0 ){
-        return $sbase.'/'.$sItem;
+        return $sBase.'/'.$sItem;
       }
     }
 

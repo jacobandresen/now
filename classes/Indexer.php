@@ -24,7 +24,6 @@ class Indexer
     $this->index();
   }
 
-
   public function clear()
   {
     mysql_query("DELETE FROM document where account_id='".$this->iAccountId."'") or die (mysql_error());

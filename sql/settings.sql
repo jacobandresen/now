@@ -15,7 +15,7 @@ create table account (
   FOREIGN KEY(user_id) references user(id)
 );
 
-drop table if exists crawlerfiler;
+drop table if exists crawlerfilter;
 create table crawlerfilter (
   id            int NOT NULL primary key auto_increment,
   account_id    int,
@@ -24,7 +24,7 @@ create table crawlerfilter (
   FOREIGN KEY(account_id) references account(id)
 );
 
-drop table if exists indexerfiler;
+drop table if exists indexerfilter;
 create table indexerfilter (
   id            int NOT NULL primary key auto_increment,
   account_id    int,

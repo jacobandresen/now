@@ -1,5 +1,7 @@
 <?php
 
+define("MAX_CONTENT_LENGTH",500000);
+
 require_once('Setting.php');
 require_once('URL.php');
 require_once('PDFFilter.php');
@@ -9,9 +11,12 @@ require_once('Crawler.php');
 require_once('Indexer.php');
 require_once('Searcher.php');
 
+
+
 class YASE
 {
-  //TODO: create configuration file
+
+
   public function __construct ()
   {
     mysql_connect("localhost", "jacob", "jacob") or die(mysql_error());

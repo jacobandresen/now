@@ -15,8 +15,6 @@ class HTTPClient
   private $sReply;
   private $aHeaders;
 
-  public $MAX_CONTENT_LENGTH=500000;
-
   public function __construct($sHost)
   {
     $this->iPort=80;
@@ -158,12 +156,12 @@ class HTTPClient
         $this->sReply="";
 
         if (  !(isset($this->aHeaders["content-length"]))||
-           $this->aHeaders["content-length"] < $this->MAX_CONTENT_LENGTH)
+           $this->aHeaders["content-length"] < MAX_CONTENT_LENGTH)
         {
         try{
           while( !feof($this->oSocket ) ) {
             $sLine=fgets($this->oSocket,512);
-            if(strlen($this->sReply) < $this->MAX_CONTENT_LENGTH){
+            if(strlen($this->sReply) < MAX_CONTENT_LENGTH){
               $this->sReply.=$sLine;
             }
           }
