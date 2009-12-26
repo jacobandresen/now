@@ -69,6 +69,7 @@ class Crawler
 
     $sResponse = htmlentities($sResponse,ENT_QUOTES);
     if(!($this->add($sUrl, $document->sContentType, $sResponse, $iLevel))) return false;
+    unset($sResponse);
 
     foreach($aMatches[1] as $sItem){
       $sFullUrl = URL::expandUrl($sItem, $sUrl);
@@ -143,8 +144,13 @@ class Crawler
     preg_match("|\@|",$sUrl, $aMatch);
     if ( count($aMatch) > 0 ){
       array_push($this->aCrawled, $sUrl);
-      print "\t".$sUrl. " - is an email \r\n";
+      print "    skip ".$sUrl. " - is an email \r\n";
       return false;
+    }
+
+    if(strpos($sUrl, "javascript:")){
+       print "    skip ".$sUrl. " - is a javascript link \r\n";
+       return false;
     }
 
     foreach( $this->filterSettings as $setting){
