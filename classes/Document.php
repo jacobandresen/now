@@ -1,19 +1,19 @@
 <?php
 class Document{
-  public $iLevel;
-  public $sUrl;
-  public $sTitle;
-  public $sContentType;
-  public $sContent;
+  public $level;
+  public $url;
+  public $title;
+  public $contentType;
+  public $content;
 
-  public static function isUTF8($str)
+  public static function isUTF8($string)
   {
     $c=0; $b=0;
     $bits = 0;
-    $len = strlen($str);
+    $len = strlen($string);
     for($i=0;$i<$len; $i++)
     {
-      $c=ord($str[$i]);
+      $c=ord($string[$i]);
       if ($c > 128) {
         if ($c >= 254) return false;
         elseif($c >= 252) $bits = 6;

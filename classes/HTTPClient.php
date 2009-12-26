@@ -1,131 +1,127 @@
 <?php
 class HTTPClient
 {
-  public $sStatus;
-  public $sFinalUrl;
-  public $sContentType;
+  public $status;
+  public $finalUrl;
+  public $contentType;
 
-  private $oSocket;
-  private $sHost;
-  private $iPort;
-  private $sErrNo;
-  private $sErrStr;
-  private $iRedirects;
-  private $sUrl;
-  private $sReply;
-  private $aHeaders;
+  private $socket;
+  private $host;
+  private $port;
+  private $errNo;
+  private $errStr;
+  private $redirects;
+  private $url;
+  private $reply;
+  private $headers;
 
-  public function __construct($sHost)
+  public function __construct($host)
   {
-    $this->iPort=80;
-    $this->iRedirects=0;
-    $this->sHost=$sHost;
+    $this->port=80;
+    $this->redirects=0;
+    $this->host=$host;
   }
 
-  public function get ($sIncomingUrl)
+  public function get ($incomingUrl)
   {
-    $sHost = URL::extractHost($sIncomingUrl);
-    if($sHost!=""){
-      $this->sHost=$sHost;
+    $host = URL::extractHost($incomingUrl);
+    if($host!=""){
+      $this->host=$host;
     }
-    $this->connect($sHost);
-    $sUrl = URL::extractRelativeUrl($sHost,$sIncomingUrl);
-    $this->sUrl=$sUrl;
-    $this->SendRequest("GET $sUrl");
-    $sResponse = $this->getReply();
+    $this->connect($host);
+    $url = URL::extractRelativeUrl($host,$incomingUrl);
+    $this->url=$url;
+    $this->SendRequest("GET $url");
+    $response = $this->getReply();
     $this->close();
 
-    return($sResponse);
+    return($response);
   }
 
-  public function getDocument ($sUrl)
+  public function getDocument ($url)
   {
     $document = new Document();
-    $document->sUrl = $sUrl;
-    $document->sContentType=trim($this->sContentType);
-    $document->sContent = $this->get($sUrl);
+    $document->url = $url;
+    $document->contentType=trim($this->contentType);
+    $document->content = $this->get($url);
 
     return $document;
   }
 
-  private function connect($sHost)
+  private function connect($host)
   {
-    $this->sHost=$sHost;
+    $this->host=$host;
 
-    if($this->sHost==""){
+    if($this->host==""){
       die("missing host name!\r\n");
     }
-    $this->oSocket = fsockopen( $this->sHost,
-      $this->iPort,
-      $this->sErrNo,
-      $this->sErrStr,
+    $this->socket = fsockopen( $this->host,
+      $this->port,
+      $this->errNo,
+      $this->errStr,
       30
     );
-    $this->aHeaders=array();
+    $this->headers=array();
   }
 
   private function close()
   {
-    fclose($this->oSocket);
+    fclose($this->socket);
   }
 
-  private function sendRequest( $sRequest )
+  private function sendRequest( $request )
   {
-    $sRequest.=" HTTP/1.0";
-    $sRequest.="\r\nUser-Agent: YASE alpha2";
-    $sRequest.="\r\nHost: ".$this->sHost;
-    $sRequest.="\r\nAccept-Charset: iso-8859-1";
-    $sRequest.="\r\nConnection: close\r\n\r\n";
+    $request.=" HTTP/1.0";
+    $request.="\r\nUser-Agent: YASE alpha3";
+    $request.="\r\nHost: ".$this->host;
+    $request.="\r\nAccept-Charset: iso-8859-1";
+    $request.="\r\nConnection: close\r\n\r\n";
 
-    if($this->oSocket)
-      fputs( $this->oSocket, $sRequest."\r\n");
+    if($this->socket)
+      fputs( $this->socket, $request."\r\n");
   }
 
   private function getHeaders ()
   {
-    $this->aHeaders=array();
-    $this->sContentType="";
-    while( !feof($this->oSocket ) ) {
-      $sLine=fgets($this->oSocket,512);
-      $indx=strpos($sLine,":");
-      $sKey=substr($sLine, 0, $indx);
-      $sKey=strtolower($sKey);
-      $sValue=substr($sLine,$indx+1, strlen($sLine)-$indx);
-      $sKey=strtolower(trim($sKey));
-      $sValue=trim($sValue);
-      if ( $sKey=="content-type" ){
-        $this->sContentType=$sValue;
+    $this->headers=array();
+    $this->contentType="";
+    while( !feof($this->socket ) ) {
+      $line=fgets($this->socket,512);
+      $index=strpos($line,":");
+      $key=substr($line, 0, $index);
+      $key=strtolower($key);
+      $value=substr($line,$index+1, strlen($line)-$index);
+      $key=strtolower(trim($key));
+      $value=trim($value);
+      if ( $key=="content-type" ){
+        $this->contentType=$value;
       }
-      $this->aHeaders[$sKey]=$sValue;
-      if($sLine=="\r\n") break;
+      $this->headers[$key]=$value;
+      if($line=="\r\n") break;
     }
-
   }
 
   private function redirect()
   {
-    $this->iRedirects++;
-    print "redirects#:".$this->iRedirects."\r\n";
-    if($this->iRedirects<5){
-      $sNewUrl=chop($this->aHeaders['location']);
-
-      //TODO: assume that the redirect is on the same host
-      print "redirecting to:".$sNewUrl."\r\n";
-      if (isset($this->oSocket))
+    $this->redirects++;
+    print "redirects#:".$this->redirects."\r\n";
+    if($this->redirects<5){
+      $newUrl=chop($this->headers['location']);
+      print "redirecting to:".$newUrl."\r\n";
+      if (isset($this->socket))
         $this->close();
-      $this->Connect($this->sHost);
+      $this->Connect($this->host);
 
-      //make sure we have a full url
-      if(!(strpos($sNewUrl, $this->sHost)) &&
-        !(strpos($sNewUrl, "/"))){
-          print "EXPAND:".$this->sHost."\r\n";
-          $sNewUrl="http://".$this->sHost.$sNewUrl;
-          print "NEW URL:".$sNewUrl."\r\n";
+      if(!(strpos($newUrl, $this->host)) &&
+        !(strpos($newUrl, "/"))){
+          print "EXPAND:".$this->host."\r\n";
+          $newUrl="http://".$this->host.$newUrl;
+          print "NEW URL:".$newUrl."\r\n";
         }
 
-      $this->sFinalUrl=$sNewUrl;
-      print "[".$this->sFinalUrl."]\r\n";
-      return($this->Get($sNewUrl));
+      $this->finalUrl=$newUrl;
+      print "[".$this->finalUrl."]\r\n";
+      return($this->Get($newUrl));
     }else{
       print "too many redirects \r\n";
       return("");
@@ -134,47 +130,47 @@ class HTTPClient
 
   private function getReply ()
   {
-    $this->sReply="";
-    if(!$this->oSocket){ return(""); }
+    $this->reply="";
+    if(!$this->socket){ return(""); }
 
-    $sStatus=fgets($this->oSocket,24);
-    $aStatus=split(" ",$sStatus, 3);
-    if( preg_match("/http/i",$aStatus[0])){
-      if($aStatus[1]!="200"){
+    $status=fgets($this->socket,24);
+    $statusArray=split(" ",$status, 3);
+    if( preg_match("/http/i",$statusArray[0])){
+      if($statusArray[1]!="200"){
         //handle redirects
-        if( $aStatus[1]=="301" || $aStatus[1]=="302"){
+        if( $statusArray[1]=="301" || $statusArray[1]=="302"){
           $this->getHeaders();
-          $this->sStatus="301";
+          $this->status="301";
           return($this->Redirect());
         }
-        if($aStatus[1]=="400"){
-          print "[".$this->sUrl."] was not found!\r\n";
+        if($statusArray[1]=="400"){
+          print "[".$this->url."] was not found!\r\n";
           return("");
         }
       }else{
         $this->getHeaders();
         $this->sReply="";
 
-        if (  !(isset($this->aHeaders["content-length"]))||
-           $this->aHeaders["content-length"] < MAX_CONTENT_LENGTH)
+        if (  !(isset($this->headers["content-length"]))||
+           $this->headers["content-length"] < MAX_CONTENT_LENGTH)
         {
         try{
-          while( !feof($this->oSocket ) ) {
-            $sLine=fgets($this->oSocket,512);
-            if(strlen($this->sReply) < MAX_CONTENT_LENGTH){
-              $this->sReply.=$sLine;
+          while( !feof($this->socket ) ) {
+            $line=fgets($this->socket,512);
+            if(strlen($this->reply) < MAX_CONTENT_LENGTH){
+              $this->reply.=$line;
             }
           }
         }catch(Exception $e){
-          print "failed retrieving:".$this->ssUrl."\r\n";
+          print "failed retrieving:".$this->url."\r\n";
         }
         }else{
-          print "[".$this->sUrl."] CONTENT TO BIG\r\n";
-          $this->sReply="";
+          print "[".$this->url."] CONTENT TO BIG\r\n";
+          $this->reply="";
         }
       }
     }
-    return($this->sReply);
+    return($this->reply);
   }
 };
 ?>

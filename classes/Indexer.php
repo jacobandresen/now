@@ -1,15 +1,15 @@
 <?php
 class Indexer
 {
-  private $iAccountId;
+  private $accountId;
   private $filterSettings;
 
-  public function __construct($iAccountId)
+  public function __construct($accountId)
   {
-    $this->iAccountId = $iAccountId;
+    $this->accountId = $accountId;
 
     $this->filterSettings=array();
-    $res = mysql_query('select name,value from indexerfilter where account_id="'.$this->iAccountId.'"');
+    $res = mysql_query('select name,value from indexerfilter where account_id="'.$this->accountId.'"');
     while ($row = mysql_fetch_array($res) ) {
       $setting = new Setting();
       $setting->name=$row[0];
@@ -26,13 +26,13 @@ class Indexer
 
   public function clear()
   {
-    mysql_query("DELETE FROM document where account_id='".$this->iAccountId."'") or die (mysql_error());
+    mysql_query("DELETE FROM document where account_id='".$this->accountId."'") or die (mysql_error());
   }
 
   public function index()
   {
     print "start INDEX\r\n";
-    $sSQL="select max(retrieved),url,contenttype,content,level from dump where account_id='".$this->iAccountId."' group by account_id,url";
+    $sSQL="select max(retrieved),url,contenttype,content,level from dump where account_id='".$this->accountId."' group by account_id,url";
     $res = mysql_query($sSQL) or die (mysql_error());
 
     while($row=mysql_fetch_array($res)){
@@ -56,12 +56,14 @@ class Indexer
       if(!($this->noDuplicateURL($url))) return false;
       if(!($this->URLFilter($url))) return false;
 
-      $content = html_entity_decode($content, ENT_QUOTES);
-      if(!strpos($content,".pdf")){
+      //default to html if not pdf
+      if($contenttype!="application/pdf"){
+        $content = html_entity_decode($content, ENT_QUOTES);
         $title = $this->findHTMLTitle($content);
         $title = htmlentities($title, ENT_QUOTES);
-
-        print "TITLE:".$title."\r\n";
+        if($title==""){
+          $title=$url;
+        }
         $content = $this->cleanHTML($content);
       } else {
         $title = $url;
@@ -70,10 +72,9 @@ class Indexer
       $md5 = md5($content);
       if(!($this->noDuplicateContent($md5))) return false;
 
-
       $blength=strlen($content);
       if($blength>5 && strlen($url)>0 ){
-        $sSQL = "INSERT INTO document(account_id,url,title,contenttype,content,md5, level) values('".$this->iAccountId."','$url','$title','$contenttype', '$content', '$md5', '$level');";
+        $sSQL = "INSERT INTO document(account_id,url,title,contenttype,content,md5, level) values('".$this->accountId."','$url','$title','$contenttype', '$content', '$md5', '$level');";
         print "indexing: [ $blength ] ".urldecode($url)." \r\n";
         mysql_query( $sSQL ) or die (mysql_error());
       }else{
@@ -89,11 +90,11 @@ class Indexer
     $url=urldecode($url);
     if($this->filterSettings) {
       foreach ($this->filterSettings as $setting){
-        $oItem = urldecode($setting->sValue);
-        if ($oItem!="") {
-          preg_match("|$oItem|", $url, $aMatch);
-          if ( count($aMatch) > 0){
-            print "SKIP DUE TO :".$oItem."\r\n";
+        $item = urldecode($setting->value);
+        if ($item!="") {
+          preg_match("|$item|", $url, $match);
+          if ( count($match) > 0){
+            print "SKIP DUE TO :".$item."\r\n";
             return false;
           }
         }
@@ -104,7 +105,7 @@ class Indexer
 
   private function noDuplicateURL( $url )
   {
-   $res= mysql_query("SELECT url from document where url='$url' and account_id='".$this->iAccountId."'") or die(mysql_error());
+   $res= mysql_query("SELECT url from document where url='$url' and account_id='".$this->accountId."'") or die(mysql_error());
    if($row=mysql_fetch_array($res)){
      print "duplicate: $url <br>  -> ".$row['url']."\r\n";
      return false;
@@ -133,47 +134,46 @@ class Indexer
     $html = preg_replace("/\s+/is", ' ', $html);
     $html = preg_replace("/<.*?>/is", '', $html);
     $html = strip_tags($html);
-  //  $html = htmlentities($html, ENT_QUOTES);
     return $html;
   }
 
-  private function findHTMLTitle($body)
+  private function findHTMLTitle($html)
   {
     $title='';
     if ($title == ''){
-      preg_match("|<.*?content_header[^>]*?\>(.*?)<\/[^>]*?\>|is", $body, $aMatches);
-      if(sizeof($aMatches)){
-        $title = $aMatches[1];
+      preg_match("|<.*?content_header[^>]*?\>(.*?)<\/[^>]*?\>|is", $html, $matches);
+      if(sizeof($matches)){
+        $title = $matches[1];
       }
     }
     if ($title == ''){
-      preg_match("|<h1>(.*?)<\/h1>|is", $body, $aMatches);
-      if(sizeof($aMatches)){
-        $title = $aMatches[1];
+      preg_match("|<h1>(.*?)<\/h1>|is", $html, $matches);
+      if(sizeof($matches)){
+        $title = $matches[1];
       }
     }
     if ($title == ''){
-      preg_match("|<h2>(.*?)<\/h2>|is", $body, $aMatches);
-      if(sizeof($aMatches)){
-        $title = $aMatches[1];
+      preg_match("|<h2>(.*?)<\/h2>|is", $html, $matches);
+      if(sizeof($matches)){
+        $title = $matches[1];
       }
     }
     if ($title == ''){
-      preg_match("|<title>(.*?)<\/title>|is", $body, $aMatches);
-      if(sizeof($aMatches)){
-        $title = $aMatches[1];
+      preg_match("|<title>(.*?)<\/title>|is", $html, $matches);
+      if(sizeof($matches)){
+        $title = $matches[1];
       }
     }
     if ($title == ''){
-      preg_match("|<h3>(.*?)<\/h3>|is", $body, $aMatches);
-      if(sizeof($aMatches)){
-        $title = $aMatches[1];
+      preg_match("|<h3>(.*?)<\/h3>|is", $html, $matches);
+      if(sizeof($matches)){
+        $title = $matches[1];
       }
     }
     if ($title == ''){
-      preg_match("|<h4>(.*?)<\/h4>|is", $body, $aMatches);
-      if(sizeof($aMatches)){
-        $title = $aMatches[1];
+      preg_match("|<h4>(.*?)<\/h4>|is", $html, $matches);
+      if(sizeof($matches)){
+        $title = $matches[1];
       }
     }
     return ($title);

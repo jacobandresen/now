@@ -1,37 +1,37 @@
 <?php
 class Crawler
 {
-  private $iAccountId;
-  private $sDomain;
-  private $iMaxLevel;
-  private $iCrawlLimit;
+  private $accountId;
+  private $domain;
+  private $maxLevel;
+  private $crawlLimit;
 
-  private $iLevel;
-  private $iCrawled;
-  private $aFound;
-  private $aCrawled;
-  private $aProcess;
+  private $level;
+  private $numberCrawled;
+  private $found;
+  private $crawled;
+  private $process;
 
   private $filterSettings;
 
   private $httpClient;
 
-  public function __construct($iAccountId)
+  public function __construct($accountId)
   {
-    $this->iCrawled = 0;
-    $this->aFound=array();
-    $this->aCrawled=array();
-    $this->aProcess=array();
+    $this->numberCrawled = 0;
+    $this->found=array();
+    $this->crawled=array();
+    $this->process=array();
 
-    $this->iAccountId=$iAccountId;
-    $res = mysql_query('select level_limit,crawl_limit,domain from account where id="'.$iAccountId.'"');
+    $this->accountId=$accountId;
+    $res = mysql_query('select level_limit,crawl_limit,domain from account where id="'.$accountId.'"');
     $row =  mysql_fetch_array($res);
-    $this->iMaxLevel = $row['level_limit'] ;
-    $this->iCrawlLimit = $row['crawl_limit'] ;
-    $this->sDomain = $row['domain'];
+    $this->maxLevel = $row['level_limit'] ;
+    $this->crawlLimit = $row['crawl_limit'] ;
+    $this->domain = $row['domain'];
 
 
-    $res = mysql_query('select name,value from crawlerfilter  where account_id="'.$iAccountId.'"');
+    $res = mysql_query('select name,value from crawlerfilter  where account_id="'.$accountId.'"');
     $this->filterSettings =array();
     while( $row =  mysql_fetch_array($res) ) {
       $setting=new Setting();
@@ -40,56 +40,56 @@ class Crawler
       array_push($this->filterSettings, $setting);
     }
 
-    $this->httpClient = new HTTPClient($this->sDomain);
+    $this->httpClient = new HTTPClient($this->domain);
   }
 
   public function start()
   {
-    mysql_query("delete from dump where account_id='".$this->iAccountId."'");
-    $this->crawl( "http://".$this->sDomain, 0 , "http://".$this->sDomain);
+    mysql_query("delete from dump where account_id='".$this->accountId."'");
+    $this->crawl( "http://".$this->domain, 0 , "http://".$this->domain);
   }
 
-  public function crawl($sUrl, $iLevel, $sParent)
+  public function crawl($url, $level, $parent)
   {
-    $document = $this->httpClient->getDocument($sUrl);
-    $sResponse = $document->sContent;
-    if($document->sContentType=="application/pdf"){
-      $p=new PDFFilter($this->iAccountId);
-      $sResponse = $p->filter($sUrl);
+    $document = $this->httpClient->getDocument($url);
+    $response = $document->content;
+    if($document->contentType=="application/pdf"){
+      $p=new PDFFilter($this->accountId);
+      $response = $p->filter($url);
     }
 
     if(!($this->shouldWeCrawl($document))) {
-      array_push( $this->aFound, $sUrl);
-      array_push( $this->aCrawled, $sUrl);
+      array_push( $this->found, $url);
+      array_push( $this->crawled, $url);
       return false;
     }
-    print "crawl [$iLevel] - $sUrl \r\n";
+    print "crawl [$level] - $url \r\n";
 
-    preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $sResponse, $aMatches);
+    preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $response, $matches);
 
-    $sResponse = htmlentities($sResponse,ENT_QUOTES);
-    if(!($this->add($sUrl, $document->sContentType, $sResponse, $iLevel))) return false;
-    unset($sResponse);
+    $response = htmlentities($response,ENT_QUOTES);
+    if(!($this->add($url, $document->contentType, $response, $level))) return false;
+    unset($response);
 
-    foreach($aMatches[1] as $sItem){
-      $sFullUrl = URL::expandUrl($sItem, $sUrl);
-      if ( (!in_array($sFullUrl, $this->aFound))
-        and $this->URLFilter($sFullUrl)){
-        $oDoc = new Document();
-        $oDoc->sUrl = $sFullUrl;
-        $oDoc->iLevel = $iLevel+1;
-        array_push($this->aFound, $oDoc);
-        array_push($this->aProcess, $oDoc);
+    foreach($matches[1] as $item){
+      $fullUrl = URL::expandUrl($item, $url);
+      if ( (!in_array($fullUrl, $this->found))
+        and $this->URLFilter($fullUrl)){
+        $document = new Document();
+        $document->url = $fullUrl;
+        $document->level = $level+1;
+        array_push($this->found, $document);
+        array_push($this->process, $document);
       }
     }
-    $this->iCrawled++;
+    $this->numberCrawled++;
 
-    while($sChildUrl=array_shift($this->aProcess)){
-      if($sChildUrl->sUrl!=""){
-        if(!in_array($sChildUrl->sUrl, ($this->aCrawled))){
-          array_push($this->aCrawled, $sChildUrl->sUrl);
-          print "    connect ".$sChildUrl->sUrl."\r\n";
-          $this->crawl($sChildUrl->sUrl, ($sChildUrl->iLevel), $sUrl);
+    while($childUrl=array_shift($this->process)){
+      if($childUrl->url!=""){
+        if(!in_array($childUrl->url, ($this->crawled))){
+          array_push($this->crawled, $childUrl->url);
+          print "    connect ".$childUrl->url."\r\n";
+          $this->crawl($childUrl->url, ($childUrl->level), $url);
         }
       }
     }
@@ -113,62 +113,62 @@ class Crawler
     }
     print "  add [$level] - ".$url." ".strlen($content)." ".MAX_CONTENT_LENGTH."\r\n";
     $url = urlencode($url);
-    mysql_query("INSERT IGNORE into dump(account_id, url, contenttype,content, level) values('".$this->iAccountId."','$url','$contenttype', '$content', '$level')") or die (" failed to insert into dump:".mysql_error());
+    mysql_query("INSERT IGNORE into dump(account_id, url, contenttype,content, level) values('".$this->accountId."','$url','$contenttype', '$content', '$level')") or die (" failed to insert into dump:".mysql_error());
     return true;
   }
 
   private function shouldWeCrawl ($document)
   {
-    if ($this->iLevel > $this->iMaxLevel){ return false;}
-    if ($this->iCrawled>$this->iCrawlLimit){return false;}
+    if ($this->level > $this->maxLevel){ return false;}
+    if ($this->numberCrawled>$this->crawlLimit){return false;}
     if (
-      ($document->sContentType == "application/x-zip") ||
-      ($document->sContentType == "application/xml") ||
-      ($document->sContentType == "application/json") ||
-      ($document->sContentType == "image/jpeg") ||
-      ($document->sContentType == "image/jpg") ||
-      ($document->sContentType == "image/gif") ||
-      ($document->sContentType == "image/bmp") ||
-      ($document->sContentType == "image/png") ||
-      ($document->sContentType == "text/css") ||
-      ($document->sContentType == "text/javascript")
+      ($document->contentType == "application/x-zip") ||
+      ($document->contentType == "application/xml") ||
+      ($document->contentType == "application/json") ||
+      ($document->contentType == "image/jpeg") ||
+      ($document->contentType == "image/jpg") ||
+      ($document->contentType == "image/gif") ||
+      ($document->contentType == "image/bmp") ||
+      ($document->contentType == "image/png") ||
+      ($document->contentType == "text/css") ||
+      ($document->contentType == "text/javascript")
     ){
-      print "    skip - ".$document->sUrl." 'do not crawl ".$document->sContentType."'\r\n";
+      print "    skip - ".$document->url." 'do not crawl ".$document->contentType."'\r\n";
       return false;
     }
     return true;
   }
 
-  private function URLFilter($sUrl)
+  private function URLFilter($url)
   {
-    preg_match("|\@|",$sUrl, $aMatch);
-    if ( count($aMatch) > 0 ){
-      array_push($this->aCrawled, $sUrl);
-      print "    skip ".$sUrl. " - is an email \r\n";
+    preg_match("|\@|",$url, $match);
+    if ( count($match) > 0 ){
+      array_push($this->crawled, $url);
+      print "    skip ".$url. " - is an email \r\n";
       return false;
     }
 
-    if(strpos($sUrl, "javascript:")){
-       print "    skip ".$sUrl. " - is a javascript link \r\n";
+    if(strpos($url, "javascript:")){
+       print "    skip ".$url. " - is a javascript link \r\n";
        return false;
     }
 
     foreach( $this->filterSettings as $setting){
-      $oItem = urldecode($setting->sValue);
-      if ($oItem!=""){
-        preg_match("|$oItem|", $sUrl, $aMatch);
-        if( count($aMatch) > 0){
-          array_push($this->aCrawled, $sUrl);
-          print "\t".$sUrl." - failed on filter $oItem \r\n";
+      $item = urldecode($setting->value);
+      if ($item!=""){
+        preg_match("|$item|", $url, $match);
+        if( count($match) > 0){
+          array_push($this->crawled, $url);
+          print "\t".$url." - failed on filter $item \r\n";
           return false;
         }
       }
     }
-    preg_match("|".$this->sDomain."|", $sUrl, $aMatch);
-    if (count($aMatch) > 0) {
+    preg_match("|".$this->domain."|", $url, $match);
+    if (count($match) > 0) {
       return true;
     }
-    array_push($this->aCrawled, $sUrl);
+    array_push($this->crawled, $url);
     return false;
   }
 };

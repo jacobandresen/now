@@ -1,24 +1,24 @@
 <?php
 class PDFFilter
 {
-  private $iAccountId;
-  public function __construct($iAccountId)
+  private $accountId;
+  public function __construct($accountId)
   {
-    $this->iAccountId=$iAccountId;
+    $this->accountId=$accountId;
   }
 
-  public function filter($sUrl )
+  public function filter($url )
   {
-    $sContent = file_get_contents($sUrl);
-    $tmpFile=$this->iAccountId."tmp";
+    $content = file_get_contents($url);
+    $tmpFile=$this->accountId."tmp";
     unlink($tmpFile.".pdf");
     unlink($tmpFile.".txt");
     $fh = fopen($tmpFile.".pdf",'w');
     fwrite($fh, $sContent);
     fclose($fh);
     system("pdftotext ".$tmpFile.".pdf");
-    $sTxt = file_get_contents($tmpFile.".txt");
-    return($sTxt);
+    $txt = file_get_contents($tmpFile.".txt");
+    return($txt);
   }
 };
 ?>

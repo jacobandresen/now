@@ -1,61 +1,61 @@
 <?php
 class URL
 {
-  public static function extractHost($sUrl)
+  public static function extractHost($url)
   {
-    preg_match("@(http\s?\://([^\/].*?))(\/|$)@", $sUrl, $aMatch);
-    if ( count($aMatch) > 1 ){
-      $sHost = $aMatch[2];
+    preg_match("@(http\s?\://([^\/].*?))(\/|$)@", $url, $match);
+    if ( count($match) > 1 ){
+      $host = $match[2];
     }
-    return $sHost;
+    return $host;
   }
 
-  public static function extractRelativeUrl($sHost, $sUrl)
+  public static function extractRelativeUrl($host, $url)
   {
-    $sUrl=preg_replace("/http\:\/\//i","", $sUrl);
-    $sUrl=str_replace($sHost, "", $sUrl);
-    if($sUrl==""){
-      $sUrl="/";
+    $url=preg_replace("/http\:\/\//i","", $url);
+    $url=str_replace($host, "", $url);
+    if($url==""){
+      $url="/";
     }
-    return $sUrl;
+    return $url;
   }
 
-  public static function expandUrl($sItem, $sParent)
+  public static function expandUrl($item, $parent)
   {
-    $sPage="";
-    if ($sItem == './'){
-      $sItem = '/';
+    $page="";
+    if ($item == './'){
+      $item = '/';
     }
-    preg_match("@(http\s?\://[^\/].*?)(\/|$)@", $sParent, $aMatch);
-    if ( count($aMatch) > 0 ){
-      $sBase = $aMatch[1];
+    preg_match("@(http\s?\://[^\/].*?)(\/|$)@", $parent, $match);
+    if ( count($match) > 0 ){
+      $base = $match[1];
     }
-    preg_match("@(http\s?\://[^\/].*?)\/([^\?]*?)(\?|$)@", $sParent, $aMatch);
-    if ( count($aMatch) > 0 ){
-      $sPage = $aMatch[2];
+    preg_match("@(http\s?\://[^\/].*?)\/([^\?]*?)(\?|$)@", $parent, $match);
+    if ( count($match) > 0 ){
+      $page = $match[2];
     }
-    preg_match("|^http|", $sItem, $aMatch);
-    if ( count($aMatch) > 0 ){
-      return $sItem;
-    }
-
-    if ($sPage) {
-      preg_match("|^\/$sPage|", $sItem, $aMatch);
-      if ( count($aMatch) > 0 ){
-        return $sBase.$sItem;
-      }
-      preg_match("|^$sPage|", $sItem, $aMatch);
-      if ( count ($aMatch) > 0 ){
-        return $sBase.'/'.$sItem;
-      }
+    preg_match("|^http|", $item, $match);
+    if ( count($match) > 0 ){
+      return $item;
     }
 
-    preg_match("|^\?|", $sItem, $aMatch);
-    if ( count($aMatch) > 0 ){
-      return $sBase.'/'.$sPage.$sItem;
+    if ($page) {
+      preg_match("|^\/$page|", $item, $match);
+      if ( count($match) > 0 ){
+        return $base.$item;
+      }
+      preg_match("|^$page|", $item, $match);
+      if ( count ($match) > 0 ){
+        return $base.'/'.$item;
+      }
     }
-    $sUrl = $sBase.'/'.$sItem;
-    return $sUrl;
+
+    preg_match("|^\?|", $item, $match);
+    if ( count($match) > 0 ){
+      return $base.'/'.$page.$item;
+    }
+    $url = $base.'/'.$item;
+    return $url;
   }
 }
 ?>

@@ -15,8 +15,6 @@ require_once('Searcher.php');
 
 class YASE
 {
-
-
   public function __construct ()
   {
     mysql_connect("localhost", "jacob", "jacob") or die(mysql_error());
