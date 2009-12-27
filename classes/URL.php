@@ -1,6 +1,35 @@
 <?php
 class URL
 {
+  public static function filter($url, $tablename, $accountId)
+  {
+    preg_match("|\@|", $url, $match);
+    if ( count($match) > 0 ) {
+      print "    skip ".$url. " - is an email \r\n";
+      return false;
+    }
+ 
+    if ( strpos($url, "javascript:")) {
+      print "    skip ".$url." - is a javascript link \r\n";
+      return false;
+    }
+
+   $SQL ="select name,value from ".$tablename." where account_id='".$acocuntId."';";
+   $res = mysql_query($SQL) or die ("SQL:".$SQL." failed:".mysql_error());
+   while ($row = mysql_fetch_array($res) ){
+     $name=$row[0];
+     $item = urldecode($row[1]);
+     if ($item!="") {
+       preg_match("|$item|", $url, $match);
+       if ( count($match) > 0){
+         print "    skip due to :".$name." ".$item." \r\n";
+         return false;
+       }
+     }  
+   }
+   return true;
+  }
+
   public static function extractHost($url)
   {
     preg_match("@(http\s?\://([^\/].*?))(\/|$)@", $url, $match);

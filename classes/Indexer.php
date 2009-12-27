@@ -2,20 +2,10 @@
 class Indexer
 {
   private $accountId;
-  private $filterSettings;
 
   public function __construct($accountId)
   {
     $this->accountId = $accountId;
-
-    $this->filterSettings=array();
-    $res = mysql_query('select name,value from indexerfilter where account_id="'.$this->accountId.'"');
-    while ($row = mysql_fetch_array($res) ) {
-      $setting = new Setting();
-      $setting->name=$row[0];
-      $setting->value=$row[1];
-      array_push($this->filterSettings, $setting);
-    }
   }
 
   public function start()
@@ -53,7 +43,7 @@ class Indexer
       $title="";
 
       if(!($this->noDuplicateURL($url))) return false;
-      if(!($this->URLFilter($url))) return false;
+      if(!(URL::filter($url, "indexerfilter", $this->accountId))) return false;
 
       //default to html if not pdf
       if($contenttype!="application/pdf"){
@@ -75,7 +65,7 @@ class Indexer
       $length=strlen($content);
       if($length>5 && strlen($url)>0 ){
         $SQL = "INSERT INTO document(account_id,url,title,contenttype,content,md5, level) values('".$this->accountId."','$url','$title','$contenttype', '$content', '$md5', '$level');";
-        print "indexing: [ $blength ] ".urldecode($url)." \r\n";
+        print "indexing: [ ".$length." ] ".urldecode($url)." \r\n";
         mysql_query( $SQL ) or die (mysql_error());
       }else{
         print $url." empty doc <br />\r\n";
@@ -83,25 +73,6 @@ class Indexer
     }catch(Exception $e){
       print "failed adding $url\r\n";
     }
-  }
-
-  //TODO: refactor to URL class
-  private function URLFilter($url)
-  {
-    $url=urldecode($url);
-    if($this->filterSettings) {
-      foreach ($this->filterSettings as $setting){
-        $item = urldecode($setting->value);
-        if ($item!="") {
-          preg_match("|$item|", $url, $match);
-          if ( count($match) > 0){
-            print "SKIP DUE TO :".$item."\r\n";
-            return false;
-          }
-        }
-      }
-    }
-   return true;
   }
 
   private function noDuplicateURL( $url )
@@ -124,6 +95,8 @@ class Indexer
    return true;
   }
 
+  
+  //TODO: create HTML utility class
   private function cleanHTML($html)
   {
     $html = preg_replace("/<script.*?<\/script>/is", ' ', $html);
