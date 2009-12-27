@@ -126,13 +126,15 @@ class HTTPClient
   private function getReply ()
   {
     $this->reply="";
-    if(!$this->socket){ return(""); }
+    if(!$this->socket){ 
+      print "error - not connected \r\n"; 
+      return(""); 
+    }
 
     $status=fgets($this->socket,24);
     $statusArray=split(" ",$status, 3);
     if( preg_match("/http/i",$statusArray[0])){
       if($statusArray[1]!="200"){
-        //handle redirects
         if( $statusArray[1]=="301" || $statusArray[1]=="302"){
           $this->getHeaders();
           $this->status="301";

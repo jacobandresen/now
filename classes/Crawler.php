@@ -51,45 +51,49 @@ class Crawler
     print "crawl [$level] - $url \r\n";
 
     $document = $this->httpClient->getDocument($url);
-    $response = $document->content;
-    if($document->contentType=="application/pdf"){
+
+    if ($document->contentType=="application/pdf") {
       $p=new PDFFilter($this->accountId);
-      $response = $p->filter($url);
-    }
+      $document->content = $p->filter($document);
+    } else {
 
-    if(!($this->shouldWeCrawl($document))) {
-      array_push( $this->found, $url);
-      array_push( $this->crawled, $url);
-      return false;
-    }
-
-    preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $response, $matches);
-
-    $response = htmlentities($response,ENT_QUOTES);
-    if(!($this->add($url, $document->contentType, $response, $level))) return false;
-    unset($response);
-
-    foreach($matches[1] as $item){
-      $fullUrl = URL::expandUrl($item, $url);
-      if ( (!in_array($fullUrl, $this->found) &&
-         $this->URLFilter($fullUrl))){
-        print "    connect ".$fullUrl."\r\n";
-        $document = new Document();
-        $document->url = $fullUrl;
-        $document->level = $level+1;
-        array_push($this->found, $document);
-        array_push($this->process, $document);
+      //default to html
+      if(!($this->shouldWeCrawl($document))) {
+        array_push( $this->crawled, $url);
+        return false;
       }
-    }
 
-    while($child=array_shift($this->process)){
-      if($child->url!=""){
-        if(!in_array($child->url, ($this->crawled))){
-          array_push($this->crawled, $child->url);
-          $this->crawl($child->url, ($child->level), $url);
+     //get html links 
+     preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", 
+                     $document->content, $matches);
+      foreach ($matches[1] as $item) {
+        $fullUrl = URL::expandUrl($item, $url);
+        if ( (!in_array($fullUrl, $this->found) &&
+          $this->URLFilter($fullUrl))){
+          $link = new Document();
+          $link->url = $fullUrl;
+          $link->level = $level+1;
+          array_push($this->found, $link);
+          array_push($this->process, $link);
         }
       }
-    }
+
+      //crawl links
+      while($child=array_shift($this->process)){
+       if($child->url!=""){
+         if(!in_array($child->url, ($this->crawled))){
+           array_push($this->crawled, $child->url);
+           $this->crawl($child->url, ($child->level), $url);
+         }
+       }
+     }
+
+    //prepare for storage in database
+    $document->content = htmlentities($document->content,ENT_QUOTES);
+   }
+  
+   if(!($this->add($url, $document->contentType, 
+                   $document->content, $level))) return false;
   }
 
   public function add ( $url, $contenttype,$content, $level )

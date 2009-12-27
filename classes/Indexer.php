@@ -31,9 +31,8 @@ class Indexer
 
   public function index()
   {
-    print "start INDEX\r\n";
-    $sSQL="select max(retrieved),url,contenttype,content,level from dump where account_id='".$this->accountId."' group by account_id,url";
-    $res = mysql_query($sSQL) or die (mysql_error());
+    $SQL="select max(retrieved),url,contenttype,content,level from dump where account_id='".$this->accountId."' group by account_id,url";
+    $res = mysql_query($SQL) or die (mysql_error());
 
     while($row=mysql_fetch_array($res)){
       try{
@@ -72,11 +71,11 @@ class Indexer
       $md5 = md5($content);
       if(!($this->noDuplicateContent($md5))) return false;
 
-      $blength=strlen($content);
-      if($blength>5 && strlen($url)>0 ){
-        $sSQL = "INSERT INTO document(account_id,url,title,contenttype,content,md5, level) values('".$this->accountId."','$url','$title','$contenttype', '$content', '$md5', '$level');";
+      $length=strlen($content);
+      if($length>5 && strlen($url)>0 ){
+        $SQL = "INSERT INTO document(account_id,url,title,contenttype,content,md5, level) values('".$this->accountId."','$url','$title','$contenttype', '$content', '$md5', '$level');";
         print "indexing: [ $blength ] ".urldecode($url)." \r\n";
-        mysql_query( $sSQL ) or die (mysql_error());
+        mysql_query( $SQL ) or die (mysql_error());
       }else{
         print $url." empty doc <br />\r\n";
       }
@@ -114,7 +113,7 @@ class Indexer
   }
   private function noDuplicateContent($md5)
   {
-    $result=mysql_query("SELECT url,md5 from document where md5='$md5'") or die(mysql_error());
+    $result=mysql_query("SELECT url,md5 from document where md5='$md5' and account_id='".$this->accountId."'") or die(mysql_error());
     $row=mysql_fetch_row($result);
     if($row) {
       print "\r\nduplicate found for ".$url." -> ".$row['url'].", md5:".$row['md5']."\r\n";
