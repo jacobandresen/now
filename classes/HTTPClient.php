@@ -42,8 +42,8 @@ class HTTPClient
   {
     $document = new Document();
     $document->url = $url;
-    $document->contentType=trim($this->contentType);
     $document->content = $this->get($url);
+    $document->contentType=trim($this->contentType);
 
     return $document;
   }
