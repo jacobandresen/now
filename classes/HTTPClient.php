@@ -66,6 +66,7 @@ class HTTPClient
 
   private function close()
   {
+     if (is_writeable($this->socket))
     fclose($this->socket);
   }
 
@@ -104,26 +105,20 @@ class HTTPClient
   private function redirect()
   {
     $this->redirects++;
-    print "redirects#:".$this->redirects."\r\n";
     if($this->redirects<5){
       $newUrl=chop($this->headers['location']);
-      print "redirecting to:".$newUrl."\r\n";
-      if (isset($this->socket))
-        $this->close();
-      $this->Connect($this->host);
 
       if(!(strpos($newUrl, $this->host)) &&
         !(strpos($newUrl, "/"))){
-          print "EXPAND:".$this->host."\r\n";
           $newUrl="http://".$this->host.$newUrl;
-          print "NEW URL:".$newUrl."\r\n";
         }
 
       $this->finalUrl=$newUrl;
-      print "[".$this->finalUrl."]\r\n";
+      print "redirect [".$this->redirects."] - to :".$newUrl."\r\n";
+      $this->redirects=0;
       return($this->Get($newUrl));
     }else{
-      print "too many redirects \r\n";
+      print "  skip - too many redirects \r\n";
       return("");
     }
   }
@@ -165,7 +160,7 @@ class HTTPClient
           print "failed retrieving:".$this->url."\r\n";
         }
         }else{
-          print "[".$this->url."] CONTENT TO BIG\r\n";
+          print "    skip - ".$this->url."  'content too big'\r\n";
           $this->reply="";
         }
       }

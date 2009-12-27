@@ -7,7 +7,6 @@ class Crawler
   private $crawlLimit;
 
   private $level;
-  private $numberCrawled;
   private $found;
   private $crawled;
   private $process;
@@ -18,7 +17,6 @@ class Crawler
 
   public function __construct($accountId)
   {
-    $this->numberCrawled = 0;
     $this->found=array();
     $this->crawled=array();
     $this->process=array();
@@ -29,7 +27,6 @@ class Crawler
     $this->maxLevel = $row['level_limit'] ;
     $this->crawlLimit = $row['crawl_limit'] ;
     $this->domain = $row['domain'];
-
 
     $res = mysql_query('select name,value from crawlerfilter  where account_id="'.$accountId.'"');
     $this->filterSettings =array();
@@ -51,6 +48,8 @@ class Crawler
 
   public function crawl($url, $level, $parent)
   {
+    print "crawl [$level] - $url \r\n";
+
     $document = $this->httpClient->getDocument($url);
     $response = $document->content;
     if($document->contentType=="application/pdf"){
@@ -63,7 +62,6 @@ class Crawler
       array_push( $this->crawled, $url);
       return false;
     }
-    print "crawl [$level] - $url \r\n";
 
     preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", $response, $matches);
 
@@ -73,8 +71,9 @@ class Crawler
 
     foreach($matches[1] as $item){
       $fullUrl = URL::expandUrl($item, $url);
-      if ( (!in_array($fullUrl, $this->found))
-        and $this->URLFilter($fullUrl)){
+      if ( (!in_array($fullUrl, $this->found) &&
+         $this->URLFilter($fullUrl))){
+        print "    connect ".$fullUrl."\r\n";
         $document = new Document();
         $document->url = $fullUrl;
         $document->level = $level+1;
@@ -82,14 +81,12 @@ class Crawler
         array_push($this->process, $document);
       }
     }
-    $this->numberCrawled++;
 
-    while($childUrl=array_shift($this->process)){
-      if($childUrl->url!=""){
-        if(!in_array($childUrl->url, ($this->crawled))){
-          array_push($this->crawled, $childUrl->url);
-          print "    connect ".$childUrl->url."\r\n";
-          $this->crawl($childUrl->url, ($childUrl->level), $url);
+    while($child=array_shift($this->process)){
+      if($child->url!=""){
+        if(!in_array($child->url, ($this->crawled))){
+          array_push($this->crawled, $child->url);
+          $this->crawl($child->url, ($child->level), $url);
         }
       }
     }
@@ -120,7 +117,7 @@ class Crawler
   private function shouldWeCrawl ($document)
   {
     if ($this->level > $this->maxLevel){ return false;}
-    if ($this->numberCrawled>$this->crawlLimit){return false;}
+    if (count($this->crawled)>$this->crawlLimit){return false;}
     if (
       ($document->contentType == "application/x-zip") ||
       ($document->contentType == "application/xml") ||

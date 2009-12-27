@@ -14,7 +14,7 @@ class PDFFilter
     unlink($tmpFile.".pdf");
     unlink($tmpFile.".txt");
     $fh = fopen($tmpFile.".pdf",'w');
-    fwrite($fh, $sContent);
+    fwrite($fh, $content);
     fclose($fh);
     system("pdftotext ".$tmpFile.".pdf");
     $txt = file_get_contents($tmpFile.".txt");

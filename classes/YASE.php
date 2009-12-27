@@ -11,8 +11,6 @@ require_once('Crawler.php');
 require_once('Indexer.php');
 require_once('Searcher.php');
 
-
-
 class YASE
 {
   public function __construct ()
