@@ -51,6 +51,7 @@ class Crawler
     print "crawl [$level] - $url \r\n";
 
     $document = $this->httpClient->getDocument($url);
+    $document->level = $level;
 
     if ($document->contentType=="application/pdf") {
       $p=new PDFFilter($this->accountId);
@@ -58,13 +59,15 @@ class Crawler
     } else {
 
       //default to html
-      if(!($this->shouldWeCrawl($document))) {
+      if ($this->level > $this->maxLevel){ return false;}
+      if (count($this->crawled)>$this->crawlLimit){return false;}
+      if (!$document->shouldCrawl()) {
         array_push( $this->crawled, $url);
         return false;
       }
 
-     //get html links 
-     preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", 
+      //get html links 
+      preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", 
                      $document->content, $matches);
       foreach ($matches[1] as $item) {
         $fullUrl = URL::expandUrl($item, $url);
@@ -91,55 +94,11 @@ class Crawler
     //prepare for storage in database
     $document->content = htmlentities($document->content,ENT_QUOTES);
    }
-  
-   if(!($this->add($url, $document->contentType, 
-                   $document->content, $level))) return false;
+   
+   return $document->save($this->accountId);
   }
 
-  public function add ( $url, $contenttype,$content, $level )
-  {
-    $url = utf8_decode($url);
-
-    if(strlen($url)>1028){
-      print "    skip  - $url 'URL too long'\r\n";
-      return false;
-    }
-    if(strlen($content)>MAX_CONTENT_LENGTH){
-      print "    skip - $url 'content too big' \r\n";
-      return false;
-    }
-    if(strlen($content)<1){
-      print "    skip - $url 'no content' \r\n";
-      return false;
-    }
-    print "  add [$level] - ".$url." ".strlen($content)." ".MAX_CONTENT_LENGTH."\r\n";
-    $url = urlencode($url);
-    mysql_query("INSERT IGNORE into dump(account_id, url, contenttype,content, level) values('".$this->accountId."','$url','$contenttype', '$content', '$level')") or die (" failed to insert into dump:".mysql_error());
-    return true;
-  }
-
-  private function shouldWeCrawl ($document)
-  {
-    if ($this->level > $this->maxLevel){ return false;}
-    if (count($this->crawled)>$this->crawlLimit){return false;}
-    if (
-      ($document->contentType == "application/x-zip") ||
-      ($document->contentType == "application/xml") ||
-      ($document->contentType == "application/json") ||
-      ($document->contentType == "image/jpeg") ||
-      ($document->contentType == "image/jpg") ||
-      ($document->contentType == "image/gif") ||
-      ($document->contentType == "image/bmp") ||
-      ($document->contentType == "image/png") ||
-      ($document->contentType == "text/css") ||
-      ($document->contentType == "text/javascript")
-    ){
-      print "    skip - ".$document->url." 'do not crawl ".$document->contentType."'\r\n";
-      return false;
-    }
-    return true;
-  }
-
+  //TODO: refactor to URL class
   private function URLFilter($url)
   {
     preg_match("|\@|",$url, $match);

@@ -71,6 +71,7 @@ class Indexer
       $md5 = md5($content);
       if(!($this->noDuplicateContent($md5))) return false;
 
+      //TODO: combine sqltable 'dump' and 'document' 
       $length=strlen($content);
       if($length>5 && strlen($url)>0 ){
         $SQL = "INSERT INTO document(account_id,url,title,contenttype,content,md5, level) values('".$this->accountId."','$url','$title','$contenttype', '$content', '$md5', '$level');";
@@ -84,6 +85,7 @@ class Indexer
     }
   }
 
+  //TODO: refactor to URL class
   private function URLFilter($url)
   {
     $url=urldecode($url);
