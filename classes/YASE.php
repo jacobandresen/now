@@ -6,7 +6,6 @@ define("MYSQL_PASSWORD", "jacob");
 define("MYSQL_DATABASE", "jacob");
 define("TMP_YASE", "/tmp/yase/");
 
-require_once('Setting.php');
 require_once('URL.php');
 require_once('PDFFilter.php');
 require_once('HTTPClient.php');
