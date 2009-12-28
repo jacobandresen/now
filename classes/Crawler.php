@@ -31,26 +31,18 @@ class Crawler
 
   public function start()
   {
-    mysql_query("delete from dump where account_id='".$this->accountId."'");
-    $this->crawl( "http://".$this->domain, 0 , "http://".$this->domain);
+    $startUrl = "http://".$this->domain;
+    
+    if($this->shouldCrawl($startUrl)){
+      mysql_query("delete from dump where account_id='".$this->accountId."'");
+      $this->crawl( $startUrl, 0 , $startUrl);
+    } else {
+      print "failed to start crawl \r\n";
+    }
   }
 
   public function crawl($url, $level, $parent)
   {
-    if ($this->inDomain($url) ==false) {
-      print "skip - 'not in domain' $url \r\n";
-      array_push( $this->crawled, $url); //skip document
-      return false;
-    }
-    if ($this->level > $this->maxLevel ||
-       count($this->crawled)>$this->crawlLimit||
-       in_array($url, $this->crawled) ||
-       !(URL::filter($url, "crawlerfilter", $this->accountId))){ 
-      print "skip - 'filtered' \r\n"; 
-      array_push( $this->crawled, $url); //skip document
-      return false;
-    }
- 
     print "crawl [$level] - $url \r\n";
 
     $document = $this->httpClient->getDocument($url);
@@ -60,13 +52,14 @@ class Crawler
     if ($document->contentType=="application/pdf") {
       $p=new PDFFilter($this->accountId);
       $document->content = $p->filter($document);
-      array_push($this->crawled, $url);
       $document->content = htmlentities($document->content,ENT_QUOTES);
+
+      array_push($this->crawled, $url);
       return $document->save($this->accountId);
     } else {
 
      if (!$document->shouldCrawl()) {
-        array_push( $this->crawled, $url); //skip document
+        array_push( $this->found, $url); //skip document
         return false;
       }
 
@@ -75,8 +68,7 @@ class Crawler
                      $document->content, $matches);
       foreach ($matches[1] as $item) {
         $fullUrl = URL::expandUrl($item, $url);
-        if ( (!in_array($fullUrl, $this->found) &&
-          URL::filter($url, "crawlerfilter", $this->accountId))) { 
+        if ( $this->shouldCrawl($fullUrl) ) { 
           $link = new Document();
           $link->url = $fullUrl;
           $link->level = $level+1;
@@ -100,6 +92,27 @@ class Crawler
    }
   }
 
+  private function shouldCrawl($url)
+  { 
+    if (in_array($url, $this->crawled)){
+      return false; 
+    }
+    if ($this->inDomain($url) ==false) {
+      print "skip - 'not in domain' $url \r\n";
+      array_push( $this->crawled, $url); //skip document
+      return false;
+    }
+    if ($this->level > $this->maxLevel ||
+       count($this->crawled)>$this->crawlLimit||
+       in_array($url, $this->crawled) ||
+       !(URL::filter($url, "crawlerfilter", $this->accountId))){ 
+      print "skip - 'filtered' $url \r\n"; 
+      array_push( $this->crawled, $url); //skip document
+      return false;
+    }
+    return true;
+  }
+  
   private function inDomain($url) {
     $host = URL::extractHost($url);
     $domain = str_replace("www.", "", $this->domain);

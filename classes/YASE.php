@@ -7,6 +7,7 @@ define("MYSQL_DATABASE", "jacob");
 define("TMP_YASE", "/tmp/yase/");
 
 require_once('URL.php');
+require_once('HTMLUtil.php');
 require_once('PDFFilter.php');
 require_once('HTTPClient.php');
 require_once('Document.php');

@@ -42,24 +42,24 @@ class Indexer
     try{
       $title="";
 
-      if(!($this->noDuplicateURL($url))) return false;
+      if(!(HTMLUtil::noDuplicateURL($this->accountId, $url))) return false;
       if(!(URL::filter($url, "indexerfilter", $this->accountId))) return false;
 
       //default to html if not pdf
       if($contenttype!="application/pdf"){
         $content = html_entity_decode($content, ENT_QUOTES);
-        $title = $this->findHTMLTitle($content);
+        $title = HTMLUtil::findTitle($this->accountId, $content);
         $title = htmlentities($title, ENT_QUOTES);
         if($title==""){
           $title=$url;
         }
-        $content = $this->cleanHTML($content);
+        $content = HTMLUtil::clean($content);
       } else {
         $title = $url;
       }
 
       $md5 = md5($content);
-      if(!($this->noDuplicateContent($md5))) return false;
+      if(!(HTMLUtil::noDuplicateContent($accountId, $md5))) return false;
 
       //TODO: combine sqltable 'dump' and 'document' 
       $length=strlen($content);
@@ -73,84 +73,6 @@ class Indexer
     }catch(Exception $e){
       print "failed adding $url\r\n";
     }
-  }
-
-  private function noDuplicateURL( $url )
-  {
-   $res= mysql_query("SELECT url from document where url='$url' and account_id='".$this->accountId."'") or die(mysql_error());
-   if($row=mysql_fetch_array($res)){
-     print "duplicate: $url <br>  -> ".$row['url']."\r\n";
-     return false;
-   }
-   return true;
-  }
-  private function noDuplicateContent($md5)
-  {
-    $result=mysql_query("SELECT url,md5 from document where md5='$md5' and account_id='".$this->accountId."'") or die(mysql_error());
-    $row=mysql_fetch_row($result);
-    if($row) {
-      print "\r\nduplicate found for ".$url." -> ".$row['url'].", md5:".$row['md5']."\r\n";
-      return false;
-    }
-   return true;
-  }
-
-  
-  //TODO: create HTML utility class
-  private function cleanHTML($html)
-  {
-    $html = preg_replace("/<script.*?<\/script>/is", ' ', $html);
-    $html = preg_replace("/<link.*?\/>/is", ' ', $html);
-    $html = preg_replace("/<style type\=\"text\/css\">.*?<\/style>/is", '', $html);
-    $html = preg_replace("/<\!\-\-.*?\-\->/is", ' ', $html);
-    $html = preg_replace("/\(/is", '', $html);
-    $html = preg_replace("/\'/is", '', $html);
-    $html = preg_replace("/\s+/is", ' ', $html);
-    $html = preg_replace("/<.*?>/is", '', $html);
-    $html = strip_tags($html);
-    return $html;
-  }
-
-  private function findHTMLTitle($html)
-  {
-    $title='';
-    if ($title == ''){
-      preg_match("|<.*?content_header[^>]*?\>(.*?)<\/[^>]*?\>|is", $html, $matches);
-      if(sizeof($matches)){
-        $title = $matches[1];
-      }
-    }
-    if ($title == ''){
-      preg_match("|<h1>(.*?)<\/h1>|is", $html, $matches);
-      if(sizeof($matches)){
-        $title = $matches[1];
-      }
-    }
-    if ($title == ''){
-      preg_match("|<h2>(.*?)<\/h2>|is", $html, $matches);
-      if(sizeof($matches)){
-        $title = $matches[1];
-      }
-    }
-    if ($title == ''){
-      preg_match("|<title>(.*?)<\/title>|is", $html, $matches);
-      if(sizeof($matches)){
-        $title = $matches[1];
-      }
-    }
-    if ($title == ''){
-      preg_match("|<h3>(.*?)<\/h3>|is", $html, $matches);
-      if(sizeof($matches)){
-        $title = $matches[1];
-      }
-    }
-    if ($title == ''){
-      preg_match("|<h4>(.*?)<\/h4>|is", $html, $matches);
-      if(sizeof($matches)){
-        $title = $matches[1];
-      }
-    }
-    return ($title);
   }
 };
 ?>
