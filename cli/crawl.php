@@ -12,7 +12,6 @@ if ($argv[1] == "") {
   print "  crawl.php [account name] \r\n";
   exit -1;
 }
-
 $s = new YASE();
 $s->crawl($argv[1]);
 ?>

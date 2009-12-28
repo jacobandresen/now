@@ -37,17 +37,21 @@ class Crawler
 
   public function crawl($url, $level, $parent)
   {
- 
-    if (!$this->inDomain($url)) {
+    if ($this->inDomain($url) ==false) {
       print "skip - 'not in domain' $url \r\n";
+      array_push( $this->crawled, $url); //skip document
       return false;
     }
-    if ($this->level > $this->maxLevel){ return false;}
-    if (count($this->crawled)>$this->crawlLimit){return false;}
-    if (!(URL::filter($url, "crawlerfilter", $this->accountId))){ return false;}
+    if ($this->level > $this->maxLevel ||
+       count($this->crawled)>$this->crawlLimit||
+       in_array($url, $this->crawled) ||
+       !(URL::filter($url, "crawlerfilter", $this->accountId))){ 
+      print "skip - 'filtered' \r\n"; 
+      array_push( $this->crawled, $url); //skip document
+      return false;
+    }
  
     print "crawl [$level] - $url \r\n";
-
 
     $document = $this->httpClient->getDocument($url);
     $document->level = $level;
@@ -56,6 +60,8 @@ class Crawler
     if ($document->contentType=="application/pdf") {
       $p=new PDFFilter($this->accountId);
       $document->content = $p->filter($document);
+      array_push($this->crawled, $url);
+      $document->content = htmlentities($document->content,ENT_QUOTES);
       return $document->save($this->accountId);
     } else {
 
@@ -81,6 +87,7 @@ class Crawler
    
       $document->content = htmlentities($document->content,ENT_QUOTES);
       $document->save($this->accountId);
+      array_push($this->crawled, $url);
 
       //crawl HTML links
       while($child=array_shift($this->process)){
@@ -91,11 +98,12 @@ class Crawler
        }
      }
    }
-   array_push($this->crawled, $url);
   }
 
   private function inDomain($url) {
-    return (URL::extractHost($url)==$this->domain);
+    $host = URL::extractHost($url);
+    $domain = str_replace("www.", "", $this->domain);
+    return (strpos($host,$domain)!==false);
   } 
 };
 ?>

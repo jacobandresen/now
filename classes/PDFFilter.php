@@ -9,18 +9,24 @@ class PDFFilter
 
   public function filter($document)
   {
-    if(strlen($document->content)>0){
-      print "pdf - start - [".$document->url."] \r\n";
-      $tmpFile=$this->accountId."tmp";
+   if(TMP_YASE==''){
+     die ('missing temporary storage path: TMP_YASE');
+   }
+   
+   if(strlen($document->content)>0){
+      $tmpFile=TMP_YASE."/".$this->accountId."tmp";
+      $tmpFilePdf = $tmpFile.".pdf";
+      $tmpFileTxt = $tmpFile.".txt";
+      
       unlink($tmpFile.".pdf");
       unlink($tmpFile.".txt");
+      
       $fh = fopen($tmpFile.".pdf",'w');
       fwrite($fh, $document->content);
       fclose($fh);
-      system("pdftotext ".$tmpFile.".pdf");
-      $txt = file_get_contents($tmpFile.".txt");
-      print $txt; 
-      print "pdf - end - [".$document->url."] \r\n";
+      
+      system("pdftotext ".$tmpFilePdf);
+      $txt = file_get_contents($tmpFileTxt);
       return($txt);
     } else {
       print "pdf - no content - [".$document->url."] \r\n";
