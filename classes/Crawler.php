@@ -58,7 +58,7 @@ class Crawler
       return $document->save($this->accountId);
     } else {
 
-     if (!$document->shouldCrawl()) {
+      if (!$document->shouldCrawl()) {
         array_push( $this->found, $url); //skip document
         return false;
       }
@@ -104,8 +104,7 @@ class Crawler
     }
     if ($this->level > $this->maxLevel ||
        count($this->crawled)>$this->crawlLimit||
-       in_array($url, $this->crawled) ||
-       !(URL::filter($url, "crawlerfilter", $this->accountId))){ 
+       URL::filter($this->accountId, $url, "crawlerfilter")){ 
       print "skip - 'filtered' $url \r\n"; 
       array_push( $this->crawled, $url); //skip document
       return false;

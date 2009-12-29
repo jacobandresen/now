@@ -1,24 +1,15 @@
 <?php
 class HTMLUtil
 {
-  public static function noDuplicateURL( $accountId, $url )
-  {
-   $res= mysql_query("SELECT url from document where url='$url' and account_id='".$accountId."'") or die(mysql_error());
-   if($row=mysql_fetch_array($res)){
-     print "duplicate: $url <br>  -> ".$row['url']."\r\n";
-     return false;
-   }
-   return true;
-  }
-  public static function noDuplicateContent($accountId, $md5)
+  public static function checkDuplicateContent($accountId, $md5)
   {
     $result=mysql_query("SELECT url,md5 from document where md5='$md5' and account_id='".$accountId."'") or die(mysql_error());
     $row=mysql_fetch_row($result);
     if($row) {
       print "\r\nduplicate found  ".$url." -> ".$row['url'].", md5:".$row['md5']."\r\n";
-      return false;
+      return true;
     }
-   return true;
+   return false;
   }
 
   public static function clean($html)

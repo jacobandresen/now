@@ -38,13 +38,14 @@ class Indexer
 
   public function add($url, $contenttype,$content, $level)
   {
-    print "ADD: ".urldecode($url)." \r\n";
     try{
       $title="";
 
-      if(!(HTMLUtil::noDuplicateURL($this->accountId, $url))) return false;
-      if(!(URL::filter($url, "indexerfilter", $this->accountId))) return false;
+      if(URL::checkDuplicate($this->accountId, $url)) return false;
+      if(URL::filter($this->accountId, $url, "indexerfilter")) return false;
 
+      print "ADD: ".urldecode($url)." \r\n";
+      
       //default to html if not pdf
       if($contenttype!="application/pdf"){
         $content = html_entity_decode($content, ENT_QUOTES);
@@ -59,7 +60,7 @@ class Indexer
       }
 
       $md5 = md5($content);
-      if(!(HTMLUtil::noDuplicateContent($accountId, $md5))) return false;
+      if(HTMLUtil::checkDuplicateContent($accountId, $md5)) return false;
 
       //TODO: combine sqltable 'dump' and 'document' 
       $length=strlen($content);

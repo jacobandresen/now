@@ -1,22 +1,32 @@
 <?php
 class URL
 {
-  public static function filter($url, $tablename, $accountId)
+  public static function checkDuplicate($accountId, $url)
+  {
+    $res = mysql_query("SELECT url from document where url='$url' and account_id='".$acocuntId."'") or die(mysql_error());
+    if($row=mysql_fetch_array($res)){
+      print "duplicate :$url  -> ".$row['url']."\r\n";
+      return  true;  
+    }
+    return false;
+  }
+
+  public static function filter($accountId, $url, $tablename)
   {
     if (strpos($url, "#")) {
       print "skip - 'contains HTML anchor' $url \r\n";
-      return false;
+      return true;
     }  
     
     preg_match("|\@|", $url, $match);
     if ( count($match) > 0 ) {
       print "    skip ".$url. " - is an email \r\n";
-      return false;
+      return true;
     }
  
     if ( strpos($url, "javascript:")) {
       print "    skip ".$url." - is a javascript link \r\n";
-      return false;
+      return true;
     }
 
    $SQL ="select name,value from ".$tablename." where account_id='".$acocuntId."';";
@@ -28,11 +38,11 @@ class URL
        preg_match("|$item|", $url, $match);
        if ( count($match) > 0){
          print "    skip due to :".$name." ".$item." \r\n";
-         return false;
+         return true; 
        }
      }  
    }
-   return true;
+   return false;
   }
 
   public static function extractHost($url)
