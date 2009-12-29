@@ -3,6 +3,11 @@ class URL
 {
   public static function filter($url, $tablename, $accountId)
   {
+    if (strpos($url, "#")) {
+      print "skip - 'contains HTML anchor' $url \r\n";
+      return false;
+    }  
+    
     preg_match("|\@|", $url, $match);
     if ( count($match) > 0 ) {
       print "    skip ".$url. " - is an email \r\n";

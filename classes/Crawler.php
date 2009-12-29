@@ -64,7 +64,7 @@ class Crawler
       }
 
       //get HTML links 
-      preg_match_all("/(?:src|href)=\"([^\"]*?)\"/i", 
+      preg_match_all("/\<a.*?(?:src|href)=\"([^\"]*?)\"/i", 
                      $document->content, $matches);
       foreach ($matches[1] as $item) {
         $fullUrl = URL::expandUrl($item, $url);
@@ -91,7 +91,7 @@ class Crawler
      }
    }
   }
-
+  
   private function shouldCrawl($url)
   { 
     if (in_array($url, $this->crawled)){
