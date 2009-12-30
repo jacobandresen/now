@@ -33,4 +33,3 @@ create table indexerfilter (
   FOREIGN KEY(account_id) references account(id)
 )
 ;
-

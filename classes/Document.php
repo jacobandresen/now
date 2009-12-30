@@ -1,8 +1,8 @@
 <?php
 class Document{
+
   public $level;
   public $url;
-  public $title;
   public $contentType;
   public $content;
 
@@ -28,8 +28,8 @@ class Document{
     print "    add [".$this->level."] - ".$this->url." ".strlen($this->content)." ".MAX_CONTENT_LENGTH."\r\n";
    $this->url = urlencode($this->url);
 
-   $SQL= "INSERT IGNORE into dump(account_id, url, contenttype, content, level) values('".$accountId."','".$this->url."','".$this->contenttype."','".$this->content."','".$this->level."')";
-   mysql_query($SQL) or die("SQL error:".$SQL." \r\nfailed to insert into dump:".mysql_error());
+   $SQL= "INSERT IGNORE into document(account_id, url, contenttype, content, level) values('".$accountId."','".$this->url."','".$this->contentType."','".$this->content."','".$this->level."')";
+   mysql_query($SQL) or die("SQL error:".$SQL." \r\nfailed to insert into document:".mysql_error());
    return true;  
   } 
 

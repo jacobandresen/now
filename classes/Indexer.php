@@ -16,17 +16,19 @@ class Indexer
 
   public function clear()
   {
-    mysql_query("DELETE FROM document where account_id='".$this->accountId."'") or die (mysql_error());
+   mysql_query("DELETE FROM facet where account_id='".$this->accountId."'") or die (mysql_error());
   }
 
   public function index()
   {
-    $SQL="select max(retrieved),url,contenttype,content,level from dump where account_id='".$this->accountId."' group by account_id,url";
+    $SQL="select max(retrieved),id,url,contenttype,content,level from document where account_id='".$this->accountId."' group by account_id,url";
     $res = mysql_query($SQL) or die (mysql_error());
 
     while($row=mysql_fetch_array($res)){
       try{
-        $this->add($row['url'],
+        $this->add(
+          $row['id'], 
+          $row['url'],
           $row['contenttype'],
           $row['content'],
           $row['level']);
@@ -36,7 +38,7 @@ class Indexer
     }
   }
 
-  public function add($url, $contenttype,$content, $level)
+  public function add($id, $url, $contenttype,$content, $level)
   {
     try{
       $title="";
@@ -44,7 +46,6 @@ class Indexer
       if(URL::checkDuplicate($this->accountId, $url)) return false;
       if(URL::filter($this->accountId, $url, "indexerfilter")) return false;
 
-      print "ADD: ".urldecode($url)." \r\n";
       
       //default to html if not pdf
       if($contenttype!="application/pdf"){
@@ -55,20 +56,24 @@ class Indexer
           $title=$url;
         }
         $content = HTMLUtil::clean($content);
+        print "ADD HTML [".strlen($content)."]: ".urldecode($url)." \r\n";
       } else {
         $title = $url;
+        print "ADD HTML [".strlen($content)."]: ".urldecode($url)." \r\n";
       }
 
       $md5 = md5($content);
       if(HTMLUtil::checkDuplicateContent($accountId, $md5)) return false;
 
-      //TODO: combine sqltable 'dump' and 'document' 
       $length=strlen($content);
-      if($length>5 && strlen($url)>0 ){
-        $SQL = "INSERT INTO document(account_id,url,title,contenttype,content,md5, level) values('".$this->accountId."','$url','$title','$contenttype', '$content', '$md5', '$level');";
-        print "indexing: [ ".$length." ] ".urldecode($url)." \r\n";
-        mysql_query( $SQL ) or die (mysql_error());
-      }else{
+      if($length>0 && strlen($url)>0 ){
+       $SQL = "INSERT INTO facet(account_id,document_id,name,content) values('".$this->accountId."','".$id."','title','".$title."');";   
+       mysql_query( $SQL ) or die (mysql_error());
+
+       $SQL = "INSERT INTO facet(account_id,document_id,name,content) values('".$this->accountId."','".$id."','content','".$content."');";   
+       mysql_query( $SQL ) or die (mysql_error());
+    
+     }else{
         print $url." empty doc <br />\r\n";
       }
     }catch(Exception $e){

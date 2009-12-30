@@ -34,7 +34,7 @@ class Crawler
     $startUrl = "http://".$this->domain;
     
     if($this->shouldCrawl($startUrl)){
-      mysql_query("delete from dump where account_id='".$this->accountId."'");
+      mysql_query("delete from document where account_id='".$this->accountId."'");
       $this->crawl( $startUrl, 0 , $startUrl);
     } else {
       print "failed to start crawl \r\n";
