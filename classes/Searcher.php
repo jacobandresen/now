@@ -27,10 +27,12 @@ class Searcher
       while ($row=mysql_fetch_array($result)){
         $title=$row['title'];
         $content=$row['content'];
+	$content=iconv("UTF-8", "ISO-8859-1", $content);
+        $content=substr($content,1,400);
         $document = new Document();
         $document->url = urldecode($row['url']);
         $document->title = trim(html_entity_decode($title));
-        $document->content = substr($content, 1, 400);
+        $document->content = htmlentities($content);
         $document->contentType = $row['contenttype'];
         $pos++;
         $results[$pos] = $document;

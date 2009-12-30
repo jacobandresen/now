@@ -58,7 +58,7 @@ class Indexer
         print "ADD HTML [".strlen($content)."]: ".urldecode($url)." \r\n";
       } else {
         $title = $url;
-        print "ADD HTML [".strlen($content)."]: ".urldecode($url)." \r\n";
+        print "ADD PDF [".strlen($content)."]: ".urldecode($url)." \r\n";
       }
 
       $md5 = md5($content);

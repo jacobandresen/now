@@ -1,18 +1,6 @@
 <?php
 class HTMLUtil
 {
-/*
-  public static function checkDuplicateContent($accountId, $md5)
-  {
-    $result=mysql_query("SELECT url,md5 from document where md5='$md5' and account_id='".$accountId."'") or die(mysql_error());
-    $row=mysql_fetch_row($result);
-    if($row) {
-      print "\r\nduplicate found  ".$url." -> ".$row['url'].", md5:".$row['md5']."\r\n";
-      return true;
-    }
-   return false;
-  }
-*/
   public static function clean($html)
   {
     $html = preg_replace("/<script.*?<\/script>/is", ' ', $html);
