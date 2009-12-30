@@ -1,6 +1,7 @@
 <?php
 class HTMLUtil
 {
+/*
   public static function checkDuplicateContent($accountId, $md5)
   {
     $result=mysql_query("SELECT url,md5 from document where md5='$md5' and account_id='".$accountId."'") or die(mysql_error());
@@ -11,7 +12,7 @@ class HTMLUtil
     }
    return false;
   }
-
+*/
   public static function clean($html)
   {
     $html = preg_replace("/<script.*?<\/script>/is", ' ', $html);

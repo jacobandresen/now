@@ -31,5 +31,4 @@ create table indexerfilter (
   name          varchar(256),
   value         LONGTEXT,
   FOREIGN KEY(account_id) references account(id)
-)
-;
+ ;
