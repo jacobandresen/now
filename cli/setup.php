@@ -18,7 +18,6 @@ $user = $argv[1];
 $domain= $argv[2];
 
 $y = new YASE();
-
 $y->addUser($user, "test");
 $y->addAccount($user, $domain);
 ?>

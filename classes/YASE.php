@@ -14,6 +14,7 @@ require_once('Document.php');
 require_once('Crawler.php');
 require_once('Indexer.php');
 require_once('Searcher.php');
+require_once('Encoding.php');
 
 class YASE
 {

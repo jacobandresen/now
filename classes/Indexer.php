@@ -38,6 +38,7 @@ class Indexer
     }
   }
 
+//TODO: refactor argument to "Document"
   public function add($id, $url, $contenttype,$content, $level)
   {
     try{
