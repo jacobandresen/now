@@ -114,11 +114,9 @@ class HTTPClient
         }
 
       $this->finalUrl=$newUrl;
-      print "redirect [".$this->redirects."] - to :".$newUrl."\r\n";
       $this->redirects=0;
       return($this->Get($newUrl));
     }else{
-      print "  skip - too many redirects \r\n";
       return("");
     }
   }
@@ -127,7 +125,6 @@ class HTTPClient
   {
     $this->reply="";
     if(!$this->socket){ 
-      print "error - not connected \r\n"; 
       return(""); 
     }
 
@@ -141,7 +138,6 @@ class HTTPClient
           return($this->Redirect());
         }
         if($statusArray[1]=="400"){
-          print "[".$this->url."] was not found!\r\n";
           return("");
         }
       }else{
@@ -162,7 +158,6 @@ class HTTPClient
           print "failed retrieving:".$this->url."\r\n";
         }
         }else{
-          print "    skip - ".$this->url."  'content too big'\r\n";
           $this->reply="";
         }
       }

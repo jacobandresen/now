@@ -1,5 +1,5 @@
 <?php
-class HTMLUtil
+class HTMLRobot
 {
   public static function clean($html)
   {

@@ -38,7 +38,6 @@ class Indexer
     }
   }
 
-//TODO: refactor argument to "Document"
   public function add($id, $url, $contenttype,$content, $level)
   {
     try{
@@ -47,19 +46,16 @@ class Indexer
       if(URL::checkDuplicate($this->accountId, $url)) return false;
       if(URL::filter($this->accountId, $url, "indexerfilter")) return false;
 
-      //default to html if not pdf
       if($contenttype!="application/pdf"){
         $content = html_entity_decode($content, ENT_QUOTES);
-        $title = HTMLUtil::findTitle($this->accountId, $content);
+        $title = HTMLRobot::findTitle($this->accountId, $content);
         $title = htmlentities($title, ENT_QUOTES);
         if($title==""){
           $title=$url;
         }
-        $content = HTMLUtil::clean($content);
-        print "ADD HTML [".strlen($content)."]: ".urldecode($url)." \r\n";
+        $content = HTMLRobot::clean($content);
       } else {
         $title = $url;
-        print "ADD PDF [".strlen($content)."]: ".urldecode($url)." \r\n";
       }
 
       $md5 = md5($content);

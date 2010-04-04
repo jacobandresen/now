@@ -1,20 +1,20 @@
 <?php
 define("MAX_CONTENT_LENGTH",2000000);
-
 define("MYSQL_USER", "jacob");
 define("MYSQL_PASSWORD", "jacob");
 define("MYSQL_DATABASE", "jacob");
 define("TMP_YASE", "/tmp/yase/");
 
+require_once('Encoding.php');
 require_once('URL.php');
-require_once('HTMLUtil.php');
-require_once('PDFFilter.php');
 require_once('HTTPClient.php');
 require_once('Document.php');
 require_once('Crawler.php');
 require_once('Indexer.php');
 require_once('Searcher.php');
-require_once('Encoding.php');
+
+require_once('HTMLRobot.php');
+require_once('PDFRobot.php');
 
 class YASE
 {

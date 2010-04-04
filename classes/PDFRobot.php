@@ -1,5 +1,5 @@
 <?php
-class PDFFilter
+class PDFRobot
 {
   private $accountId;
   public function __construct($accountId)
@@ -7,7 +7,7 @@ class PDFFilter
     $this->accountId=$accountId;
   }
 
-  public function filter($document)
+  public function clean($document)
   {
    if(TMP_YASE==''){
      die ('missing temporary storage path: TMP_YASE');
@@ -28,9 +28,7 @@ class PDFFilter
       system("pdftotext ".$tmpFilePdf);
       $txt = file_get_contents($tmpFileTxt);
       return($txt);
-    } else {
-      print "pdf - no content - [".$document->url."] \r\n";
-    } 
+    }
   }
 };
 ?>

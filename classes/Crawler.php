@@ -1,4 +1,5 @@
 <?php
+
 class Crawler
 {
   private $accountId;
@@ -48,10 +49,9 @@ class Crawler
     $document = $this->httpClient->getDocument($url);
     $document->level = $level;
 
-    //default to HTML 
     if ($document->contentType=="application/pdf") {
-      $p=new PDFFilter($this->accountId);
-      $document->content = $p->filter($document);
+      $p=new PDFRobot($this->accountId);
+      $document->content = $p->clean($document);
       $document->content = htmlentities($document->content,ENT_QUOTES);
 
       array_push($this->crawled, $url);
@@ -63,7 +63,6 @@ class Crawler
         return false;
       }
 
-      //get HTML links 
       preg_match_all("/\<a.*?(?:src|href)=\"([^\"]*?)\"/i", 
                      $document->content, $matches);
       foreach ($matches[1] as $item) {
@@ -98,14 +97,12 @@ class Crawler
       return false; 
     }
     if ($this->inDomain($url) ==false) {
-      print "skip - 'not in domain' $url \r\n";
       array_push( $this->crawled, $url); //skip document
       return false;
     }
     if ($this->level > $this->maxLevel ||
        count($this->crawled)>$this->crawlLimit||
        URL::filter($this->accountId, $url, "crawlerfilter")){ 
-      print "skip - 'filtered' $url \r\n"; 
       array_push( $this->crawled, $url); //skip document
       return false;
     }
