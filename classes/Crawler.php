@@ -33,8 +33,9 @@ class Crawler
   public function start()
   {
     $startUrl = "http://".$this->domain;
-    
+
     if($this->shouldCrawl($startUrl)){
+      //clear existing entry in dump for account
       mysql_query("delete from document where account_id='".$this->accountId."'");
       $this->crawl( $startUrl, 0 , $startUrl);
     } else {
@@ -63,11 +64,11 @@ class Crawler
         return false;
       }
 
-      preg_match_all("/\<a.*?(?:src|href)=\"([^\"]*?)\"/i", 
+      preg_match_all("/\<a.*?(?:src|href)=\"([^\"]*?)\"/i",
                      $document->content, $matches);
       foreach ($matches[1] as $item) {
         $fullUrl = URL::expandUrl($item, $url);
-        if ( $this->shouldCrawl($fullUrl) ) { 
+        if ( $this->shouldCrawl($fullUrl) ) {
           $link = new Document();
           $link->url = $fullUrl;
           $link->level = $level+1;
@@ -75,12 +76,11 @@ class Crawler
           array_push($this->process, $link);
         }
       }
-   
+
       $document->content = htmlentities($document->content,ENT_QUOTES);
       $document->save($this->accountId);
       array_push($this->crawled, $url);
 
-      //crawl HTML links
       while($child=array_shift($this->process)){
        if($child->url!=""){
          if(!in_array($child->url, ($this->crawled))){
@@ -90,11 +90,11 @@ class Crawler
      }
    }
   }
-  
+
   private function shouldCrawl($url)
-  { 
+  {
     if (in_array($url, $this->crawled)){
-      return false; 
+      return false;
     }
     if ($this->inDomain($url) ==false) {
       array_push( $this->crawled, $url); //skip document
@@ -108,11 +108,11 @@ class Crawler
     }
     return true;
   }
-  
+
   private function inDomain($url) {
     $host = URL::extractHost($url);
     $domain = str_replace("www.", "", $this->domain);
     return (strpos($host,$domain)!==false);
-  } 
+  }
 };
 ?>

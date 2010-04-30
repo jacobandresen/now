@@ -2,7 +2,7 @@ drop table if exists document;
 create table document (
   id int NOT      	NULL primary key auto_increment,
   account_id      	int,
-  url 		        varchar(256),
+  url 		          varchar(256),
   level           	int,
   contenttype     	varchar(256),
   retrieved 	    	timestamp,
@@ -16,7 +16,7 @@ create table index_info (
   account_id		int,
   document_id		int,
   md5		        varchar(60),
-  updated		timestamp,  
+  updated		timestamp,
   foreign key(document_id) references document(id),
   foreign key(account_id)  references account(id)
 );

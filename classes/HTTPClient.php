@@ -124,8 +124,8 @@ class HTTPClient
   private function getReply ()
   {
     $this->reply="";
-    if(!$this->socket){ 
-      return(""); 
+    if(!$this->socket){
+      return("");
     }
 
     $status=fgets($this->socket,24);

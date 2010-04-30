@@ -1,11 +1,11 @@
 <?php
 class URL
 {
-  public static function checkDuplicate($accountId, $url)
+  public static function hasDuplicate($accountId, $url)
   {
     $res = mysql_query("SELECT url from document where url='$url' and account_id='".$acocuntId."'") or die(mysql_error());
     if($row=mysql_fetch_array($res)){
-      return  true;  
+      return  true;
     }
     return false;
   }

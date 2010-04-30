@@ -27,7 +27,7 @@ class Searcher
       while ($row=mysql_fetch_array($result)){
         $title=$row['title'];
         $content=$row['content'];
-	$content=iconv("UTF-8", "ISO-8859-1", $content);
+	      $content=iconv("UTF-8", "ISO-8859-1", $content);
         $content=substr($content,1,400);
         $document = new Document();
         $document->url = urldecode($row['url']);

@@ -25,77 +25,57 @@ class Indexer
     $res = mysql_query($SQL) or die (mysql_error());
 
     while($row=mysql_fetch_array($res)){
-      try{
-        $this->add(
-          $row['id'], 
-          $row['url'],
-          $row['contenttype'],
-          $row['content'],
-          $row['level']);
-      }catch(Exception $e){
-        print "FAILED: $url \r\n";
-      }
+      $document = new Document($row['id'], $row['url'], $row['contentType'], $row['content'] ,$row['level']);
+      $this->add($document);
     }
   }
 
-  public function add($id, $url, $contenttype,$content, $level)
+  public function add($document)
   {
     try{
       $title="";
 
-      if(URL::checkDuplicate($this->accountId, $url)) return false;
-      if(URL::filter($this->accountId, $url, "indexerfilter")) return false;
+      if(URL::hasDuplicate($this->accountId, $document->url)) return false;
+      if(URL::filter($this->accountId, $document->url, "indexerfilter")) return false;
 
-      if($contenttype!="application/pdf"){
-        $content = html_entity_decode($content, ENT_QUOTES);
-        $title = HTMLRobot::findTitle($this->accountId, $content);
-        $title = htmlentities($title, ENT_QUOTES);
-        if($title==""){
-          $title=$url;
-        }
-        $content = HTMLRobot::clean($content);
-      } else {
-        $title = $url;
+      if($document->contenttype!="application/pdf"){
+        //default to HTML
+        $document->content = html_entity_decode($document->content, ENT_QUOTES);
+        $document->title = HTMLRobot::findTitle($this->accountId, $document->content);
+        $document->title = htmlentities($document->title, ENT_QUOTES);
+        $document->content = HTMLRobot::clean($document->content);
       }
 
-      $md5 = md5($content);
-      if($this->checkDuplicateContent($accountId, $md5)) return false;
-      $this->update_index_info($id, $md5);
+      //default title
+      if($document->title==""){ $document->title=$document->url; }
 
-      $length=strlen($content);
-      if($length>0 && strlen($url)>0 ){
+      $md5 = md5($document->content);
+      if($Document::hasDuplicateContent($accountId, $md5)) return false;
+      $this->update_index_info($document->id, $md5);
 
-       $SQL = "INSERT INTO facet(account_id,document_id,name,content) values('".$this->accountId."','".$id."','title','".$title."');";   
+      $length=strlen($document->content);
+      if($length>0 && strlen($document->url)>0 ){
+
+       $SQL = "INSERT INTO facet(account_id,document_id,name,content) values('".$this->accountId."','".$document->id."','title','".$document->title."');";
        mysql_query( $SQL ) or die (mysql_error());
 
-       $SQL = "INSERT INTO facet(account_id,document_id,name,content) values('".$this->accountId."','".$id."','content','".$content."');";   
+       $SQL = "INSERT INTO facet(account_id,document_id,name,content) values('".$this->accountId."','".$document->id."','content','".$document->content."');";
        mysql_query( $SQL ) or die (mysql_error());
-    
+
      }else{
-        print $url." empty doc <br />\r\n";
+        print $document->url." empty doc <br />\r\n";
       }
     }catch(Exception $e){
-      print "failed adding $url\r\n";
+      print "failed adding $document->url\r\n";
     }
   }
 
-  private function update_index_info ($id, $md5) 
+  private function update_index_info ($id, $md5)
   {
     $SQL = "delete from index_info where document_id='".$id."';" ;
-    mysql_query( $SQL ) or die ("delete index info failed:".mysql_error()); 
+    mysql_query( $SQL ) or die ("delete index info failed:".mysql_error());
     $SQL = "insert into index_info(document_id, account_id,md5) values('$id','$this->accountId','$md5');" ;
     mysql_query($SQL) or die ("update index info failed:".mysql_error());
-  }
-
-  private function checkDuplicateContent($accountId, $md5)
-  {
-    $result = mysql_query("SELECT d.url, i.md5 from document d, index_info i where i.md5='$md5' and i.document_id=d.id and d.account_id='".$acountId."'") or die(mysql_error());
-    $row=mysql_fetch_row($result);
-    if ($row) {
-      print "duplicate found for ".$row['url']."\r\n";
-      return true;
-    }
-   return false; 
   }
 };
 ?>
