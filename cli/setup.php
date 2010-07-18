@@ -1,5 +1,5 @@
 <?php
-require_once("../classes/YASE.php");
+require_once("../php/YASE.php");
 
 if (!isset($argv[1])){
   $argv[1]="";
