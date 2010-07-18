@@ -72,10 +72,7 @@ class Indexer
 
   private function update_index_info ($id, $md5)
   {
-    $SQL = "delete from index_info where document_id='".$id."';" ;
-    mysql_query( $SQL ) or die ("delete index info failed:".mysql_error());
-    $SQL = "insert into index_info(document_id, account_id,md5) values('$id','$this->accountId','$md5');" ;
-    mysql_query($SQL) or die ("update index info failed:".mysql_error());
+    $SQL = "update document where id='".$id."' set md5='".$md5."'";
   }
 };
 ?>

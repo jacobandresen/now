@@ -1,5 +1,6 @@
 <?php
 define("MAX_CONTENT_LENGTH",2000000);
+define("MYSQL_HOST", "localhost");
 define("MYSQL_USER", "jacob");
 define("MYSQL_PASSWORD", "jacob");
 define("MYSQL_DATABASE", "jacob");
@@ -7,6 +8,7 @@ define("TMP_YASE", "/tmp/yase/");
 
 require_once('Encoding.php');
 require_once('URL.php');
+require_once('Setting.php');
 require_once('HTTPClient.php');
 require_once('Document.php');
 require_once('Crawler.php');
@@ -20,7 +22,7 @@ class YASE
 {
   public function __construct ()
   {
-    mysql_connect("localhost", MYSQL_USER, MYSQL_PASSWORD) or die(mysql_error());
+    mysql_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD) or die(mysql_error());
     mysql_select_db(MYSQL_DATABASE) or die(mysql_error());
   }
 

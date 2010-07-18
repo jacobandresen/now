@@ -3,15 +3,12 @@
 class Crawler
 {
   private $accountId;
-  private $domain;
-  private $maxLevel;
-  private $crawlLimit;
+  private $setting;
 
   private $level;
   private $found;
   private $crawled;
   private $process;
-
   private $httpClient;
 
   public function __construct($accountId)
@@ -21,11 +18,10 @@ class Crawler
     $this->process=array();
 
     $this->accountId=$accountId;
-    $res = mysql_query('select level_limit,crawl_limit,domain from account where id="'.$accountId.'"');
-    $row =  mysql_fetch_array($res);
-    $this->maxLevel = $row['level_limit'] ;
-    $this->crawlLimit = $row['crawl_limit'] ;
-    $this->domain = $row['domain'];
+    $this->setting = new Setting("crawler", $accountId);
+    $this->maxLevel = $this->setting->get('max_level');
+    $this->crawlLimit = $this->setting->get('crawl_limit');
+    $this->domain = $this->setting->get('domain');
 
     $this->httpClient = new HTTPClient($this->domain);
   }
@@ -35,7 +31,6 @@ class Crawler
     $startUrl = "http://".$this->domain;
 
     if($this->shouldCrawl($startUrl)){
-      //clear existing entry in dump for account
       mysql_query("delete from document where account_id='".$this->accountId."'");
       $this->crawl( $startUrl, 0 , $startUrl);
     } else {

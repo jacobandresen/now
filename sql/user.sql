@@ -13,18 +13,19 @@ create table account (
   FOREIGN KEY(login_id) 	references login(id)
 );
 
+create table account_setting (
+  id				int NOT NULL primary key auto_increment,
+  user_id			int,
+  setting_name			varchar[256], 
+  name				varchar(256),
+  value				varchar(256)
+  FOREIGN KEY(user_id) 		references user(id)
+);
+
 create table account_login_rights (
   account_id			int NOT NULL primary key auto_increment,
   login_id			int,
   privilege			int,
   FOREIGN KEY(login_id) 	references login(id),
   FOREIGN KEY(account_id) 	references account(id) 
-);
-
-create table user_setting (
-  id				int NOT NULL primary key auto_increment,
-  user_id			int,
-  name				varchar(256),
-  value				varchar(256)
-  FOREIGN KEY(user_id) 		references user(id)
 );
