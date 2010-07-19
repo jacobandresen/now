@@ -1,5 +1,5 @@
 <?php
-class URL
+class YASE_URL
 {
   public static function hasDuplicate($accountId, $url)
   {
@@ -10,7 +10,7 @@ class URL
     return false;
   }
 
-  public static function filter($accountId, $url, $tablename)
+  public static function filter($accountId, $url, $settingName)
   {
     if (strpos($url, "#")) {
       return true;
@@ -25,7 +25,7 @@ class URL
       return true;
     }
 
-   $SQL ="select name,value from ".$tablename." where account_id='".$acocuntId."';";
+   $SQL ="select name,value from setting where setting_name='".$settingName."' and account_id='".$acocuntId."';";
    $res = mysql_query($SQL) or die ("SQL:".$SQL." failed:".mysql_error());
    while ($row = mysql_fetch_array($res) ){
      $name=$row[0];

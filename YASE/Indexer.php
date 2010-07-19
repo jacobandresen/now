@@ -1,5 +1,5 @@
 <?php
-class Indexer
+class YASE_Indexer
 {
   private $accountId;
 
@@ -25,25 +25,27 @@ class Indexer
     $res = mysql_query($SQL) or die (mysql_error());
 
     while($row=mysql_fetch_array($res)){
-      $document = new Document($row['id'], $row['url'], $row['contentType'], $row['content'] ,$row['level']);
+      $document = new YASE_Document($row['id'], $row['url'], $row['contentType'], $row['content'] ,$row['level']);
       $this->add($document);
     }
   }
 
+  //TODO: add flexible content analyzers (instead of hardcoded "title" and "content" facet 
+  //TODO: update number of indexed documents 
   public function add($document)
   {
     try{
       $title="";
 
-      if(URL::hasDuplicate($this->accountId, $document->url)) return false;
-      if(URL::filter($this->accountId, $document->url, "indexerfilter")) return false;
+      if(YASE_URL::hasDuplicate($this->accountId, $document->url)) return false;
+      if(YASE_URL::filter($this->accountId, $document->url, "indexerfilter")) return false;
 
       if($document->contenttype!="application/pdf"){
         //default to HTML
         $document->content = html_entity_decode($document->content, ENT_QUOTES);
-        $document->title = HTMLRobot::findTitle($this->accountId, $document->content);
+        $document->title = YASE_HTMLRobot::findTitle($this->accountId, $document->content);
         $document->title = htmlentities($document->title, ENT_QUOTES);
-        $document->content = HTMLRobot::clean($document->content);
+        $document->content = YASE_HTMLRobot::clean($document->content);
       }
 
       //default title
@@ -51,7 +53,7 @@ class Indexer
 
       $md5 = md5($document->content);
       if($Document::hasDuplicateContent($accountId, $md5)) return false;
-      $this->update_index_info($document->id, $md5);
+      $this->setMD5($document->id, $md5);
 
       $length=strlen($document->content);
       if($length>0 && strlen($document->url)>0 ){
@@ -70,7 +72,7 @@ class Indexer
     }
   }
 
-  private function update_index_info ($id, $md5)
+  private function setMD5 ($id, $md5)
   {
     $SQL = "update document where id='".$id."' set md5='".$md5."'";
   }

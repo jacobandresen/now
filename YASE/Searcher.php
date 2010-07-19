@@ -1,5 +1,5 @@
 <?php
-class Searcher
+class YASE_Searcher
 {
   private $accountId;
   public $limit = 5;

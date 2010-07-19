@@ -1,6 +1,6 @@
 <?php
 
-class Crawler
+class YASE_Crawler
 {
   private $accountId;
   private $setting;
@@ -21,9 +21,11 @@ class Crawler
     $this->setting = new Setting("crawler", $accountId);
     $this->maxLevel = $this->setting->get('max_level');
     $this->crawlLimit = $this->setting->get('crawl_limit');
+    
+    //TODO: we should be able to allow several domains (use collection_in_domain)
     $this->domain = $this->setting->get('domain');
 
-    $this->httpClient = new HTTPClient($this->domain);
+    $this->httpClient = new YASE_HTTPClient($this->domain);
   }
 
   public function start()
@@ -45,6 +47,8 @@ class Crawler
     $document = $this->httpClient->getDocument($url);
     $document->level = $level;
 
+    //TODO: update number of seen documents
+    //TODO: use separate content analyzers  pr contentType
     if ($document->contentType=="application/pdf") {
       $p=new PDFRobot($this->accountId);
       $document->content = $p->clean($document);
@@ -62,9 +66,9 @@ class Crawler
       preg_match_all("/\<a.*?(?:src|href)=\"([^\"]*?)\"/i",
                      $document->content, $matches);
       foreach ($matches[1] as $item) {
-        $fullUrl = URL::expandUrl($item, $url);
+        $fullUrl = YASE_URL::expandUrl($item, $url);
         if ( $this->shouldCrawl($fullUrl) ) {
-          $link = new Document();
+          $link = new YASE_Document();
           $link->url = $fullUrl;
           $link->level = $level+1;
           array_push($this->found, $link);
@@ -97,15 +101,16 @@ class Crawler
     }
     if ($this->level > $this->maxLevel ||
        count($this->crawled)>$this->crawlLimit||
-       URL::filter($this->accountId, $url, "crawlerfilter")){ 
+       YASE_URL::filter($this->accountId, $url, "crawlerfilter")){ 
       array_push( $this->crawled, $url); //skip document
       return false;
     }
     return true;
   }
-
+  
+  //TODO: we should be able to allow several domains (use collection_in_domain)
   private function inDomain($url) {
-    $host = URL::extractHost($url);
+    $host = YASE_URL::extractHost($url);
     $domain = str_replace("www.", "", $this->domain);
     return (strpos($host,$domain)!==false);
   }

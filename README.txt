@@ -1,5 +1,1 @@
-this search engine shall be used for no evil
-
-dependencies:
-	pdftotext
-	mysql
+welcome to my zen garden ;)

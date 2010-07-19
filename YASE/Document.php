@@ -1,5 +1,5 @@
 <?php
-class Document{
+class YASE_Document{
 
   public $level;
   public $url;

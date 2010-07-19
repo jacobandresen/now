@@ -1,5 +1,7 @@
 <?php
-class HTMLRobot
+
+//TODO: add flexible content analyzers
+class YASE_HTMLRobot
 {
   public static function clean($html)
   {
