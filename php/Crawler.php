@@ -1,6 +1,6 @@
 <?php
 
-class YASE_Crawler
+class Crawler
 {
   private $accountId;
   private $setting;
@@ -66,9 +66,9 @@ class YASE_Crawler
       preg_match_all("/\<a.*?(?:src|href)=\"([^\"]*?)\"/i",
                      $document->content, $matches);
       foreach ($matches[1] as $item) {
-        $fullUrl = YASE_URL::expandUrl($item, $url);
+        $fullUrl = URL::expandUrl($item, $url);
         if ( $this->shouldCrawl($fullUrl) ) {
-          $link = new YASE_Document();
+          $link = new Document();
           $link->url = $fullUrl;
           $link->level = $level+1;
           array_push($this->found, $link);
@@ -101,7 +101,7 @@ class YASE_Crawler
     }
     if ($this->level > $this->maxLevel ||
        count($this->crawled)>$this->crawlLimit||
-       YASE_URL::filter($this->accountId, $url, "crawlerfilter")){ 
+       URL::filter($this->accountId, $url, "crawlerfilter")){ 
       array_push( $this->crawled, $url); //skip document
       return false;
     }
@@ -110,7 +110,7 @@ class YASE_Crawler
   
   //TODO: we should be able to allow several domains (use collection_in_domain)
   private function inDomain($url) {
-    $host = YASE_URL::extractHost($url);
+    $host = URL::extractHost($url);
     $domain = str_replace("www.", "", $this->domain);
     return (strpos($host,$domain)!==false);
   }

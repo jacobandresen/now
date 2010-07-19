@@ -1,5 +1,5 @@
 <?php
-class YASE_Setting 
+class Setting 
 {
   private $settingName;
   private $accountId;

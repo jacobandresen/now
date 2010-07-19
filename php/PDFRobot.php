@@ -1,5 +1,5 @@
 <?php
-class YASE_PDFRobot
+class PDFRobot
 {
   private $accountId;
   public function __construct($accountId)

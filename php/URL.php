@@ -1,5 +1,5 @@
 <?php
-class YASE_URL
+class URL
 {
   public static function hasDuplicate($accountId, $url)
   {

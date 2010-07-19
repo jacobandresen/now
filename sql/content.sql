@@ -1,14 +1,12 @@
 drop table if exists document;
 create table document (
   id 				int NOT NULL primary key auto_increment,
-  account_id      		int,
   url 		        	varchar(256),
   level           		int,
   contenttype     		varchar(256),
   retrieved 	    		timestamp,
   content 	      		LONGTEXT,
-  FULLTEXT(content),
-  foreign key(account_id)  	references account(id)
+  FULLTEXT(content)
 ) engine=MyISAM;
 
 drop table if exists collection;
@@ -27,7 +25,14 @@ create table collection_in_domain (
   foreign key(collection_id)    references collection(id)
 );
 
--- TODO: create a separate facet description?
+drop table if exists account_collection;
+create table account_collection (
+  account_id			int,
+  collection_id			int,
+  foreign key(account_id)	references account(id),
+  foreign key(collection_id)	references colleciton(id)
+);
+
 drop table if exists facet;
 create table facet (
   id int 			NOT NULL primary key auto_increment,

@@ -1,5 +1,5 @@
 <?php
-class YASE_Indexer
+class Indexer
 {
   private $accountId;
 
