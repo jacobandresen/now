@@ -11,7 +11,7 @@ create table document (
 
 drop table if exists collection;
 create table collection (
-  id int			NOT NULL primary key auto_increment,
+  id 				int NOT NULL primary key auto_increment,
   name				varchar(256),
   seen_documents		int,
   indexed_documents		int,
@@ -20,8 +20,8 @@ create table collection (
 
 drop table if exists collection_in_domain;
 create table collection_in_domain (
-  collection_id			id,
-  domain			varchar(256)
+  collection_id			int,
+  domain			varchar(256),
   foreign key(collection_id)    references collection(id)
 );
 
@@ -30,7 +30,7 @@ create table account_collection (
   account_id			int,
   collection_id			int,
   foreign key(account_id)	references account(id),
-  foreign key(collection_id)	references colleciton(id)
+  foreign key(collection_id)	references collection(id)
 );
 
 drop table if exists facet;

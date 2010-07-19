@@ -3,8 +3,7 @@ create table account (
   username			varchar(256) NOT NULL UNIQUE,
   password			varchar(256) NOT NULL, 
   first_name			varchar(256),
-  last_name			varchar(256),
-  FOREIGN KEY(login_id) 	references login(id)
+  last_name			varchar(256)
 );
 
 create table account_setting (
@@ -19,6 +18,5 @@ create table account_setting (
 create table account_login_rights (
   account_id			int NOT NULL primary key auto_increment,
   privilege			int,
-  FOREIGN KEY(login_id) 	references login(id),
   FOREIGN KEY(account_id) 	references account(id) 
 );
