@@ -16,9 +16,9 @@ create table account (
 create table account_setting (
   id				int NOT NULL primary key auto_increment,
   user_id			int,
-  setting_name			varchar[256], 
+  setting_name			varchar(256), 
   name				varchar(256),
-  value				varchar(256)
+  value				varchar(256),
   FOREIGN KEY(user_id) 		references user(id)
 );
 

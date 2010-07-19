@@ -8,7 +8,7 @@ create table document (
   retrieved 	    		timestamp,
   content 	      		LONGTEXT,
   FULLTEXT(content),
-  foreign key(account_id)  	references user(id)
+  foreign key(account_id)  	references account(id)
 ) engine=MyISAM;
 
 drop table if exists facet;
