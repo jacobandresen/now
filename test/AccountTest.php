@@ -4,22 +4,22 @@ require_once '../php/Framework.php';
 
 class AccountTest extends PHPUnit_Framework_TestCase
 {
-  public function testCanCreateNewAccount()
+  public function testCreate()
   {
      Account::create("jacob", "jacob", "Jacob", "Andresen");
-     $loginId = Account::login("jacob", "jacob");
   }  
 
-  public function testCanDeleteExistingAccount()
+  public function testDefaultAccountSettings()
+  {
+     $loginId = Account::login("jacob", "jacob");
+     $setting = new Setting("crawler", $loginId);
+     $this->assertEquals( $setting->get("crawl_limit"), "1500");
+     $this->assertEquals( $setting->get("level_limit"), "15"); 
+  }
+ 
+  public function testDelete()
   {
      $loginId = Account::login("jacob", "jacob");
      Account::delete($loginId);
-  }
-
-  public function testAreTheDefaultSettingsCorrect()
-  {
-     Account::create("jacob", "jacob", "Jacob", "Andresen");
-     //assert crawl_limit exists
-     //assert level_limit exists     
   }
 }

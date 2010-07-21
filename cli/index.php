@@ -12,7 +12,7 @@ if ($argv[1] == "") {
   exit -1;
 }
 
-$s = new YASE();
-$s->index($argv[1]);
+//$s = new YASE();
+//$s->index($argv[1]);
 
 ?>
