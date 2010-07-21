@@ -17,7 +17,6 @@ create table account_setting (
   FOREIGN KEY(account_id) 	references account(id)
 );
 
-
 drop table if exists account_login_rights;
 create table account_login_rights (
   account_id			int NOT NULL primary key auto_increment,

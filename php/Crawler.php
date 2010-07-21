@@ -2,8 +2,7 @@
 
 class Crawler
 {
-  private $accountId;
-  private $setting;
+  private $account;
 
   private $level;
   private $found;
@@ -17,15 +16,11 @@ class Crawler
     $this->crawled=array();
     $this->process=array();
 
-    $this->accountId=$accountId;
-    $this->setting = new Setting("crawler", $accountId);
-    $this->maxLevel = $this->setting->get('max_level');
-    $this->crawlLimit = $this->setting->get('crawl_limit');
+    $this->account = new Account($accountId);
     
-    //TODO: we should be able to allow several domains (use collection_in_domain)
-    $this->domain = $this->setting->get('domain');
+    //$this->domain = $this->setting->get('domain');
 
-    $this->httpClient = new YASE_HTTPClient($this->domain);
+    $this->httpClient = new HTTPClient($this->domain);
   }
 
   public function start()
@@ -47,15 +42,13 @@ class Crawler
     $document = $this->httpClient->getDocument($url);
     $document->level = $level;
 
-    //TODO: update number of seen documents
-    //TODO: use separate content analyzers  pr contentType
     if ($document->contentType=="application/pdf") {
       $p=new PDFRobot($this->accountId);
       $document->content = $p->clean($document);
       $document->content = htmlentities($document->content,ENT_QUOTES);
 
       array_push($this->crawled, $url);
-      return $document->save($this->accountId);
+      return $document->save($this->account->id);
     } else {
 
       if (!$document->shouldCrawl()) {
@@ -77,7 +70,7 @@ class Crawler
       }
 
       $document->content = htmlentities($document->content,ENT_QUOTES);
-      $document->save($this->accountId);
+      $document->save($this->account->id);
       array_push($this->crawled, $url);
 
       while($child=array_shift($this->process)){
@@ -99,9 +92,9 @@ class Crawler
       array_push( $this->crawled, $url); //skip document
       return false;
     }
-    if ($this->level > $this->maxLevel ||
+    if ($this->level > $this->account->setting->maxLevel ||
        count($this->crawled)>$this->crawlLimit||
-       URL::filter($this->accountId, $url, "crawlerfilter")){ 
+       URL::filter($this->account->id, $url, "crawlerfilter")){ 
       array_push( $this->crawled, $url); //skip document
       return false;
     }

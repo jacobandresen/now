@@ -4,22 +4,15 @@ require_once '../php/Framework.php';
 
 class AccountTest extends PHPUnit_Framework_TestCase
 {
-  public function testCreate()
+  public function testAddCollection()
   {
-     Account::create("jacob", "jacob", "Jacob", "Andresen");
+    $account = login("jacob", "jacob");
+    $collection = new Collection($account->id, "jacobs stuff");
+    $collection->addDomain("pedant.dk");
+    $account->addCollection($collection);
   }  
 
-  public function testDefaultAccountSettings()
+  public function testDeleteCollection()
   {
-     $loginId = Account::login("jacob", "jacob");
-     $setting = new Setting("crawler", $loginId);
-     $this->assertEquals( $setting->get("crawl_limit"), "1500");
-     $this->assertEquals( $setting->get("level_limit"), "15"); 
-  }
- 
-  public function testDelete()
-  {
-     $loginId = Account::login("jacob", "jacob");
-     Account::delete($loginId);
   }
 }

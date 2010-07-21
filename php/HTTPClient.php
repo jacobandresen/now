@@ -1,5 +1,5 @@
 <?php
-class YASE_HTTPClient
+class HTTPClient
 {
   public $status;
   public $finalUrl;
@@ -24,12 +24,12 @@ class YASE_HTTPClient
 
   public function get ($incomingUrl)
   {
-    $host = YASE_URL::extractHost($incomingUrl);
+    $host = URL::extractHost($incomingUrl);
     if($host!=""){
       $this->host=$host;
     }
     $this->connect($host);
-    $url = YASE_URL::extractRelativeUrl($host,$incomingUrl);
+    $url = URL::extractRelativeUrl($host,$incomingUrl);
     $this->url=$url;
     $this->SendRequest("GET $url");
     $response = $this->getReply();
@@ -40,7 +40,7 @@ class YASE_HTTPClient
 
   public function getDocument ($url)
   {
-    $document = new YASE_Document();
+    $document = new Document();
     $document->url = $url;
     $document->content = $this->get($url);
     $document->contentType=trim($this->contentType);

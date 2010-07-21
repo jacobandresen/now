@@ -1,8 +1,8 @@
 <?php
 class Setting 
 {
-  private $settingName;
   private $accountId;
+  private $settingName;
 
   public function __construct($settingName, $accountId)
   {
