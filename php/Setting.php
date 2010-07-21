@@ -19,7 +19,7 @@ class Setting
   {
     $res = mysql_query("select value from account_setting where account_id='".$this->accountId."' and setting_name='".$this->settingName."' and name='".$name."'") or die (mysql_error());
     $row = mysql_fetch_array($res);
-    return $row[$name];     
+    return $row[0];     
   }
 };
 ?>
