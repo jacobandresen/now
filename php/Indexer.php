@@ -1,5 +1,5 @@
 <?php
-class Indexer
+class Indexer extends Collection
 {
   private $accountId;
 
@@ -21,6 +21,7 @@ class Indexer
 
   public function index()
   {
+    //TODO: delete from current collection
     $SQL="select max(retrieved),id,url,contenttype,content,level from document where account_id='".$this->accountId."' group by account_id,url";
     $res = mysql_query($SQL) or die (mysql_error());
 

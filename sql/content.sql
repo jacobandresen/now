@@ -18,7 +18,7 @@ create table collection (
   indexed_documents		int,
   start_url			varchar(512),
   last_updated			datetime, 
-  foreign key(account_id)       references(id)
+  foreign key(owner_id)       references account(id)
 );
 
 drop table if exists collection_in_domain;

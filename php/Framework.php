@@ -1,5 +1,7 @@
 <?php
 require_once('Configuration.php');
+require_once('Account.php');
+require_once('Collection.php');
 require_once('Encoding.php');
 require_once('URL.php');
 require_once('Setting.php');
@@ -10,20 +12,19 @@ require_once('Indexer.php');
 require_once('Searcher.php');
 require_once('HTMLRobot.php');
 require_once('PDFRobot.php');
-require_once('Collection.php');
 
 mysql_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD) or die(mysql_error());
 mysql_select_db(MYSQL_DATABASE) or die(mysql_error());
 
 function login($userName, $password)
 {
-  $res = mysql_query("SELECT id from account where username='".$userName."' and password='".$password."'");
+  $res = mysql_query("SELECT id from account where username='".$userName."' and password='".$password."'") or die(mysql_error());
   $row = mysql_fetch_array($res);
   $accountId = $row[0];
-  if ( isset($acocuntId) ){
+  if ( isset($accountId) ){
     return new Account($accountId);
   }else{
-    throw new Exception("login failed"); 
+    throw new Exception("login failed for user ".$userName." with password ".$password); 
   }
 }
 
@@ -32,7 +33,7 @@ function createAccount($userName, $password,
 {
   try{ 
       mysql_query("BEGIN"); 
-      mysql_query("INSERT INTO account(username, password, first_name, last_name) VALUES('$userName','$password', '$firstName', '$lastName')");
+      mysql_query("INSERT INTO account(username, password, first_name, last_name) VALUES('$userName','$password', '$firstName', '$lastName')") or die (mysql_error());
       $loginId = login($userName, $password);
       createDefaultAccountSettings($loginId);
       mysql_query("COMMIT");

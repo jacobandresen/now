@@ -6,10 +6,6 @@ class Collection
   protected $name;
   protected $domains;
   
- // protected $seenNumberOfPages;
- // protected $crawledNumberOfPages;
- // protected $indexedNumberOfPages;
-
   public function __construct ($accountId, $name) 
   {
     $this->accountId = $accountId;
@@ -20,10 +16,10 @@ class Collection
     $this->id = mysql_insert_id();
   }
 
-  public function make ($collectionId)
+  public function read ($collectionId)
   {
     $this->id = $colletionId;
-    $res = mysql_query("SELECT account_id,name FROM account where id=$collectionId");
+    $res = mysql_query("SELECT account_id,name FROM collection where id=$collectionId");
     $row = mysql_fetch_row($res);
     $this->accountId = $row['account_id'];
     $this->name = $row['name']; 
@@ -55,6 +51,5 @@ class Collection
     } 
    return true;    
   }
-
 }
 ?>

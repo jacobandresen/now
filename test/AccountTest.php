@@ -2,24 +2,25 @@
 require_once 'PHPUnit/Framework.php';
 require_once '../php/Framework.php';
 
-class ManagerTest extends PHPUnit_Framework_TestCase
+class AccountTest extends PHPUnit_Framework_TestCase
 {
-  public function testCreateAccount()
+  public function testCreate()
   {
-     createAccount("jacob", "jacob", "Jacob", "Andresen");
+     Account::create("jacob", "jacob", "Jacob", "Andresen");
   }  
 
-  public function testDefaultAccountSettings()
+  public function testDefaultSettings()
   {
-     $accountId = login("jacob", "jacob");
-     $crawlerSetting = new Setting("crawler", $accountId);
-     $this->assertEquals( $crawlerSetting->get("crawl_limit"), "1500");
-     $this->assertEquals( $crawlerSetting->get("level_limit"), "15"); 
+     $account = Account::login("jacob", "jacob");
+     $this->assertEquals( $account->crawlerSetting->get("crawl_limit"), "1500");
+     $this->assertEquals( $account->crawlerSetting->get("level_limit"), "15"); 
   }
  
-  public function testDeleteAccount()
+  public function testDelete()
   {
-     $accountId = login("jacob", "jacob");
-     deleteAccount($accountId);
+     $account = login("jacob", "jacob");
+     deleteAccount($account->id);
+
+     //TODO: verify that we cannot find the account
   }
 }

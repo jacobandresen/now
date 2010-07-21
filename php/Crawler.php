@@ -1,25 +1,22 @@
 <?php
 
-class Crawler
+class Crawler extends Collection
 {
-  private $account;
-
-  private $level;
-  private $found;
-  private $crawled;
-  private $process;
+  protected $account;
+  protected $level;
+  
+  protected $processURLs;
+  protected $seenURLs;
+  protected $crawledURLs;
+ 
   private $httpClient;
 
   public function __construct($accountId)
   {
-    $this->found=array();
-    $this->crawled=array();
-    $this->process=array();
-
+    $this->processURLs=array();
+    $this->crawledURLs=array();
+   
     $this->account = new Account($accountId);
-    
-    //$this->domain = $this->setting->get('domain');
-
     $this->httpClient = new HTTPClient($this->domain);
   }
 
@@ -47,12 +44,12 @@ class Crawler
       $document->content = $p->clean($document);
       $document->content = htmlentities($document->content,ENT_QUOTES);
 
-      array_push($this->crawled, $url);
+      array_push($this->crawledURLs, $url);
       return $document->save($this->account->id);
     } else {
 
       if (!$document->shouldCrawl()) {
-        array_push( $this->found, $url); //skip document
+        array_push( $this->foundURLs, $url); //skip document
         return false;
       }
 
@@ -64,8 +61,8 @@ class Crawler
           $link = new Document();
           $link->url = $fullUrl;
           $link->level = $level+1;
-          array_push($this->found, $link);
-          array_push($this->process, $link);
+          array_push($this->foundURLs, $link);
+          array_push($this->processURLs, $link);
         }
       }
 
@@ -88,7 +85,7 @@ class Crawler
     if (in_array($url, $this->crawled)){
       return false;
     }
-    if ($this->inDomain($url) ==false) {
+    if ($this->inAllowedDomains($url) ==false) {
       array_push( $this->crawled, $url); //skip document
       return false;
     }
@@ -101,11 +98,5 @@ class Crawler
     return true;
   }
   
-  //TODO: we should be able to allow several domains (use collection_in_domain)
-  private function inDomain($url) {
-    $host = URL::extractHost($url);
-    $domain = str_replace("www.", "", $this->domain);
-    return (strpos($host,$domain)!==false);
-  }
 };
 ?>
