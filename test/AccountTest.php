@@ -2,17 +2,24 @@
 require_once 'PHPUnit/Framework.php';
 require_once '../php/Framework.php';
 
-class AccountTest extends PHPUnit_Framework_TestCase
+class ManagerTest extends PHPUnit_Framework_TestCase
 {
-  public function testAddCollection()
+  public function testCreateAccount()
   {
-    $account = login("jacob", "jacob");
-    $collection = new Collection($account->id, "jacobs stuff");
-    $collection->addDomain("pedant.dk");
-    $account->addCollection($collection);
+     createAccount("jacob", "jacob", "Jacob", "Andresen");
   }  
 
-  public function testDeleteCollection()
+  public function testDefaultAccountSettings()
   {
+     $accountId = login("jacob", "jacob");
+     $crawlerSetting = new Setting("crawler", $accountId);
+     $this->assertEquals( $crawlerSetting->get("crawl_limit"), "1500");
+     $this->assertEquals( $crawlerSetting->get("level_limit"), "15"); 
+  }
+ 
+  public function testDeleteAccount()
+  {
+     $accountId = login("jacob", "jacob");
+     deleteAccount($accountId);
   }
 }
