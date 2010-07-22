@@ -23,19 +23,12 @@ class Account
     }
   }
 
-  public static function create ($userName, $password, 
-		       $firstName, $lastName)
+  public static function create ($userName, $password, $firstName, $lastName)
   {
-  try{ 
-      mysql_query("BEGIN"); 
-      mysql_query("INSERT INTO account(username, password, first_name, last_name) VALUES('$userName','$password', '$firstName', '$lastName')") or die (mysql_error());
-      $loginId = login($userName, $password);
-      Account::createDefaultSettings($loginId);
-      mysql_query("COMMIT");
-    }catch(Exception $herr){
- 	print "account creation failed :".mysql_error();
-        mysql_Query("ROLLBACK"); 
-    }
+    $sql = "INSERT INTO account(username, password, first_name, last_name) VALUES('$userName','$password', '$firstName', '$lastName')";
+    print $sql;
+    mysql_query($sql) or die(mysql_error()); 
+    Account::createDefaultSettings(mysql_insert_id());
   }
 
   public function delete($accountId) 
@@ -48,12 +41,6 @@ class Account
     $setting = new Setting("crawler", $accountId);
     $setting->set("crawl_limit", "1500");
     $setting->set("level_limit", "15"); 
-  }
-
-
-  public function addCollection( $collection ) 
-  {
-    throw new Exception("not implemented");
   }
 
 }

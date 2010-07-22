@@ -19,8 +19,8 @@ class AccountTest extends PHPUnit_Framework_TestCase
   public function testDelete()
   {
      $account = login("jacob", "jacob");
-     deleteAccount($account->id);
+     Account::delete($account->id);
 
-     //TODO: verify that we cannot find the account
+     //TODO: verify that we cannot login to the account
   }
 }

@@ -1,7 +1,7 @@
 <?php
 class Indexer extends Collection
 {
-  private $accountId;
+  public $accountId;
 
   public function __construct($accountId)
   {

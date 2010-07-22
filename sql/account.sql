@@ -1,6 +1,6 @@
 drop table if exists account;
 create table account (
-  id 				int NOT NULL primary key auto_increment,
+  id 				int NOT NULL primary key auto_increment ,
   username			varchar(256) NOT NULL UNIQUE,
   password			varchar(256) NOT NULL, 
   first_name			varchar(256),
@@ -14,7 +14,7 @@ create table account_setting (
   setting_name			varchar(256), 
   name				varchar(256),
   value				varchar(256),
-  FOREIGN KEY(account_id) 	references account(id)
+  FOREIGN KEY(account_id) 	references account(id) 
 );
 
 drop table if exists account_login_rights;
