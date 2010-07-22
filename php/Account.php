@@ -9,6 +9,7 @@ class Account
   {
     $this->id = $accountId; 
     $this->crawlerSetting = new Setting("crawler", $this->id);
+    $this->collections = array(); 
     $this->readCollections();
   }
 
@@ -43,16 +44,13 @@ class Account
     $res = mysql_query($sql) or die( mysql_error());
     while ($row = mysql_fetch_array($res, MYSQL_NUM))  
     {
-      print $row[0]; 
       array_push($colids, $row[0]); 
     }
 
-    //TODO: avoid infinite loop with
-    //foreach ($colids as $colid) 
-    //{
-    //  print $colid; 
-    //  array_push($this->collections, Collection::read($colid));
-    //}
+    foreach ($colids as $colid) 
+    {
+      array_push($this->collections, Collection::read($colid));
+    }
   }
 
   private function createDefaultSettings($accountId) 

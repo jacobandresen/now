@@ -7,7 +7,8 @@ class CollectionTest extends PHPUnit_Framework_TestCase
   public function testAdd()
   { 
     $account = Account::login("jacob", "jacob");
-    $collection = new Collection($account->id, "jacobs stuff");
+    $collection = new Collection();
+    $collection->create($account->id, "jacobs stuff");
     $collection->addDomain("pedant.dk");
 
     $this->assertEquals($collection->name, "jacobs stuff");

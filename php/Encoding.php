@@ -1,5 +1,5 @@
 <?php
-class YASE_Encoding{
+class Encoding{
   public static function isUTF8($string)
   {
     $c=0; $b=0;
