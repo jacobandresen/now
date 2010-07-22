@@ -6,6 +6,7 @@ class AccountTest extends PHPUnit_Framework_TestCase
 {
   public function testCreate()
   {
+     mysql_query("DELETE FROM account where username='jacob'");
      Account::create("jacob", "jacob", "Jacob", "Andresen");
   }  
 
@@ -18,9 +19,9 @@ class AccountTest extends PHPUnit_Framework_TestCase
  
   public function testDelete()
   {
-     $account = login("jacob", "jacob");
+     mysql_query("DELETE FROM account where username='deleteme'");
+     Account::create("deleteme", "deleteme", "Jacob", "Andresen");
+     $account = Account::login("deleteme", "deleteme");
      Account::delete($account->id);
-
-     //TODO: verify that we cannot login to the account
   }
 }

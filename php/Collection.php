@@ -2,31 +2,39 @@
 class Collection
 {
   public $id; 
-  protected $accountId;
-  protected $name;
-  protected $domains;
+  public $name;
+  public $ownerId; 
+  public $domains;
   
-  public function __construct ($accountId, $name) 
+  public function __construct ($ownerId, $name) 
   {
-    $this->accountId = $accountId;
+    $this->ownerId = $ownerId;  
     $this->name = $name;
   
-    mysql_query("INSERT INTO collection(owner_id, name) VALUES($accountId, '$name')") or die (mysql_error());
+    mysql_query("INSERT INTO collection(owner_id, name) VALUES($ownerId, '$name')") or die (mysql_error());
  
     $this->id = mysql_insert_id();
   }
 
   public function read ($collectionId)
   {
-    $this->id = $colletionId;
-    $res = mysql_query("SELECT account_id,name FROM collection where id=$collectionId");
+    $this->id = $collectionId;
+    $res = mysql_query("SELECT owner_id,name FROM collection where id=$collectionId") or die(mysql_error());
     $row = mysql_fetch_row($res);
-    $this->accountId = $row['account_id'];
-    $this->name = $row['name']; 
+    
+    $this->ownerId = $row[0];
+    $this->name = $row[1]; 
 
-    $res = mysql_query("SELECT domain  FROM collection_in_domain where collection_id=$collectionId") or die (mysql_error());
-    while ($row = mysql_fetch_row($res) )  {
-      array_push($this->domains, $row[0]);
+    $this->readDomains();  
+    return ($this);
+  }
+
+  private function readDomains ()
+  {
+    $res = mysql_query("SELECT domain FROM collection_in_domain where collection_id=".$this->id) or die (mysql_error());
+    while ( ($row = mysql_fetch_array($res)) )  {
+     print $row[0];
+     array_push($this->domains, $row[0]);
     }
   }
 

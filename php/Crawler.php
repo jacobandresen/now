@@ -2,7 +2,7 @@
 
 class Crawler extends Collection
 {
-  protected $account;
+  public $account;
   protected $level;
   
   protected $processURLs;
