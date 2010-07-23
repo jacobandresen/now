@@ -40,6 +40,7 @@ class Collection
     return ($c);
   }
 
+  //TODO: how to remove the collection from the account
   public function delete ()
   {
     mysql_query("DELETE FROM collection WHERE ID=$this->id") or die (mysql_error());

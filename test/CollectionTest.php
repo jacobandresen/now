@@ -11,9 +11,19 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 
     $collection = Collection::create($account->id, "jacobs stuff");
     $collection->addDomain("pedant.dk");
+    $collection->addDomain("searchzen.org");
 
     $this->assertEquals($collection->name, "jacobs stuff");
     $this->assertEquals($collection->domains[0], "pedant.dk");
+    $this->assertEquals($collection->domains[1], "searchzen.org");
   }  
+
+  public function testDelete()
+  {
+    $account = Account::login("jacob", "jacob");
+    
+    $account->collections[0]->delete();
+    print_r($account);
+  }
 
 }

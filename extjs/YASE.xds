@@ -1,0 +1,387 @@
+{
+	"name": "YASE.xds",
+	"projectId": "8C14F400-A62D-43FA-8FC4-8DF6BF0D5773",
+	"settings": {
+		"urlPrefix": "http://localhost/",
+		"spacesToIndent": 4,
+		"codeGenFormat": "Class",
+		"extPath": "http://extjs.cachefly.net/ext-3.2.1/",
+		"exportPath": ".",
+		"lineEnding": "CRLF"
+	},
+	"xdsVersion": "xds-1.0.2.7",
+	"components": [
+		{
+			"id": "MyPanel",
+			"cid": "panel",
+			"jsClass": "AdministrationPanel",
+			"snapToGrid": 10,
+			"userConfig": {
+				"title": "Search Engine Administration",
+				"width": 847,
+				"height": 464
+			},
+			"cn": [
+				{
+					"id": "MyUserComponent",
+					"cid": "usercomponent",
+					"jsClass": "MyTabPanel",
+					"snapToGrid": 10,
+					"userConfig": {
+						"jsClass": "CollectionConfigurationTabPanel",
+						"userXType": "collecitonconfigurationtabpanel",
+						"height": 310
+					},
+					"userComponent": "MyTabPanel"
+				},
+				{
+					"id": "MyUserComponent2",
+					"cid": "usercomponent",
+					"jsClass": "MyToolbar",
+					"snapToGrid": 10,
+					"userConfig": {
+						"jsClass": "AdministrationToolBar",
+						"userXType": "administratiotoolbar"
+					},
+					"userComponent": "MyToolbar"
+				}
+			]
+		},
+		{
+			"id": "MyTabPanel",
+			"cid": "tabpanel",
+			"jsClass": "CollectionConfigurationTabPanel",
+			"snapToGrid": 10,
+			"userConfig": {
+				"activeTab": 0,
+				"height": 739
+			},
+			"userXType": "collecitonconfigurationtabpanel",
+			"cn": [
+				{
+					"id": "MyUserComponent1",
+					"cid": "usercomponent",
+					"jsClass": "MyPanel1",
+					"snapToGrid": 10,
+					"userConfig": {
+						"jsClass": "AccountPanel",
+						"userXType": "accountpanel"
+					},
+					"userComponent": "MyPanel1"
+				},
+				{
+					"id": "MyUserComponent3",
+					"cid": "usercomponent",
+					"jsClass": "MyPanel2",
+					"snapToGrid": 10,
+					"userConfig": {
+						"jsClass": "CrawlerPanel",
+						"userXType": "crawlerpanel",
+						"height": 427,
+						"width": 1220
+					},
+					"userComponent": "MyPanel2"
+				},
+				{
+					"id": "MyUserComponent4",
+					"cid": "usercomponent",
+					"jsClass": "MyPanel3",
+					"snapToGrid": 10,
+					"userConfig": {
+						"jsClass": "IndexerPanel",
+						"userXType": "indexerpanel"
+					},
+					"userComponent": "MyPanel3"
+				}
+			]
+		},
+		{
+			"id": "MyPanel1",
+			"cid": "panel",
+			"jsClass": "AccountPanel",
+			"snapToGrid": 10,
+			"userConfig": {
+				"title": "Account",
+				"height": 473
+			},
+			"userXType": "accountpanel",
+			"cn": [
+				{
+					"id": "MyLabel",
+					"cid": "label",
+					"jsClass": "MyLabel",
+					"snapToGrid": 10,
+					"userConfig": {
+						"text": "Crawl Limit",
+						"width": 200
+					}
+				},
+				{
+					"id": "MyNumberField",
+					"cid": "numberfield",
+					"jsClass": "MyNumberField",
+					"snapToGrid": 10,
+					"userConfig": {
+						"id": "acountCrawlLimit"
+					}
+				},
+				{
+					"id": "MySpacer",
+					"cid": "spacer",
+					"jsClass": "MySpacer",
+					"snapToGrid": 10
+				},
+				{
+					"id": "MyLabel1",
+					"cid": "label",
+					"jsClass": "MyLabel1",
+					"snapToGrid": 10,
+					"userConfig": {
+						"text": "Level Limit"
+					}
+				},
+				{
+					"id": "MyNumberField1",
+					"cid": "numberfield",
+					"jsClass": "MyNumberField",
+					"snapToGrid": 10,
+					"userConfig": {
+						"id": "levelLimit"
+					}
+				},
+				{
+					"id": "MyGrid",
+					"cid": "grid",
+					"jsClass": "MyGrid",
+					"snapToGrid": 10,
+					"userConfig": {
+						"title": "domains",
+						"store": "(none)",
+						"height": 285,
+						"width": 386
+					},
+					"cn": [
+						{
+							"id": "MyColumn",
+							"cid": "gridcolumn",
+							"jsClass": "MyColumn",
+							"snapToGrid": 10,
+							"userConfig": {
+								"dataIndex": "string",
+								"header": "domain",
+								"sortable": true,
+								"resizable": "-ext-undefined-",
+								"width": 100
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "MyToolbar",
+			"cid": "toolbar",
+			"jsClass": "AdministrationToolBar",
+			"dock": "tbar",
+			"snapToGrid": 10,
+			"userConfig": {
+				"id": "AdministrationToolBar",
+				"itemId": "AdministrationToolBar"
+			},
+			"userXType": "administratiotoolbar",
+			"cn": [
+				{
+					"id": "MyButton",
+					"cid": "button",
+					"jsClass": "MyButton",
+					"snapToGrid": 10,
+					"userConfig": {
+						"text": "SaveButton"
+					}
+				},
+				{
+					"id": "MyButton1",
+					"cid": "button",
+					"jsClass": "MyButton1",
+					"snapToGrid": 10,
+					"userConfig": {
+						"text": "ResetButton"
+					}
+				}
+			]
+		},
+		{
+			"id": "MyPanel2",
+			"cid": "panel",
+			"jsClass": "CrawlerPanel",
+			"snapToGrid": 10,
+			"userConfig": {
+				"title": "Crawler",
+				"height": 539
+			},
+			"userXType": "crawlerpanel",
+			"cn": [
+				{
+					"id": "MyUserComponent6",
+					"cid": "usercomponent",
+					"jsClass": "MyGrid1",
+					"snapToGrid": 10,
+					"userConfig": {
+						"jsClass": "CrawlerFilterGridPanel",
+						"userXType": "crawlerfiltergridpanel"
+					},
+					"userComponent": "MyGrid1"
+				}
+			]
+		},
+		{
+			"id": "MyPanel3",
+			"cid": "panel",
+			"jsClass": "IndexerPanel",
+			"snapToGrid": 10,
+			"userConfig": {
+				"title": "Indexer"
+			},
+			"userXType": "indexerpanel"
+		},
+		{
+			"id": "MyToolbar1",
+			"cid": "toolbar",
+			"jsClass": "CrawlerFilterToolBar",
+			"dock": "tbar",
+			"snapToGrid": 10,
+			"userXType": "crawlerfiltertoolbar",
+			"cn": [
+				{
+					"id": "MyButton2",
+					"cid": "button",
+					"jsClass": "MyButton2",
+					"snapToGrid": 10,
+					"userConfig": {
+						"text": "Save",
+						"id": "SaveButton"
+					}
+				},
+				{
+					"id": "MyButton3",
+					"cid": "button",
+					"jsClass": "MyButton3",
+					"snapToGrid": 10,
+					"userConfig": {
+						"text": "DeleteButton"
+					}
+				}
+			]
+		},
+		{
+			"id": "MyGrid1",
+			"cid": "grid",
+			"jsClass": "CrawlerFilterGridPanel",
+			"snapToGrid": 10,
+			"userConfig": {
+				"title": "Crawler Filter",
+				"store": "(none)"
+			},
+			"userXType": "crawlerfiltergridpanel",
+			"cn": [
+				{
+					"id": "MyColumn2",
+					"cid": "gridcolumn",
+					"jsClass": "MyColumn2",
+					"snapToGrid": 10,
+					"userConfig": {
+						"dataIndex": "number",
+						"header": "domain",
+						"sortable": true,
+						"resizable": "-ext-undefined-",
+						"width": 100,
+						"align": "right"
+					}
+				},
+				{
+					"id": "MyColumn1",
+					"cid": "gridcolumn",
+					"jsClass": "MyColumn1",
+					"snapToGrid": 10,
+					"userConfig": {
+						"dataIndex": "string",
+						"header": "page prefix",
+						"sortable": true,
+						"resizable": "-ext-undefined-",
+						"width": 100
+					}
+				},
+				{
+					"id": "MyColumn3",
+					"cid": "booleancolumn",
+					"jsClass": "MyColumn3",
+					"snapToGrid": 10,
+					"userConfig": {
+						"header": "exclude",
+						"sortable": true,
+						"resizable": "-ext-undefined-",
+						"width": 100
+					}
+				},
+				{
+					"id": "MyUserComponent5",
+					"cid": "usercomponent",
+					"jsClass": "MyToolbar1",
+					"snapToGrid": 10,
+					"userConfig": {
+						"jsClass": "CrawlerFilterToolBar",
+						"userXType": "crawlerfiltertoolbar"
+					},
+					"userComponent": "MyToolbar1"
+				}
+			]
+		}
+	],
+	"stores": [
+		{
+			"id": "MyStore",
+			"cid": "jsonstore",
+			"jsClass": "CrawlerStore",
+			"snapToGrid": 10,
+			"userConfig": {
+				"storeId": "MyStore"
+			}
+		},
+		{
+			"id": "MyStore1",
+			"cid": "jsonstore",
+			"jsClass": "AccountStore",
+			"snapToGrid": 10,
+			"userConfig": {
+				"storeId": "MyStore1"
+			}
+		},
+		{
+			"id": "MyStore2",
+			"cid": "jsonstore",
+			"jsClass": "IndexerStore",
+			"snapToGrid": 10,
+			"userConfig": {
+				"storeId": "MyStore2"
+			}
+		},
+		{
+			"id": "MyStore3",
+			"cid": "jsonstore",
+			"jsClass": "AccountDomainStore",
+			"snapToGrid": 10,
+			"userConfig": {
+				"storeId": "MyStore3"
+			}
+		},
+		{
+			"id": "MyStore4",
+			"cid": "jsonstore",
+			"jsClass": "CrawlerFilterStore",
+			"snapToGrid": 10,
+			"userConfig": {
+				"storeId": "MyStore4"
+			}
+		}
+	]
+}

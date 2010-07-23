@@ -1,9 +1,9 @@
 <?php
 class Account 
 {
-  public    $id; 
-  protected $setting;
-  protected $collections;
+  public $id; 
+  public $setting;
+  public $collections;
 
   public function __construct($accountId)
   {
