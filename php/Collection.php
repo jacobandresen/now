@@ -14,8 +14,8 @@ class Collection
   public static function create ($ownerId, $name) 
   {
     $c = new Collection(); 
-    $t->ownerId = $ownerId;  
-    $t->name = $name;
+    $c->ownerId = $ownerId;  
+    $c->name = $name;
   
     mysql_query("INSERT INTO collection(owner_id, name) VALUES($ownerId, '$name')") or die (mysql_error());
     $c->domains = array();
@@ -28,11 +28,12 @@ class Collection
   { 
     $c = new Collection();
     $c->id = $collectionId;
-    $res = mysql_query("SELECT owner_id,name FROM collection where id=$collectionId") or die(mysql_error());
+    $res = mysql_query("SELECT id,owner_id,name FROM collection where id=$collectionId") or die(mysql_error());
     $row = mysql_fetch_row($res);
     if ($row) {
-      $c->ownerId = $row[0];
-      $c->name = $row[1]; 
+      $c->id = $row[0];
+      $c->ownerId = $row[1];
+      $c->name = $row[2]; 
       $c->domains = array();
       $c->readDomains();  
     } 
@@ -46,8 +47,10 @@ class Collection
 
   public function addDomain ( $domain ) 
   { 
-    mysql_query("INSERT INTO collection_in_domain(collection_id,domain) values('".$this->id."','".$domain."')") or die (mysql_error()); 
-    array_push($this->domains, $domain); 
+    $SQL ="INSERT INTO collection_in_domain(collection_id,domain) values('".$this->id."','".$domain."')";
+    mysql_query($SQL) or die(mysql_error()); 
+    $this->domains = array ();
+    $this->readDomains();
   }
 
   public function inAllowedDomains ( $URL )
