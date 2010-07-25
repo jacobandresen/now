@@ -2,23 +2,30 @@
 
 class Crawler extends Collection
 {
-  public $account;
   protected $level;
   
   protected $processURLs;
   protected $seenURLs;
   protected $crawledURLs;
  
-  private $httpClient;
+  protected $httpClient;
 
-  public function __construct($accountId)
+  
+  public function __construct($collectionId)
+  {
+    Parent::__construct($collectionId);	  
+    $this->prepare();
+  }
+
+  private function prepare()
   {
     $this->processURLs=array();
     $this->crawledURLs=array();
-   
-    $this->account = new Account($accountId);
-    $this->httpClient = new HTTPClient($this->domain);
-  }
+
+    //TODO: We do not require a domain to start HTTPClient
+    $firstDomain = $this->domains[0]; 
+    $this->httpClient = new HTTPClient($firstDomain);
+  } 
 
   public function start()
   {

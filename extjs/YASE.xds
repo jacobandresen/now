@@ -25,7 +25,7 @@
 				{
 					"id": "MyUserComponent",
 					"cid": "usercomponent",
-					"jsClass": "MyTabPanel",
+					"jsClass": "CollectionConfigurationTabPanel",
 					"snapToGrid": 10,
 					"userConfig": {
 						"jsClass": "CollectionConfigurationTabPanel",
@@ -37,7 +37,7 @@
 				{
 					"id": "MyUserComponent2",
 					"cid": "usercomponent",
-					"jsClass": "MyToolbar",
+					"jsClass": "AdministrationToolBar",
 					"snapToGrid": 10,
 					"userConfig": {
 						"jsClass": "AdministrationToolBar",
@@ -61,7 +61,7 @@
 				{
 					"id": "MyUserComponent1",
 					"cid": "usercomponent",
-					"jsClass": "MyPanel1",
+					"jsClass": "AccountPanel",
 					"snapToGrid": 10,
 					"userConfig": {
 						"jsClass": "AccountPanel",
@@ -72,7 +72,7 @@
 				{
 					"id": "MyUserComponent3",
 					"cid": "usercomponent",
-					"jsClass": "MyPanel2",
+					"jsClass": "CrawlerPanel",
 					"snapToGrid": 10,
 					"userConfig": {
 						"jsClass": "CrawlerPanel",
@@ -85,7 +85,7 @@
 				{
 					"id": "MyUserComponent4",
 					"cid": "usercomponent",
-					"jsClass": "MyPanel3",
+					"jsClass": "IndexerPanel",
 					"snapToGrid": 10,
 					"userConfig": {
 						"jsClass": "IndexerPanel",
@@ -156,7 +156,7 @@
 					"snapToGrid": 10,
 					"userConfig": {
 						"title": "domains",
-						"store": "(none)",
+						"store": "AccountDomainStore",
 						"height": 285,
 						"width": 386
 					},
@@ -217,18 +217,21 @@
 			"snapToGrid": 10,
 			"userConfig": {
 				"title": "Crawler",
-				"height": 539
+				"height": 539,
+				"width": 893
 			},
 			"userXType": "crawlerpanel",
 			"cn": [
 				{
 					"id": "MyUserComponent6",
 					"cid": "usercomponent",
-					"jsClass": "MyGrid1",
+					"jsClass": "CrawlerFilterGridPanel",
 					"snapToGrid": 10,
 					"userConfig": {
 						"jsClass": "CrawlerFilterGridPanel",
-						"userXType": "crawlerfiltergridpanel"
+						"userXType": "crawlerfiltergridpanel",
+						"width": 628,
+						"height": 234
 					},
 					"userComponent": "MyGrid1"
 				}
@@ -326,7 +329,7 @@
 				{
 					"id": "MyUserComponent5",
 					"cid": "usercomponent",
-					"jsClass": "MyToolbar1",
+					"jsClass": "CrawlerFilterToolBar",
 					"snapToGrid": 10,
 					"userConfig": {
 						"jsClass": "CrawlerFilterToolBar",
@@ -344,7 +347,7 @@
 			"jsClass": "CrawlerStore",
 			"snapToGrid": 10,
 			"userConfig": {
-				"storeId": "MyStore"
+				"storeId": "CrawlerStore"
 			}
 		},
 		{
@@ -353,7 +356,7 @@
 			"jsClass": "AccountStore",
 			"snapToGrid": 10,
 			"userConfig": {
-				"storeId": "MyStore1"
+				"storeId": "AccountStore"
 			}
 		},
 		{
@@ -362,7 +365,7 @@
 			"jsClass": "IndexerStore",
 			"snapToGrid": 10,
 			"userConfig": {
-				"storeId": "MyStore2"
+				"storeId": "IndexerStore"
 			}
 		},
 		{
@@ -371,7 +374,7 @@
 			"jsClass": "AccountDomainStore",
 			"snapToGrid": 10,
 			"userConfig": {
-				"storeId": "MyStore3"
+				"storeId": "AccountDomainStore"
 			}
 		},
 		{
@@ -380,7 +383,7 @@
 			"jsClass": "CrawlerFilterStore",
 			"snapToGrid": 10,
 			"userConfig": {
-				"storeId": "MyStore4"
+				"storeId": "CrawlerFilterStore"
 			}
 		}
 	]

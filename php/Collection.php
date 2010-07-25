@@ -3,7 +3,8 @@ class Collection
 {
   public $id; 
   public $name;
-  public $ownerId; 
+  public $account;
+
   public $domains;
   
   public function __construct ( ) 
@@ -11,20 +12,21 @@ class Collection
     $this->domains = array(); 
   } 
 
-  public static function create ($ownerId, $name) 
+  public static function create ($account, $name) 
   {
     $c = new Collection(); 
-    $c->ownerId = $ownerId;  
     $c->name = $name;
   
-    mysql_query("INSERT INTO collection(owner_id, name) VALUES($ownerId, '$name')") or die (mysql_error());
+    $c->account = $account;
+    mysql_query("INSERT INTO collection(owner_id, name) VALUES($account->id, '$name')") or die (mysql_error());
     $c->domains = array();
     $c->id = mysql_insert_id();
-   
+    
+
     return($c); 
   }
   
-  public static function read ($collectionId)
+  public static function read ($account, $collectionId)
   { 
     $c = new Collection();
     $c->id = $collectionId;
@@ -32,7 +34,7 @@ class Collection
     $row = mysql_fetch_row($res);
     if ($row) {
       $c->id = $row[0];
-      $c->ownerId = $row[1];
+      $c->account = $account;	    
       $c->name = $row[2]; 
       $c->domains = array();
       $c->readDomains();  
@@ -40,7 +42,6 @@ class Collection
     return ($c);
   }
 
-  //TODO: how to remove the collection from the account
   public function delete ()
   {
     mysql_query("DELETE FROM collection WHERE ID=$this->id") or die (mysql_error());

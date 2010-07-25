@@ -49,7 +49,7 @@ class Account
 
     foreach ($colids as $colid) 
     {
-      array_push($this->collections, Collection::read($colid));
+      array_push($this->collections, Collection::read($this, $colid));
     }
   }
 
