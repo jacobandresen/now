@@ -4,11 +4,12 @@ require_once '../php/Framework.php';
 
 class CrawlerTest extends PHPUnit_Framework_TestCase
 {
-  public void testCrawl()
+  public function testCrawl()
   {
     $account = Account::login("jacob", "jacob");
     $c = $account->collections[0];
-    $c->start();
+    
+    $crawler =  new Crawler($c->id);
   }
 
 }

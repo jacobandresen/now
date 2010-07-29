@@ -4,7 +4,7 @@ YASE is released under the GPL v3 and is available under a commercial license fr
 Contributors:
 -------------
 Jacob Andresen 
-Johan Bäckström
+Johan Backström
  
 
 

@@ -25,7 +25,7 @@ drop table if exists collection_in_domain;
 create table collection_in_domain (
   collection_id			int NOT NULL,
   domain			varchar(256),
-  foreign key(collection_id)    references collection(id),
+  foreign key(collection_id)    references collection(id) on delete cascade,
   PRIMARY KEY(collection_id, domain)
 );
 

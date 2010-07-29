@@ -12,6 +12,11 @@ class Collection
     $this->domains = array(); 
   } 
 
+  public function log ($message) 
+  {
+     print $message."\r\n"; //NOTE: this could go into the database
+  }
+
   public static function create ($account, $name) 
   {
     $c = new Collection(); 
@@ -22,7 +27,6 @@ class Collection
     $c->domains = array();
     $c->id = mysql_insert_id();
     
-
     return($c); 
   }
   

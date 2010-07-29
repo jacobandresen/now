@@ -2,15 +2,12 @@
 
 class Crawler extends Collection
 {
-  protected $level;
-  
-  protected $processURLs;
-  protected $seenURLs;
-  protected $crawledURLs;
- 
-  protected $httpClient;
+  public $level;
+  public $processURLs;
+  public $seenURLs;
+  public $crawledURLs;
+  public $httpClient;
 
-  
   public function __construct($collectionId)
   {
     Parent::__construct($collectionId);	  
@@ -20,11 +17,11 @@ class Crawler extends Collection
   private function prepare()
   {
     $this->processURLs=array();
+    $this->seenURLS=array(); 
     $this->crawledURLs=array();
 
-    //TODO: We do not require a domain to start HTTPClient
-    $firstDomain = $this->domains[0]; 
-    $this->httpClient = new HTTPClient($firstDomain);
+    //FIXME: We do not need a domain to start the HTTPClient 
+    $this->httpClient = new HTTPClient($this->domains[0]);
   } 
 
   public function start()
@@ -32,16 +29,16 @@ class Crawler extends Collection
     $startUrl = "http://".$this->domain;
 
     if($this->shouldCrawl($startUrl)){
-      mysql_query("delete from document where account_id='".$this->accountId."'");
+      mysql_query("delete from document where account_id='".$this->account->id."'");
       $this->crawl( $startUrl, 0 , $startUrl);
     } else {
-      print "failed to start crawl \r\n";
+      $this->log("failed to start crawl");
     }
   }
 
   public function crawl($url, $level, $parent)
   {
-    print "crawl [$level] - $url \r\n";
+    $this->log("crawl [$level] - $url ");
 
     $document = $this->httpClient->getDocument($url);
     $document->level = $level;
@@ -104,6 +101,5 @@ class Crawler extends Collection
     }
     return true;
   }
-  
 };
 ?>

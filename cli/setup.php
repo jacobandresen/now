@@ -17,6 +17,5 @@ if ($argv[1] == "" || $argv[2] == "") {
 $userName = $argv[1];
 $password= $argv[2];
 
-//$y = new YASE();
-//$y->addAccount($userName, $password);
+Account::create($userName, $password, "", "");
 ?>
