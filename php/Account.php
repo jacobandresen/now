@@ -29,7 +29,7 @@ class Account
     mysql_query($sql) or die(mysql_error()); 
   }
 
-  public function delete($accountId) 
+  public static function delete($accountId) 
   {
     mysql_query("DELETE FROM account where id=$accountId");
   }

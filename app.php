@@ -2,6 +2,7 @@
 
 require_once("php/Framework.php");
 
+//TODO: avoid sql injection
 $model  = $_REQUEST['model'];
 $data   = $_REQUEST['data'];
 $action = $_REQUEST['action'];
@@ -13,19 +14,26 @@ $success=false;
 
 $resp={};
 $resp->data={};
+$resp->success=false;
 
 switch ($model) {
   case "collection":
     switch ($action) {
       case "create":
-        break;
+         Collection::create($data);	     
+         break;
       case "retrieve":
-         //$resp->data->name = 
-         //$resp->data->pageLimit=	
-	 //$resp->data->levelLimit=
+         $resp->data = Collection::retrieve($data->id);
+         $resp->success = true;
         break;
-      case "delete":
-	break;
+      case "update":
+         Collection::update($data);
+         $resp->success = true;
+	 break; 
+      case "destroy":
+         Collection::destroy($data->id);
+         $resp->success = true;	         
+         break;
     } 
     break;
   case "collectiondomain":
@@ -77,6 +85,6 @@ switch ($model) {
     } 
     break;
 }
-
-print "{success:".$success."}";
+//TODO: print "Content-Type: application/json \r\n";
+print json_encode($resp);
 ?>

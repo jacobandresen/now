@@ -18,13 +18,13 @@ class Collection
      print $message."\r\n"; 
   }
 
-  public static function create ($ownerId, $name, $pageLimit, $levelLimit) 
+  public static function create ($data) 
   {
     $c = new Collection(); 
-    $c->ownerId = $ownerId;
-    $c->name = $name;
+    $c->ownerId = $data->ownerId;
+    $c->name = $data->name;
   
-    mysql_query("INSERT INTO collection(owner_id, name, page_limit, level_limit) VALUES($ownerId, '$name', $pageLimit, $levelLimit)") or die (mysql_error());
+    mysql_query("INSERT INTO collection(owner_id, name, page_limit, level_limit) VALUES(".$data->ownerId.", '".$data->name."', ".$data->pageLimit.", ".$data->levelLimit.")") or die (mysql_error());
     $c->domains = array();
     $c->id = mysql_insert_id();
     
@@ -49,9 +49,14 @@ class Collection
     return ($c);
   }
 
-  public function delete ()
+  public static function update ($data)
   {
-    mysql_query("DELETE FROM collection WHERE ID=$this->id") or die (mysql_error());
+    mysql_query("UPDATE collection where id=".$data->id." set  owner_id=".$data->ownerId.",name='".$data->name."', page_limit='".$data->pageLimit."', level_limit='".$data->levelLimit.")") or die (mysql_error());
+  }
+
+  public static function delete ( $id )
+  {
+    mysql_query("DELETE FROM collection WHERE ID=$id") or die (mysql_error());
   }
 
   public function addDomain ( $domain ) 

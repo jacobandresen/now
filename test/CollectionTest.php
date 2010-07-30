@@ -9,7 +9,9 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     $account = Account::login("jacob", "jacob");
     mysql_query("DELETE FROM collection where owner_id=".$account->id) or die(mysql_error());
 
-    $collection = Collection::create($account->id, "jacobs stuff", 1500, 15);
+    $params = json_decode('{"ownerId":"'.$account->id.'","name":"jacobs stuff","pageLimit":1500,"levelLimit":15}');
+
+    $collection = Collection::create($params);
     $collection->addDomain("pedant.dk");
     $collection->addDomain("searchzen.org");
 
@@ -21,7 +23,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
   public function testDelete()
   {
     $account = Account::login("jacob", "jacob");
-    $account->collections[0]->delete();
+    Account::delete($account->collections[0]->id);
   }
 
 }
