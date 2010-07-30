@@ -269,6 +269,15 @@
 					"userConfig": {
 						"text": "Save Changes"
 					}
+				},
+				{
+					"id": "MyButton7",
+					"cid": "button",
+					"jsClass": "MyButton",
+					"snapToGrid": 10,
+					"userConfig": {
+						"text": "Start / Restart"
+					}
 				}
 			]
 		},

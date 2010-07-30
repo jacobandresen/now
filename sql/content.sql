@@ -14,6 +14,8 @@ create table collection (
   id 				int NOT NULL primary key auto_increment,
   owner_id			int, 
   name				varchar(256),
+  page_limit			int, 
+  level_limit			int,
   seen_documents		int,
   indexed_documents		int,
   start_url			varchar(512),

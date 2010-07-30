@@ -2,13 +2,11 @@
 class Account 
 {
   public $id; 
-  public $setting;
   public $collections;
 
   public function __construct($accountId)
   {
     $this->id = $accountId; 
-    $this->crawlerSetting = new Setting("crawler", $this->id);
     $this->collections = array(); 
     $this->readCollections();
   }
@@ -29,7 +27,6 @@ class Account
   {
     $sql = "INSERT INTO account(username, password, first_name, last_name) VALUES('$userName','$password', '$firstName', '$lastName')";
     mysql_query($sql) or die(mysql_error()); 
-    Account::createDefaultSettings(mysql_insert_id());
   }
 
   public function delete($accountId) 
@@ -49,15 +46,9 @@ class Account
 
     foreach ($colids as $colid) 
     {
-      array_push($this->collections, Collection::read($this, $colid));
+      array_push($this->collections, Collection::retrieve($colid));
     }
   }
 
-  private function createDefaultSettings($accountId) 
-  {
-    $setting = new Setting("crawler", $accountId);
-    $setting->set("crawl_limit", "1500");
-    $setting->set("level_limit", "15"); 
-  }
 }
 ?>

@@ -3,8 +3,9 @@ class Collection
 {
   public $id; 
   public $name;
-  public $account;
-
+  public $pageLimit;
+  public $levelLimit; 
+  public $ownerId;
   public $domains;
   
   public function __construct ( ) 
@@ -14,32 +15,34 @@ class Collection
 
   public function log ($message) 
   {
-     print $message."\r\n"; //NOTE: this could go into the database
+     print $message."\r\n"; 
   }
 
-  public static function create ($account, $name) 
+  public static function create ($ownerId, $name, $pageLimit, $levelLimit) 
   {
     $c = new Collection(); 
+    $c->ownerId = $ownerId;
     $c->name = $name;
   
-    $c->account = $account;
-    mysql_query("INSERT INTO collection(owner_id, name) VALUES($account->id, '$name')") or die (mysql_error());
+    mysql_query("INSERT INTO collection(owner_id, name, page_limit, level_limit) VALUES($ownerId, '$name', $pageLimit, $levelLimit)") or die (mysql_error());
     $c->domains = array();
     $c->id = mysql_insert_id();
     
     return($c); 
   }
-  
-  public static function read ($account, $collectionId)
+
+  public static function retrieve ($collectionId)
   { 
     $c = new Collection();
     $c->id = $collectionId;
-    $res = mysql_query("SELECT id,owner_id,name FROM collection where id=$collectionId") or die(mysql_error());
+    $res = mysql_query("SELECT id,owner_id,name,page_limit,level_limit FROM collection where id=$collectionId") or die(mysql_error());
     $row = mysql_fetch_row($res);
     if ($row) {
       $c->id = $row[0];
-      $c->account = $account;	    
+      $c->ownerId = $row[1];	    
       $c->name = $row[2]; 
+      $c->pageLimit = $row[3];
+      $c->levelLImit = $row[4];
       $c->domains = array();
       $c->readDomains();  
     } 

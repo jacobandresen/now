@@ -20,7 +20,6 @@ class Crawler extends Collection
     $this->seenURLS=array(); 
     $this->crawledURLs=array();
 
-    //FIXME: We do not need a domain to start the HTTPClient 
     $this->httpClient = new HTTPClient($this->domains[0]);
   } 
 
