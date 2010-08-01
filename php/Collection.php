@@ -1,11 +1,14 @@
 <?php
 class Collection
 {
+ 	
   public $id; 
+  public $ownerId;
   public $name;
   public $pageLimit;
   public $levelLimit; 
-  public $ownerId;
+
+  //details
   public $domains;
   
   public function __construct ( ) 
@@ -31,11 +34,11 @@ class Collection
     return($c); 
   }
 
-  public static function retrieve ($collectionId)
+  public static function retrieve ($id)
   { 
     $c = new Collection();
-    $c->id = $collectionId;
-    $res = mysql_query("SELECT id,owner_id,name,page_limit,level_limit FROM collection where id=$collectionId") or die(mysql_error());
+    $c->id = $id;
+    $res = mysql_query("SELECT id,owner_id,name,page_limit,level_limit FROM collection where id=$id") or die(mysql_error());
     $row = mysql_fetch_row($res);
     if ($row) {
       $c->id = $row[0];
@@ -43,8 +46,9 @@ class Collection
       $c->name = $row[2]; 
       $c->pageLimit = $row[3];
       $c->levelLImit = $row[4];
-      $c->domains = array();
-      $c->readDomains();  
+
+      //details
+      $c->retrieveDomains();  
     } 
     return ($c);
   }
@@ -54,19 +58,35 @@ class Collection
     mysql_query("UPDATE collection where id=".$data->id." set  owner_id=".$data->ownerId.",name='".$data->name."', page_limit='".$data->pageLimit."', level_limit='".$data->levelLimit.")") or die (mysql_error());
   }
 
-  public static function delete ( $id )
+  public static function destroy ( $id )
   {
     mysql_query("DELETE FROM collection WHERE ID=$id") or die (mysql_error());
   }
 
   public function addDomain ( $domain ) 
   { 
-    $SQL ="INSERT INTO collection_in_domain(collection_id,domain) values('".$this->id."','".$domain."')";
-    mysql_query($SQL) or die(mysql_error()); 
-    $this->domains = array ();
-    $this->readDomains();
+    $d = new Domain();
+    $d->name  = $domain;
+    $d->collectionId = $this->id; 
+    Domain::create($d);
+    $this->retrieveDomains();
   }
 
+  private function retrieveDomains ()
+  {
+    $domainIDs = array(); 
+    $this->domains = array();
+    $res = mysql_query("SELECT id FROM domain where collection_id=".$this->id) or die (mysql_error());
+    while ( ($row = mysql_fetch_array($res)) )  {
+      array_push($domainIDs, $row[0]);
+    }
+
+    foreach($domainIDs as $d){
+      array_push($this->domains, Domain::retrieve($d));  
+    }
+  }
+
+  //special commands
   public function inAllowedDomains ( $URL )
   { 
     foreach ($this->domains as $domainStr) {
@@ -77,15 +97,6 @@ class Collection
       } 
     } 
    return true;    
-  }
-  
-  private function readDomains ()
-  {
-    $this->domains = array(); 
-    $res = mysql_query("SELECT domain FROM collection_in_domain where collection_id=".$this->id) or die (mysql_error());
-    while ( ($row = mysql_fetch_array($res)) )  {
-      array_push($this->domains, $row[0]);
-    }
   }
 }
 ?>

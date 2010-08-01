@@ -2,89 +2,48 @@
 
 require_once("php/Framework.php");
 
-//TODO: avoid sql injection
-$model  = $_REQUEST['model'];
-$data   = $_REQUEST['data'];
-$action = $_REQUEST['action'];
-$query  = $_REQUEST['query'];
-$start  = $_REQUEST['start'];
-$limit  = $_REQUEST['limit'];
+$controller  	= $_REQUEST['controller'];
+$json   	= $_REQUEST['json'];
+$action 	= $_REQUEST['action'];
+$success	= false;
 
-$success=false;
+$controllers    = array();
+$controllers[0] = "Collection";
+$controllers[1] = "Domain";
 
-$resp={};
-$resp->data={};
-$resp->success=false;
+class Response 
+{
+  public $data;
+  public $success;
+}
 
-switch ($model) {
-  case "collection":
-    switch ($action) {
+$resp =new Response();;
+
+if (!isset($controller)) {
+  return;
+}
+
+if (isset($json)) {
+  $params = json_decode($json);
+}
+$controllerObject = new $controller();
+switch ($action) {
       case "create":
-         Collection::create($data);	     
+	 $collection = $controllerObject::create($params);	
+	 $resp->id = $collection->id;
          break;
       case "retrieve":
-         $resp->data = Collection::retrieve($data->id);
+         $resp->data = $controllerObject::retrieve($params->id);
          $resp->success = true;
         break;
       case "update":
-         Collection::update($data);
+         $controllerObject::update($params);
          $resp->success = true;
 	 break; 
       case "destroy":
-         Collection::destroy($data->id);
+         $controllerObject::destroy($params->id);
          $resp->success = true;	         
          break;
-    } 
-    break;
-  case "collectiondomain":
-    switch ($action) {
-      case "create":
-        break;
-      case "retrieve":
-	break;
-      case "update": 
-	break;
-      case "delete":
-	break;
-    } 
-    break;
-  case "crawlerfilter":
-    switch ($action) {
-      case "create":
-        break;
-      case "retrieve":
-	break;
-      case "update": 
-	break;
-      case "delete":
-	break;
-    } 
-    break;
-  case "indexerfilter":
-     switch ($action) {
-      case "create":
-        break;
-      case "retrieve":
-	break;
-      case "update": 
-	break;
-      case "delete":
-	break;
-    } 
-    break;
-  case "query":
-    switch ($action) {
-      case "create":
-        break;
-      case "retrieve":
-	break;
-      case "update": 
-	break;
-      case "delete":
-	break;
-    } 
-    break;
-}
-//TODO: print "Content-Type: application/json \r\n";
+  } 
 print json_encode($resp);
 ?>

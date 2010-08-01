@@ -1,5 +1,6 @@
 <?php
 
+//TODO: separate crawlerfilter table
 class Crawler extends Collection
 {
   public $level;
@@ -92,10 +93,10 @@ class Crawler extends Collection
       array_push( $this->crawled, $url); //skip document
       return false;
     }
-    if ($this->level > $this->account->setting->maxLevel ||
-       count($this->crawled)>$this->crawlLimit||
-       URL::filter($this->account->id, $url, "crawlerfilter")){ 
-      array_push( $this->crawled, $url); //skip document
+    if ($this->level > $this->levelLimit ||
+       count($this->crawled)>$this->pageLimit||
+       URL::filter($this->ownerId, $url, "crawlerfilter")){ 
+      array_push( $this->crawled, $url); 
       return false;
     }
     return true;

@@ -2,6 +2,7 @@
 require_once('Configuration.php');
 require_once('Account.php');
 require_once('Collection.php');
+require_once('Domain.php');
 require_once('Encoding.php');
 require_once('URL.php');
 require_once('HTTPClient.php');

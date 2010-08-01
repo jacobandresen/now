@@ -1,11 +1,11 @@
 <?php
+//TODO: separate  table for index filters
 class Indexer extends Collection
 {
-  public $accountId;
 
-  public function __construct($accountId)
+  public function __construct($ownerId)
   {
-    $this->accountId = $accountId;
+    $this->ownerId = $ownerId;
   }
 
   public function start()
@@ -16,13 +16,13 @@ class Indexer extends Collection
 
   public function clear()
   {
-   mysql_query("DELETE FROM facet where account_id='".$this->accountId."'") or die (mysql_error());
+   mysql_query("DELETE FROM facet where owner_id='".$this->ownerId."'") or die (mysql_error());
   }
 
   public function index()
-  {
-    //TODO: delete from current collection
-    $SQL="select max(retrieved),id,url,contenttype,content,level from document where account_id='".$this->accountId."' group by account_id,url";
+  { 
+    //FIXME: this should be for the current collection (not the ownerId)
+    $SQL="select max(retrieved),id,url,contenttype,content,level from document where owner_id='".$this->ownerId."' group by account_id,url";
     $res = mysql_query($SQL) or die (mysql_error());
 
     while($row=mysql_fetch_array($res)){
@@ -36,13 +36,13 @@ class Indexer extends Collection
     try{
       $title="";
 
-      if(URL::hasDuplicate($this->accountId, $document->url)) return false;
-      if(URL::filter($this->accountId, $document->url, "indexerfilter")) return false;
+      if(URL::hasDuplicate($this->ownerId, $document->url)) return false;
+      if(URL::filter($this->ownerId, $document->url, "indexerfilter")) return false;
 
       if($document->contenttype!="application/pdf"){
         //default to HTML
         $document->content = html_entity_decode($document->content, ENT_QUOTES);
-        $document->title = HTMLRobot::findTitle($this->accountId, $document->content);
+        $document->title = HTMLRobot::findTitle($this->ownerId, $document->content);
         $document->title = htmlentities($document->title, ENT_QUOTES);
         $document->content = HTMLRobot::clean($document->content);
       }

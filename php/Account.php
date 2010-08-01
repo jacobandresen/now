@@ -8,7 +8,7 @@ class Account
   {
     $this->id = $accountId; 
     $this->collections = array(); 
-    $this->readCollections();
+    $this->retrieveCollections();
   }
 
   public function login($userName, $password)
@@ -34,7 +34,7 @@ class Account
     mysql_query("DELETE FROM account where id=$accountId");
   }
 
-  private function readCollections ( ) 
+  private function retrieveCollections ( ) 
   {
     $colids = array();
     $sql = "SELECT id from collection where owner_id=".$this->id;

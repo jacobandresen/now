@@ -7,8 +7,8 @@ create table account (
   last_name			varchar(256)
 );
 
-drop table if exists account_login_rights;
-create table account_login_rights (
+drop table if exists account_privilege;
+create table account_privilege (
   account_id			int NOT NULL primary key auto_increment,
   privilege			int,
   FOREIGN KEY(account_id) 	references account(id) 

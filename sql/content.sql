@@ -23,12 +23,11 @@ create table collection (
   foreign key(owner_id)       	references account(id)
 );
 
-drop table if exists collection_in_domain;
-create table collection_in_domain (
+drop table if exists domain;
+create table domain (
+  id				int NOT NULL primary key auto_increment, 
   collection_id			int NOT NULL,
-  domain			varchar(256),
-  foreign key(collection_id)    references collection(id) on delete cascade,
-  PRIMARY KEY(collection_id, domain)
+  name				varchar(256)
 );
 
 drop table if exists facet;
