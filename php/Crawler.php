@@ -1,6 +1,5 @@
 <?php
-
-//TODO: separate crawlerfilter table
+require_once('Collection.php');
 class Crawler extends Collection
 {
   public $level;
@@ -95,7 +94,7 @@ class Crawler extends Collection
     }
     if ($this->level > $this->levelLimit ||
        count($this->crawled)>$this->pageLimit||
-       URL::filter($this->ownerId, $url, "crawlerfilter")){ 
+       URL::filter($this->ownerId, $this->getDomainId($url), $url, "crawlerfilter")){ 
       array_push( $this->crawled, $url); 
       return false;
     }

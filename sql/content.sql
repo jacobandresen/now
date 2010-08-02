@@ -26,8 +26,18 @@ create table collection (
 drop table if exists domain;
 create table domain (
   id				int NOT NULL primary key auto_increment, 
-  collection_id			int NOT NULL,
-  name				varchar(256)
+  name				varchar(256),
+  collection_id			int,
+  foreign key(collection_id)	references collection(id)
+);
+
+drop table if exists filter;
+create table filter (
+  id				int NOT NULL primary key auto_increment,
+  name				varchar(12), 
+  domain_id			int,
+  regex				varchar(256),
+  foreign key(domain_id)	references domain(id) 
 );
 
 drop table if exists facet;

@@ -87,6 +87,7 @@ class Collection
   }
 
   //special commands
+
   public function inAllowedDomains ( $URL )
   { 
     foreach ($this->domains as $domainStr) {
@@ -98,5 +99,17 @@ class Collection
     } 
    return true;    
   }
+
+  private function getDomainId ( $url ) 
+  {
+     foreach ($this->domains as $domain )
+     {
+	if (URL::inDomain($url , $domain->name) )
+        {
+	  return ($domain->id);
+        }
+     }
+  }
+
 }
 ?>

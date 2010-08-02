@@ -1,8 +1,6 @@
 <?php
-//TODO: separate  table for index filters
 class Indexer extends Collection
 {
-
   public function __construct($ownerId)
   {
     $this->ownerId = $ownerId;
@@ -37,7 +35,7 @@ class Indexer extends Collection
       $title="";
 
       if(URL::hasDuplicate($this->ownerId, $document->url)) return false;
-      if(URL::filter($this->ownerId, $document->url, "indexerfilter")) return false;
+      if(URL::filter($this->ownerId, $this->getDomainId($document->url), $document->url, "indexerfilter")) return false;
 
       if($document->contenttype!="application/pdf"){
         //default to HTML

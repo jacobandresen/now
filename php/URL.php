@@ -10,7 +10,7 @@ class URL
     return false;
   }
 
-  public static function filter($accountId, $url, $settingName)
+  public static function filter($accountId, $domainId, $url, $name)
   {
     if (strpos($url, "#")) {
       return true;
@@ -24,12 +24,11 @@ class URL
     if ( strpos($url, "javascript:")) {
       return true;
     }
-
-   $SQL ="select name,value from setting where setting_name='".$settingName."' and account_id='".$acocuntId."';";
+   
+   $SQL ="select regex from filter where name='".$name."' and domain_id='".$domainId."';";
    $res = mysql_query($SQL) or die ("SQL:".$SQL." failed:".mysql_error());
    while ($row = mysql_fetch_array($res) ){
-     $name=$row[0];
-     $item = urldecode($row[1]);
+     $item = urldecode($row[0]);
      if ($item!="") {
        preg_match("|$item|", $url, $match);
        if ( count($match) > 0){
@@ -95,6 +94,12 @@ class URL
     }
     $url = $base.'/'.$item;
     return $url;
+  }
+
+  public static function inDomain($url, $domain)
+  {
+    $host = URL::extractHost($url);
+    return (strpos($domain, $url)); 
   }
 }
 ?>
