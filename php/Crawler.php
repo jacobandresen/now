@@ -1,5 +1,4 @@
 <?php
-require_once('Collection.php');
 class Crawler extends Collection
 {
   public $level;
@@ -11,17 +10,12 @@ class Crawler extends Collection
   public function __construct($collectionId)
   {
     Parent::__construct($collectionId);	  
-    $this->prepare();
-  }
-
-  private function prepare()
-  {
     $this->processURLs=array();
     $this->seenURLS=array(); 
     $this->crawledURLs=array();
 
     $this->httpClient = new HTTPClient($this->domains[0]);
-  } 
+  }
 
   public function start()
   {
@@ -100,5 +94,6 @@ class Crawler extends Collection
     }
     return true;
   }
+
 };
 ?>

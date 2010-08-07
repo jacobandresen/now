@@ -434,7 +434,7 @@
 			"snapToGrid": 10,
 			"userConfig": {
 				"title": "domains",
-				"store": "CollectionDomainStore",
+				"store": "DomainStore",
 				"height": 300,
 				"width": 800
 			},
@@ -501,19 +501,19 @@
 		{
 			"id": "MyStore",
 			"cid": "jsonstore",
-			"jsClass": "CollectionSettingsStore",
+			"jsClass": "CollectionStore",
 			"snapToGrid": 10,
 			"userConfig": {
-				"storeId": "CollectionSettingsStore"
+				"storeId": "CollectionStore"
 			}
 		},
 		{
 			"id": "MyStore1",
 			"cid": "jsonstore",
-			"jsClass": "CollectionDomainStore",
+			"jsClass": "DomainStore",
 			"snapToGrid": 10,
 			"userConfig": {
-				"storeId": "CollectionDomainStore"
+				"storeId": "DomainStore"
 			},
 			"cn": [
 				{

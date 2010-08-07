@@ -7,6 +7,7 @@ class Collection
   public $name;
   public $pageLimit;
   public $levelLimit; 
+  public $startUrl;
 
   //details
   public $domains;
@@ -27,20 +28,26 @@ class Collection
     $c->ownerId = $data->ownerId;
     $c->name = $data->name;
   
-    mysql_query("INSERT INTO collection(owner_id, name, page_limit, level_limit) VALUES(".$data->ownerId.", '".$data->name."', ".$data->pageLimit.", ".$data->levelLimit.")") or die (mysql_error());
+    $SQL = "INSERT INTO collection(owner_id, name, page_limit, level_limit, start_url) VALUES(".$data->ownerId.", '".$data->name."', ".$data->pageLimit.", ".$data->levelLimit.",'".$data->startUrl."')";
+    mysql_query($SQL) or die ("collection create failed: $SQL" .mysql_error());
     $c->domains = array();
     $c->id = mysql_insert_id();
     
     return($c); 
   }
 
-  public static function retrieve ($id)
+  public static function read ($data)
   { 
     $c = new Collection();
-    $c->id = $id;
-    $res = mysql_query("SELECT id,owner_id,name,page_limit,level_limit FROM collection where id=$id") or die(mysql_error());
-    $row = mysql_fetch_row($res);
-    if ($row) {
+
+    if (isset($data->id)) {
+      $c->id = $data->id;
+      $res = mysql_query("SELECT id,owner_id,name,page_limit,level_limit FROM collection where id=".$data->id) or die(mysql_error());
+    } else {
+      $res = mysql_query("SELECT id,owner_id,name,page_limit,level_limit FROM collection where owner_id=".$data->ownerId) or die(mysql_error());
+    } 
+ 
+    while ( $row = mysql_fetch_row($res) ) {
       $c->id = $row[0];
       $c->ownerId = $row[1];	    
       $c->name = $row[2]; 
@@ -82,7 +89,7 @@ class Collection
     }
 
     foreach($domainIDs as $d){
-      array_push($this->domains, Domain::retrieve($d));  
+      array_push($this->domains, Domain::read( (object) array("id"=>$d)));  
     }
   }
 

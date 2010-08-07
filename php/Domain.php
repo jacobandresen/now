@@ -20,13 +20,12 @@ class Domain
     return $d; 
   }
 
-  public static function retrieve ($id)
+  public static function read ($data)
   {
-    $res = mysql_query("SELECT collection_id,name FROM domain where id=".$id) or die (mysql_error());
+    $res = mysql_query("SELECT id,name FROM domain where id=".$data->id) or die (mysql_error());
     $row = mysql_fetch_row($res); 
     $d = new Domain();
-    $d->id = $id;
-    $d->collectionId=$row[0]; 
+    $d->id = $row[0];
     $d->name = $row[1];
 
     return $d; 

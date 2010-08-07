@@ -7,14 +7,15 @@ class AccountTest extends PHPUnit_Framework_TestCase
   public function testCreate()
   {
      mysql_query("DELETE FROM account where username='jacob'");
-     Account::create("jacob", "jacob", "Jacob", "Andresen");
+     $params = (object) array("userName"=>"jacob", "password"=>"jacob", "firstName"=>"Jacob", "lastName"=>"Andresen");
+     Account::create($params);
   }  
 
   public function testDelete()
   {
      mysql_query("DELETE FROM account where username='deleteme'");
-     Account::create("deleteme", "deleteme", "Jacob", "Andresen");
+     Account::create( (object) array("userName"=>"deleteme", "password"=>"deleteme", "firstName"=>"Jacob", "lastName"=>"Andresen"));
      $account = Account::login("deleteme", "deleteme");
-     Account::delete($account->id);
+     Account::destroy($account->id);
   }
 }
