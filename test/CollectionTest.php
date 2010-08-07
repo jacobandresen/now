@@ -24,7 +24,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
   public function testDestroy()
   {
     $account = Account::login("jacob", "jacob");
-    Account::destroy($account->collections->id);
+    Account::destroy($account->collections[0]->id);
   }
 
 }

@@ -38,26 +38,28 @@ class Collection
 
   public static function read ($data)
   { 
-    $c = new Collection();
-
     if (isset($data->id)) {
-      $c->id = $data->id;
       $res = mysql_query("SELECT id,owner_id,name,page_limit,level_limit FROM collection where id=".$data->id) or die(mysql_error());
     } else {
       $res = mysql_query("SELECT id,owner_id,name,page_limit,level_limit FROM collection where owner_id=".$data->ownerId) or die(mysql_error());
     } 
+    
+    $cs= array();
+    $current = 0;
  
     while ( $row = mysql_fetch_row($res) ) {
-      $c->id = $row[0];
-      $c->ownerId = $row[1];	    
-      $c->name = $row[2]; 
-      $c->pageLimit = $row[3];
-      $c->levelLImit = $row[4];
+      $cs[$current] = new Collection();
+      $cs[$current]->id = $row[0];
+      $cs[$current]->ownerId = $row[1];	    
+      $cs[$current]->name = $row[2]; 
+      $cs[$current]->pageLimit = $row[3];
+      $cs[$current]->levelLImit = $row[4];
 
       //details
-      $c->retrieveDomains();  
+      $cs[$current]->retrieveDomains();  
+      $current = ($current + 1);
     } 
-    return ($c);
+    return ($cs);
   }
 
   public static function update ($data)
