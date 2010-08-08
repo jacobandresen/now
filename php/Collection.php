@@ -1,7 +1,6 @@
 <?php
 class Collection
 {
- 	
   public $id; 
   public $ownerId;
   public $name;
@@ -38,28 +37,20 @@ class Collection
 
   public static function read ($data)
   { 
-    if (isset($data->id)) {
-      $res = mysql_query("SELECT id,owner_id,name,page_limit,level_limit FROM collection where id=".$data->id) or die(mysql_error());
-    } else {
-      $res = mysql_query("SELECT id,owner_id,name,page_limit,level_limit FROM collection where owner_id=".$data->ownerId) or die(mysql_error());
-    } 
-    
-    $cs= array();
-    $current = 0;
- 
-    while ( $row = mysql_fetch_row($res) ) {
-      $cs[$current] = new Collection();
-      $cs[$current]->id = $row[0];
-      $cs[$current]->ownerId = $row[1];	    
-      $cs[$current]->name = $row[2]; 
-      $cs[$current]->pageLimit = $row[3];
-      $cs[$current]->levelLImit = $row[4];
-
-      //details
-      $cs[$current]->retrieveDomains();  
-      $current = ($current + 1);
-    } 
-    return ($cs);
+     $SQL = "SELECT id,owner_id,name,page_limit,level_limit,start_url FROM collection where id=".$data->id;
+     $res = mysql_query($SQL) or die("collection read failed:".$SQL." -> ".mysql_error());
+   
+     if ($row = mysql_fetch_row($res)) { ;
+       $c = new Collection();
+       $c->id = $row[0];
+       $c->ownerId = $row[1];	    
+       $c->name = $row[2]; 
+       $c->pageLimit = $row[3];
+       $c->levelLImit = $row[4];
+       $c->startUrl = $row[5];
+       $c->retrieveDomains();  
+       return ($c);
+     }
   }
 
   public static function update ($data)
@@ -84,14 +75,14 @@ class Collection
   private function retrieveDomains ()
   {
     $domainIDs = array(); 
-    $this->domains = array();
+    $this->collection->domains = array();
     $res = mysql_query("SELECT id FROM domain where collection_id=".$this->id) or die (mysql_error());
     while ( ($row = mysql_fetch_array($res)) )  {
       array_push($domainIDs, $row[0]);
     }
 
     foreach($domainIDs as $d){
-      array_push($this->domains, Domain::read( (object) array("id"=>$d)));  
+       array_push($this->collection->domains, Domain::read( (object) array("id"=>$d)));  
     }
   }
 
@@ -99,17 +90,18 @@ class Collection
 
   public function inAllowedDomains ( $URL )
   { 
-    foreach ($this->domains as $domainStr) {
-      $host = URL::extractHost($URL);
-      $domain = str_replace("www.", "", $domainStr);
-      if (strpos($host, $domain) == false ) {
-        return false;
+    $host = URL::extractHost($URL);
+    foreach ($this->collection->domains as $d) {
+      $domain = str_replace("www.", "", $d->name);
+      print "DOMAIN:".$domain." ? ".$URL.":".strpos($host,$domain)."\r\n"; 
+      if (strpos($host, $domain)!== false) {
+        return true;
       } 
     } 
-   return true;    
+   return false;    
   }
 
-  private function getDomainId ( $url ) 
+  public function getDomainId ( $url ) 
   {
      foreach ($this->domains as $domain )
      {

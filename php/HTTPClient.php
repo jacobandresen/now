@@ -55,6 +55,7 @@ class HTTPClient
     if($this->host==""){
       die("missing host name!\r\n");
     }
+    print "CONNECT:".$this->host."\r\n";
     $this->socket = fsockopen( $this->host,
       $this->port,
       $this->errNo,
@@ -66,7 +67,7 @@ class HTTPClient
 
   private function close()
   {
-     if (is_writeable($this->socket))
+   if (is_writeable($this->socket))
     fclose($this->socket);
   }
 

@@ -23,7 +23,7 @@ class Document{
     }
 
    $this->url = urlencode($this->url);
-   $SQL= "INSERT IGNORE into document(account_id, url, contenttype, content, level) values('".$accountId."','".$this->url."','".$this->contentType."','".$this->content."','".$this->level."')";
+   $SQL= "INSERT IGNORE into document(owner_id, url, contenttype, content, level) values('".$accountId."','".$this->url."','".$this->contentType."','".$this->content."','".$this->level."')";
    mysql_query($SQL) or die("SQL error:".$SQL." \r\nfailed to insert into document:".mysql_error());
    return true;
   }

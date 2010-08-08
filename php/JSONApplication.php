@@ -28,8 +28,8 @@ class JSONApplication
 	 $collection = $controllerObject::create($params);	
 	 $resp->id = $collection->id;
          break;
-       case "retrieve":
-         $resp->data = $controllerObject::retrieve($params->id);
+       case "read":
+         $resp->data = $controllerObject::retrieve($params);
          $resp->success = true;
         break;
       case "update":

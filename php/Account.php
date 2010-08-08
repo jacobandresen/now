@@ -1,4 +1,5 @@
 <?php
+
 class Account 
 {
   public $id; 
@@ -7,10 +8,6 @@ class Account
   public $lastName; 
 
   public $collections;  
-
-  public function __construct()
-  {
-  } 
 
   public static function create ($data)
   {
@@ -24,11 +21,10 @@ class Account
     $a->firstName = $data->firstName;
     $a->lastName = $data->lastName;
 
- //   Collection::create( (object) array('ownerId' => $a->id));
- 
     return $a; 
   }
 
+  //TODO: should we be able to retrieve several accounts here?
   public static function read($data)
   {
     $SQL = "SELECT id,username,password,first_name,last_name from account";
@@ -42,16 +38,27 @@ class Account
     $a->firstName	= $row[3];
     $a->lastName 	= $row[4];
 
-    $a->collections	= Collection::read( (object) array('ownerId'=> $a->id));
 
+    $cids=array();
+    $SQL = "SELECT id from collection where owner_id=".$a->id;
+    $res = mysql_query($SQL) or die("read collections failed:".$SQL.mysql_error());
+    
+    while( $row = mysql_fetch_array($res)) {
+      array_push($cids, $row[0]); 
+    } 
+
+    $a->collections = array();  
+    foreach ($cids as $cid) { 
+      array_push($a->collections, Collection::read( (object) array('id'=> $cid)));
+    }
     return $a; 
   } 
 
   public static function update($data) 
   {
- //   $SQL = "UPDATE account where id=".$data->id." set username='".$data-
+    $SQL = "UPDATE account where id=".$data->id." set username='".$data-userName."',password='".$data->password."',first_name='".$data->firstName."',last_name='".$data->lastName."'";
+    mysql_query($SQL) or die ("Account update failed:".$SQL.mysql_error());
   }
-
 
   public static function destroy($accountId) 
   {
@@ -68,9 +75,8 @@ class Account
     if ( isset($accountId) ){
        return (Account::read((object) array("id"=>$accountId)));
     }else{
-      throw (new Exception("login failed for user ".$userName." with password ".$password)); 
+      throw (new Exception("login failed for user ".$userName)); 
     }
   }
-
 }
 ?>

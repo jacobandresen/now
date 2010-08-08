@@ -1,11 +1,13 @@
 drop table if exists document;
 create table document (
   id 				int NOT NULL primary key auto_increment,
+  owner_id			int, 
   url 		        	varchar(256),
   level           		int,
   contenttype     		varchar(256),
   retrieved 	    		timestamp,
   content 	      		LONGTEXT,
+  FOREIGN KEY(owner_id)	 	REFERENCES account(id),
   FULLTEXT(content)
 ) engine=MyISAM;
 

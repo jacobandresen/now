@@ -1,48 +1,55 @@
 <?php
-class Crawler extends Collection
+class Crawler 
 {
+  public $collection;
   public $level;
   public $processURLs;
   public $seenURLs;
   public $crawledURLs;
   public $httpClient;
 
-  public function __construct($collectionId)
+  public function __construct($params)
   {
-    Parent::__construct($collectionId);	  
+    $this->collection = Collection::read($params); 
+ 
+    if(!isset($this->collection)){
+      print "failed to find collection for :\r\n";
+      print_r($params);
+    }
+  
     $this->processURLs=array();
     $this->seenURLS=array(); 
+    $this->foundURLs=array(); 
     $this->crawledURLs=array();
-
-    $this->httpClient = new HTTPClient($this->domains[0]);
+    $this->startUrl = $this->collection->startUrl;
+   
+    $this->httpClient = new HTTPClient($this->startUrl);
   }
 
   public function start()
   {
-    $startUrl = "http://".$this->domain;
-
-    if($this->shouldCrawl($startUrl)){
-      mysql_query("delete from document where account_id='".$this->account->id."'");
-      $this->crawl( $startUrl, 0 , $startUrl);
+    if($this->shouldCrawl($this->startUrl)){
+      mysql_query("delete from document where account_id='".$this->collection->ownerId."'");
+      $this->crawl( $this->startUrl, 0 , $this->startUrl);
     } else {
-      $this->log("failed to start crawl");
+      $this->collection->log("failed to start crawl");
     }
   }
 
   public function crawl($url, $level, $parent)
   {
-    $this->log("crawl [$level] - $url ");
+    $this->collection->log("crawl [$level] - $url ");
 
     $document = $this->httpClient->getDocument($url);
     $document->level = $level;
 
     if ($document->contentType=="application/pdf") {
-      $p=new PDFRobot($this->accountId);
+      $p=new PDFRobot($this->collection->ownerId);
       $document->content = $p->clean($document);
       $document->content = htmlentities($document->content,ENT_QUOTES);
 
       array_push($this->crawledURLs, $url);
-      return $document->save($this->account->id);
+      return $document->save($this->collection->ownerId);
     } else {
 
       if (!$document->shouldCrawl()) {
@@ -64,12 +71,12 @@ class Crawler extends Collection
       }
 
       $document->content = htmlentities($document->content,ENT_QUOTES);
-      $document->save($this->account->id);
-      array_push($this->crawled, $url);
+      $document->save($this->collection->ownerId);
+      array_push($this->crawledURLs, $url);
 
-      while($child=array_shift($this->process)){
+      while($child=array_shift($this->processURLs)){
        if($child->url!=""){
-         if(!in_array($child->url, ($this->crawled))){
+         if(!in_array($child->url, ($this->crawledURLs))){
            $this->crawl($child->url, ($child->level), $url);
          }
        }
@@ -79,17 +86,18 @@ class Crawler extends Collection
 
   private function shouldCrawl($url)
   {
-    if (in_array($url, $this->crawled)){
+   
+    if (in_array($url, $this->crawledURLs)){
       return false;
     }
-    if ($this->inAllowedDomains($url) ==false) {
-      array_push( $this->crawled, $url); //skip document
+    if ($this->collection->inAllowedDomains($url) ==false) {
+      array_push( $this->crawledURLs, $url); //skip document
       return false;
     }
-    if ($this->level > $this->levelLimit ||
-       count($this->crawled)>$this->pageLimit||
-       URL::filter($this->ownerId, $this->getDomainId($url), $url, "crawlerfilter")){ 
-      array_push( $this->crawled, $url); 
+    if ($this->level > $this->collection->levelLimit ||
+       count($this->crawledURLs)>$this->collection->pageLimit||
+       URL::filter($this->collection->ownerId, $this->collection->getDomainId($url), $url, "crawlerfilter")){ 
+      array_push( $this->crawledURLs, $url); 
       return false;
     }
     return true;
