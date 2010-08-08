@@ -12,7 +12,6 @@ if ($argv[1] == "") {
   exit -1;
 }
 
-
 $account = Account::login($argv[1], $argv[2]);
 $indexer = new Indexer($argv[3]);
 $indexer->index();

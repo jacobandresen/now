@@ -87,13 +87,11 @@ class Collection
   }
 
   //special commands
-
   public function inAllowedDomains ( $URL )
   { 
     $host = URL::extractHost($URL);
     foreach ($this->collection->domains as $d) {
       $domain = str_replace("www.", "", $d->name);
-      print "DOMAIN:".$domain." ? ".$URL.":".strpos($host,$domain)."\r\n"; 
       if (strpos($host, $domain)!== false) {
         return true;
       } 

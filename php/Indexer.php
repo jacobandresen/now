@@ -1,5 +1,5 @@
 <?php
-class Indexer extends Collection
+class Indexer 
 {
   public function __construct($ownerId)
   {

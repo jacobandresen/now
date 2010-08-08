@@ -55,7 +55,6 @@ class HTTPClient
     if($this->host==""){
       die("missing host name!\r\n");
     }
-    print "CONNECT:".$this->host."\r\n";
     $this->socket = fsockopen( $this->host,
       $this->port,
       $this->errNo,
@@ -67,14 +66,14 @@ class HTTPClient
 
   private function close()
   {
-   if (is_writeable($this->socket))
+   if (isset($this->socket) && is_writeable($this->socket))
     fclose($this->socket);
   }
 
   private function sendRequest( $request )
   {
     $request.=" HTTP/1.0";
-    $request.="\r\nUser-Agent: YASE alpha3";
+    $request.="\r\nUser-Agent: YASE";
     $request.="\r\nHost: ".$this->host;
     $request.="\r\nAccept-Charset: iso-8859-1";
     $request.="\r\nConnection: close\r\n\r\n";
