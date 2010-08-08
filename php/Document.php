@@ -7,13 +7,8 @@ class Document{
   public $contentType;
   public $content;
 
-  public function __construct ($id, $url ,$contentType, $content, $level) 
+  public function __construct () 
   {
-    $this->id  = $id;
-    $this->url = $url;
-    $this->contentType = $contentType;
-    $this->content = $content;
-    $this->level = $level;
   }
 
 

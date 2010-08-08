@@ -16,7 +16,8 @@ class Indexer
 
   public function clear()
   {
-   mysql_query("DELETE FROM facet where owner_id='".$this->collection->ownerId."'") or die (mysql_error());
+    $SQL = "DELETE FROM facet where owner_id='".$this->collection->ownerId."'";
+     mysql_query($SQL) or die (mysql_error());
   }
 
   public function index()
@@ -26,7 +27,12 @@ class Indexer
     $res = mysql_query($SQL) or die (mysql_error());
 
     while($row=mysql_fetch_array($res)){
-      $document = new Document($row['id'], $row['url'], $row['contenttype'], $row['content'] ,$row['level']);
+      $document = new Document();
+      $document->id = $row['id'];
+      $document->url = $row['url'];
+      $document->contentType= $row['contenttype'];
+      $document->content =  $row['content'] ;
+      $document->level =$row['level'];
       $this->add($document);
     }
   }
@@ -36,8 +42,8 @@ class Indexer
     try{
       $title="";
 
-//      if(URL::hasDuplicate($this->collection->ownerId, $document->url)) return false;
- //     if(URL::filter($this->collection->ownerId, $this->collection->getDomainId($document->url), $document->url, "indexerfilter")) return false;
+   //   if(URL::hasDuplicate($this->collection->ownerId, $document->url)) return false;
+    //  if(URL::filter($this->collection->ownerId, $this->collection->getDomainId($document->url), $document->url, "indexerfilter")) return false;
 
       if($document->contentType!="application/pdf"){
         //default to HTML
@@ -66,16 +72,17 @@ class Indexer
        mysql_query( $SQL ) or die (mysql_error());
 
      }else{
-        print $document->url." empty doc <br />\r\n";
+        $this->collection->log($document->url." empty doc");
       }
     }catch(Exception $e){
-      print "failed adding $document->url\r\n";
+      $this->collection->log("failed adding $document->url ");
     }
   }
 
   private function setMD5 ($id, $md5)
   {
     $SQL = "update document where id='".$id."' set md5='".$md5."'";
+    mysql_query($SQL);
   }
 };
 ?>

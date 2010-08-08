@@ -86,7 +86,6 @@ class Crawler
 
   private function shouldCrawl($url)
   {
-   
     if (in_array($url, $this->crawledURLs)){
       return false;
     }
