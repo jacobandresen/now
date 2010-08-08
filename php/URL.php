@@ -3,7 +3,7 @@ class URL
 {
   public static function hasDuplicate($accountId, $url)
   {
-    $res = mysql_query("SELECT url from document where url='$url' and account_id='".$acocuntId."'") or die(mysql_error());
+    $res = mysql_query("SELECT url from document where url='$url' and owner_id='".$accountId."'") or die(mysql_error());
     if($row=mysql_fetch_array($res)){
       return  true;
     }
@@ -44,6 +44,9 @@ class URL
     preg_match("@(http\s?\://([^\/].*?))(\/|$)@", $url, $match);
     if ( count($match) > 1 ){
       $host = $match[2];
+    }
+    if (!isset($host)) {
+      print "missing HOST for URL: $url \r\n";
     }
     return $host;
   }

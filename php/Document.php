@@ -1,10 +1,21 @@
 <?php
 class Document{
-
+  
+  public $id;
   public $level;
   public $url;
   public $contentType;
   public $content;
+
+  public function __construct ($id, $url ,$contentType, $content, $level) 
+  {
+    $this->id  = $id;
+    $this->url = $url;
+    $this->contentType = $contentType;
+    $this->content = $content;
+    $this->level = $level;
+  }
+
 
   public function save ($accountId)
   {
@@ -28,7 +39,7 @@ class Document{
    return true;
   }
 
-  public static function hasDuplicateContent($acocuntId, $md5)
+  public static function hasDuplicateContent($accountId, $md5)
   {
     $result = mysql_query("SELECT d.url, i.md5 from document d,index_info i where i.md5='$md5' and i.document_id=d.id and d.account_id='".$accountId."'") or die(mysql_error());
     $row = mysql_fetch_row($result);

@@ -45,12 +45,12 @@ create table filter (
 drop table if exists facet;
 create table facet (
   id int 			NOT NULL primary key auto_increment,
-  account_id      		int,
+  owner_id      		int,
   document_id			int,
   collection_id			int,
   name				varchar(256),
   content			LONGTEXT,
   FULLTEXT(content),
   foreign key(document_id) 	references document(id),
-  foreign key(account_id)  	references account(id)
+  foreign key(owner_id)  	references account(id)
 ) engine=MyISAM;
