@@ -15,6 +15,8 @@ if ($argv[1] == "" || $argv[2] == "") {
    exit -1;
 }
 
-//$y = new YASE();
-//print_r( $y->search($argv[1], $argv[2]));
+
+$s=new Searcher($argv[1]);
+$s->search($argv[2], 0);
+
 ?>

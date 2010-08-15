@@ -9,21 +9,11 @@ class Indexer
   }
 
   public function start()
-  {
-    $this->clear();
-    $this->index();
-  }
-
-  public function clear()
-  {
-    $SQL = "DELETE FROM facet where owner_id='".$this->collection->ownerId."'";
-     mysql_query($SQL) or die (mysql_error());
-  }
-
-  public function index()
   { 
-    //FIXME: this should be for the current collection (not the ownerId)
-    $SQL="select max(retrieved),id,url,contenttype,content,level from document where owner_id='".$this->collection->ownerId."' group by owner_id,url";
+    $SQL = "DELETE FROM facet where collection_id='".$this->collection->id."'";
+     mysql_query($SQL) or die (mysql_error());
+         
+    $SQL="select max(retrieved),id,url,contenttype,content,level from document where collection_id='".$this->collection->id."' group by owner_id,url";
     $res = mysql_query($SQL) or die (mysql_error());
 
     while($row=mysql_fetch_array($res)){
@@ -33,51 +23,56 @@ class Indexer
       $document->contentType= $row['contenttype'];
       $document->content =  $row['content'] ;
       $document->level =$row['level'];
-      $this->add($document);
+
+      $this->analyzeDocument($document);
     }
   }
 
-  public function add($document)
+  protected function analyzeDocument($document)
   {
     try{
       $title="";
 
-   //   if(URL::hasDuplicate($this->collection->ownerId, $document->url)) return false;
-    //  if(URL::filter($this->collection->ownerId, $this->collection->getDomainId($document->url), $document->url, "indexerfilter")) return false;
-
       if($document->contentType!="application/pdf"){
-        //default to HTML
+        
+        //analyze HTML as default
         $document->content = html_entity_decode($document->content, ENT_QUOTES);
         $document->title = HTMLRobot::findTitle($this->collection->ownerId, $document->content);
         $document->title = htmlentities($document->title, ENT_QUOTES);
         $document->content = HTMLRobot::clean($document->content);
       }
-
-      //default title
+      
+      //default rules
       if($document->title==""){ $document->title=$document->url; }
 
       $md5 = md5($document->content);
-   //   if(Document::hasDuplicateContent($this->collection->ownerId, $md5)) return false;
       $this->setMD5($document->id, $md5);
+   
+      $this->saveFacets($document);
 
-
-      $length=strlen($document->content);
-      $this->collection->log("[".$length."]INDEX ".$document->url);
-      if($length>0 && strlen($document->url)>0 ){
-
-       $SQL = "INSERT INTO facet(owner_id,document_id,name,content) values('".$this->collection->ownerId."','".$document->id."','title','".$document->title."');";
-       mysql_query( $SQL ) or die (mysql_error());
-
-       $SQL = "INSERT INTO facet(owner_id,document_id,name,content) values('".$this->collection->ownerId."','".$document->id."','content','".$document->content."');";
-       mysql_query( $SQL ) or die (mysql_error());
-
-     }else{
-        $this->collection->log($document->url." empty doc");
-      }
     }catch(Exception $e){
       $this->collection->log("failed adding $document->url ");
     }
   }
+
+  protected function saveFacets( $document ) 
+  {
+    $length=strlen($document->content);
+    $this->collection->log("[".$length."]INDEX ".$document->url);
+
+    if($length>0 && strlen($document->url)>0 ){
+
+        $SQL = "INSERT INTO facet(owner_id,collection_id,document_id,name,content) values('".$this->collection->ownerId."','".$this->collection->id."','".$document->id."','title','".$document->title."');";
+        mysql_query( $SQL ) or die (mysql_error());
+
+        $SQL = "INSERT INTO facet(owner_id,document_id,name,content) values('".$this->collection->ownerId."','".$this->collection->id."','".$document->id."','content','".$document->content."');";
+        mysql_query( $SQL ) or die (mysql_error());
+
+     }else{
+        $this->collection->log($document->url." empty doc");
+      }
+  }
+  
 
   private function setMD5 ($id, $md5)
   {

@@ -10,6 +10,7 @@ class CrawlerTest extends PHPUnit_Framework_TestCase
     $c = $account->collections[0];
     
     $crawler =  new Crawler($c->id);
+    $crawler->start();
   }
 
 }

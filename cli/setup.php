@@ -22,6 +22,4 @@ $account = Account::create( (object) array("userName"=>$userName, "password"=>$p
 
 $collection = Collection::create( (object) array("ownerId"=>$account->id, "name" => "jacobs stuff", "startUrl" => "http://pedant.dk", "pageLimit" => 1500, "levelLimit" => 15));
 $collection->addDomain("pedant.dk"); 
-
-
 ?>

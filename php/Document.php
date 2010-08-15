@@ -34,7 +34,7 @@ class Document{
    return true;
   }
 
-  public static function hasDuplicateContent($accountId, $md5)
+/*  public static function hasDuplicateContent($accountId, $md5)
   {
     $result = mysql_query("SELECT d.url, i.md5 from document d,index_info i where i.md5='$md5' and i.document_id=d.id and d.account_id='".$accountId."'") or die(mysql_error());
     $row = mysql_fetch_row($result);
@@ -43,7 +43,7 @@ class Document{
       return true;
     }
     return false;
-  }
+  }*/
 
   public function shouldCrawl()
   {

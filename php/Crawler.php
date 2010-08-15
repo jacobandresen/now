@@ -29,7 +29,7 @@ class Crawler
   public function start()
   {
     if($this->shouldCrawl($this->startUrl)){
-      mysql_query("delete from document where account_id='".$this->collection->ownerId."'");
+      mysql_query("delete from document where collection_id='".$this->collection->id."'");
       $this->crawl( $this->startUrl, 0 , $this->startUrl);
     } else {
       $this->collection->log("failed to start crawl");

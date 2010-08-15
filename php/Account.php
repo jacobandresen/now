@@ -24,7 +24,6 @@ class Account
     return $a; 
   }
 
-  //TODO: should we be able to retrieve several accounts here?
   public static function read($data)
   {
     $SQL = "SELECT id,username,password,first_name,last_name from account";
@@ -37,7 +36,6 @@ class Account
     $a->password	= $row[2];
     $a->firstName	= $row[3];
     $a->lastName 	= $row[4];
-
 
     $cids=array();
     $SQL = "SELECT id from collection where owner_id=".$a->id;

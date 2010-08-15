@@ -1,16 +1,3 @@
-drop table if exists document;
-create table document (
-  id 				int NOT NULL primary key auto_increment,
-  owner_id			int, 
-  url 		        	varchar(256),
-  level           		int,
-  contenttype     		varchar(256),
-  retrieved 	    		timestamp,
-  content 	      		LONGTEXT,
-  FOREIGN KEY(owner_id)	 	REFERENCES account(id),
-  FULLTEXT(content)
-) engine=MyISAM;
-
 drop table if exists collection;
 create table collection (
   id 				int NOT NULL primary key auto_increment,
@@ -24,6 +11,24 @@ create table collection (
   last_updated			datetime, 
   foreign key(owner_id)       	references account(id)
 );
+
+drop table if exists document;
+create table document (
+  id 				int NOT NULL primary key auto_increment,
+  owner_id			int, 
+  collection_id			int, 
+  url 		        	varchar(256),
+  md5				varchar(20), 
+  level           		int,
+  contenttype     		varchar(256),
+  retrieved 	    		timestamp,
+  content 	      		LONGTEXT,
+  FOREIGN KEY(owner_id)	 	REFERENCES account(id),
+  FOREIGN KEY(collection_id)    REFERENCES collection(id),
+  FULLTEXT(content)
+) engine=MyISAM;
+
+
 
 drop table if exists domain;
 create table domain (
