@@ -9,13 +9,8 @@ class PDFRobot
 
   public function clean($document)
   {
-   //TODO:construct the path automatically if it is not there
-   if(TMP_YASE==''){
-     die ('missing temporary storage path: TMP_YASE');
-   }
-
    if(strlen($document->content)>0){
-      $tmpFile=TMP_YASE."/".$this->accountId."tmp";
+      $tmpFile="/tmp/YASE".$this->collectionId."tmp";
       $tmpFilePdf = $tmpFile.".pdf";
       $tmpFileTxt = $tmpFile.".txt";
 
