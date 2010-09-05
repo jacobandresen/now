@@ -66,8 +66,10 @@ class HTTPClient
 
   private function close()
   {
-   if ( $this->socket!=null && isset($this->socket) && is_writeable($this->socket))
+  // if ( $this->socket!=null && isset($this->socket) && is_writeable($this->socket))
+    if (is_resource($this->socket)) 
     fclose($this->socket);
+    //socket_close($this->socket); 
   }
 
   private function sendRequest( $request )
