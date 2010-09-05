@@ -20,7 +20,7 @@ create table document (
   url 		        	varchar(256),
   md5				varchar(20), 
   level           		int,
-  contenttype     		varchar(256),
+  content_type     		varchar(256),
   retrieved 	    		timestamp,
   content 	      		LONGTEXT,
   FOREIGN KEY(owner_id)	 	REFERENCES account(id),
