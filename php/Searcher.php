@@ -20,7 +20,7 @@ class Searcher
     }
 
     if($query!=""){
-     $SQL = "SELECT distinct(d.url) as url ,d.contenttype as contenttype ,t.content as title, c.content as content, MATCH(c.content) AGAINST('$query') as score from document d,facet t, facet c where d.collection_id='".$this->collectionId."' and d.id=t.document_id and t.name='title' and  d.id=c.document_id and c.name='content' order by score desc";
+     $SQL = "SELECT distinct(d.url) as url ,d.content_type as content_type ,t.content as title, c.content as content, MATCH(c.content) AGAINST('$query') as score from document d,facet t, facet c where d.collection_id='".$this->collectionId."' and d.id=t.document_id and t.name='title' and  d.id=c.document_id and c.name='content' order by score desc";
      
      print "SQL:".$SQL."\r\n";
      $result = mysql_query($SQL) or die("search failed:".mysql_error());
@@ -35,7 +35,7 @@ class Searcher
         $document->url = urldecode($row['url']);
         $document->title = trim(html_entity_decode($title));
         $document->content = htmlentities($content);
-        $document->contentType = $row['contenttype'];
+        $document->contentType = $row['content_type'];
         $pos++;
         $results[$pos] = $document;
       }
