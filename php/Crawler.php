@@ -49,7 +49,7 @@ class Crawler
       $document->content = htmlentities($document->content,ENT_QUOTES);
 
       array_push($this->crawledURLs, $url);
-      return $document->save($this->collection->ownerId);
+      return $document->save($this->collection->id);
     } else {
 
       if (!$document->shouldCrawl()) {
@@ -71,7 +71,7 @@ class Crawler
       }
 
       $document->content = htmlentities($document->content,ENT_QUOTES);
-      $document->save($this->collection->ownerId);
+      $document->save($this->collection->id);
       array_push($this->crawledURLs, $url);
 
       while($child=array_shift($this->processURLs)){

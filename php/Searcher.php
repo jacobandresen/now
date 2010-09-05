@@ -1,18 +1,16 @@
 <?php
 class Searcher
 {
-  private $ownerId;
+  private $collectionId;
   public $limit = 5;
 
-  public function __construct($ownerId)
+  public function __construct($collectionId)
   {
-    $this->ownerId=$ownerId;
+    $this->collectionId=$collectionId;
   }
 
   public function search ($query, $page)
   {
-
-   print "QUERY:".$query."\r\n";
     $results = array();
     $index=0;
     $limit = '';
@@ -22,14 +20,16 @@ class Searcher
     }
 
     if($query!=""){
-     $SQL = "SELECT distinct(d.url) as url ,d.contenttype as contenttype ,t.content as title, c.content as content, MATCH(c.content) AGAINST('$query') as score from account a,document d,facet t, facet c where a.id='".$this->ownerId."' and d.id=t.document_id and t.name='title' and  d.id=c.document_id and c.name='content' order by score desc";
+     $SQL = "SELECT distinct(d.url) as url ,d.contenttype as contenttype ,t.content as title, c.content as content, MATCH(c.content) AGAINST('$query') as score from document d,facet t, facet c where d.collection_id='".$this->collectionId."' and d.id=t.document_id and t.name='title' and  d.id=c.document_id and c.name='content' order by score desc";
+     
+     print "SQL:".$SQL."\r\n";
      $result = mysql_query($SQL) or die("search failed:".mysql_error());
 
      $pos=0;
       while ($row=mysql_fetch_array($result)){
         $title=$row['title'];
         $content=$row['content'];
-	$content=iconv("UTF-8", "ISO-8859-1", $content);
+	//$content=iconv("UTF-8", "ISO-8859-1", $content);
         $content=substr($content,1,400);
         $document = new Document();
         $document->url = urldecode($row['url']);

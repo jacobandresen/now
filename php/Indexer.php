@@ -63,10 +63,10 @@ class Indexer
     if($length>0 && strlen($document->url)>0 ){
 
         $SQL = "INSERT INTO facet(owner_id,collection_id,document_id,name,content) values('".$this->collection->ownerId."','".$this->collection->id."','".$document->id."','title','".$document->title."');";
-        mysql_query( $SQL ) or die (mysql_error());
+        mysql_query( $SQL ) or die ("failed to insert title facet:".mysql_error());
 
-        $SQL = "INSERT INTO facet(owner_id,document_id,name,content) values('".$this->collection->ownerId."','".$this->collection->id."','".$document->id."','content','".$document->content."');";
-        mysql_query( $SQL ) or die (mysql_error());
+        $SQL = "INSERT INTO facet(owner_id,collection_id,document_id,name,content) values('".$this->collection->ownerId."','".$this->collection->id."','".$document->id."','content','".$document->content."');";
+        mysql_query( $SQL ) or die ("failed to insert content facet: ".mysql_error());
 
      }else{
         $this->collection->log($document->url." empty doc");

@@ -28,8 +28,6 @@ create table document (
   FULLTEXT(content)
 ) engine=MyISAM;
 
-
-
 drop table if exists domain;
 create table domain (
   id				int NOT NULL primary key auto_increment, 

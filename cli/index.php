@@ -14,6 +14,5 @@ if ($argv[1] == "") {
 
 $account = Account::login($argv[1], $argv[2]);
 $indexer = new Indexer((object) array("id"=>$argv[3]));
-$indexer->indexCollection();
-
+$indexer->start();
 ?>

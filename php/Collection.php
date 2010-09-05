@@ -8,7 +8,6 @@ class Collection
   public $levelLimit; 
   public $startUrl;
 
-  //details
   public $domains;
   
   public function __construct ( ) 
@@ -109,6 +108,5 @@ class Collection
         }
      }
   }
-
 }
 ?>

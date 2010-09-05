@@ -2,6 +2,7 @@
 class Document{
   
   public $id;
+  public $collectionId;
   public $level;
   public $url;
   public $contentType;
@@ -11,11 +12,10 @@ class Document{
   {
   }
 
-
-  public function save ($accountId)
+  public function save ($collectionId)
   {
-    if ($accountId==""){
-      die ("coding error. save to empty account\r\n");
+    if ($collectionId==""){
+      die ("coding error. save to empty collection\r\n");
     }
 
     if (strlen($this->url)>1028) {
@@ -29,7 +29,7 @@ class Document{
     }
 
    $this->url = urlencode($this->url);
-   $SQL= "INSERT IGNORE into document(owner_id, url, contenttype, content, level) values('".$accountId."','".$this->url."','".$this->contentType."','".$this->content."','".$this->level."')";
+   $SQL= "INSERT IGNORE into document(collection_id, url, contenttype, content, level) values('".$collectionId."','".$this->url."','".$this->contentType."','".$this->content."','".$this->level."')";
    mysql_query($SQL) or die("SQL error:".$SQL." \r\nfailed to insert into document:".mysql_error());
    return true;
   }
