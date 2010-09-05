@@ -1,6 +1,5 @@
 <?php
-
-class Account 
+class Account
 {
   public $id; 
   public $userName; 
@@ -68,10 +67,10 @@ class Account
     $res = mysql_query("SELECT id from account where username='".$userName."' and password='".$password."'") or die(mysql_error());
     $row = mysql_fetch_array($res);
 
-    $accountId = $row[0];
+    $id = $row[0];
     
-    if ( isset($accountId) ){
-       return (Account::read((object) array("id"=>$accountId)));
+    if ( isset($id) ){
+       return (Account::read((object) array("id"=>$id)));
     }else{
       throw (new Exception("login failed for user ".$userName)); 
     }
