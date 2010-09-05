@@ -15,11 +15,6 @@ class Collection
     $this->domains = array(); 
   } 
 
-  public function log ($message) 
-  {
-     print $message."\r\n"; 
-  }
-
   public static function create ($data) 
   {
     $c = new Collection(); 
@@ -107,6 +102,11 @@ class Collection
 	  return ($domain->id);
         }
      }
+  }
+
+  public function log ( $message ) 
+  {
+    print $message."\r\n";
   }
 }
 ?>
