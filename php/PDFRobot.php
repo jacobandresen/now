@@ -1,10 +1,10 @@
 <?php
 class PDFRobot
 {
-  private $accountId;
-  public function __construct($accountId)
+  private $collectionId;
+  public function __construct($collectionId)
   {
-    $this->accountId=$accountId;
+    $this->collectionId=$collectionId;
   }
 
   public function clean($document)
