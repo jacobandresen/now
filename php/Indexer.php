@@ -13,22 +13,22 @@ class Indexer
     $SQL = "DELETE FROM facet where collection_id='".$this->collection->id."'";
      mysql_query($SQL) or die (mysql_error());
          
-    $SQL="select max(retrieved),id,url,contenttype,content,level from document where collection_id='".$this->collection->id."' group by owner_id,url";
+    $SQL="select max(retrieved),id,url,content_type,content,level from document where collection_id='".$this->collection->id."' group by owner_id,url";
     $res = mysql_query($SQL) or die (mysql_error());
 
     while($row=mysql_fetch_array($res)){
       $document = new Document();
       $document->id = $row['id'];
       $document->url = $row['url'];
-      $document->contentType= $row['contenttype'];
+      $document->contentType= $row['content_type'];
       $document->content =  $row['content'] ;
       $document->level =$row['level'];
 
-      $this->analyzeDocument($document);
+      $this->analyze($document);
     }
   }
 
-  protected function analyzeDocument($document)
+  protected function analyze($document)
   {
     try{
       $title="";
@@ -58,7 +58,7 @@ class Indexer
   protected function saveFacets( $document ) 
   {
     $length=strlen($document->content);
-    $this->collection->log("[".$length."]INDEX ".$document->url);
+    $this->collection->log("[".$length."]INDEX ".urldecode($document->url)." type:".$document->contentType);
 
     if($length>0 && strlen($document->url)>0 ){
 
