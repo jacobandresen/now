@@ -42,7 +42,6 @@ class Collection
        $c->pageLimit = $row[3];
        $c->levelLImit = $row[4];
        $c->startUrl = $row[5];
-      // $c->retrieveDomains();  
        $c->domains = Domain::retrieve( json_decode('{"collectionId":"'.$c->id.'"}')); 
        return ($c);
      }
@@ -67,14 +66,13 @@ class Collection
     $this->domains = Domain::retrieve( json_decode('{"collectionId":"'.$this->id.'"}')); 
   }
 
-  //special commands
   public function inAllowedDomains ( $URL )
   { 
     $host = URL::extractHost($URL);
     foreach ($this->domains as $d) {
       $domain = str_replace("www.", "", $d->name);
       if (strpos($host, $domain)!== false) {
-        return true;
+         return true;
       } 
     } 
    return false;    

@@ -16,7 +16,9 @@ class Crawler
       print "failed to find collection for :\r\n";
       print_r($params);
     }
-  
+ 
+
+    $this->pageLimit= 
     $this->processURLs=array();
     $this->seenURLS=array(); 
     $this->foundURLs=array(); 
@@ -28,6 +30,7 @@ class Crawler
 
   public function start()
   {
+    print "page limit:".$this->pageLimit."\r\n";
     if($this->shouldCrawl($this->startUrl)){
       mysql_query("delete from document where collection_id='".$this->collection->id."'");
       $this->crawl( $this->startUrl, 0 , $this->startUrl);
@@ -38,7 +41,11 @@ class Crawler
 
   public function crawl($url, $level, $parent)
   {
-    $this->collection->log("crawl [$level] - $url ");
+    if (count($this->crawledURLs) > $this->pageLimit){
+      return;
+    } 
+
+    $this->collection->log("crawl #".count($this->crawledURLs)." [$level] - $url ");
 
     $document = $this->httpClient->getDocument($url);
     $document->level = $level;
@@ -52,7 +59,8 @@ class Crawler
       return $document->save($this->collection->id);
     } else {
 
-      if (!$document->shouldCrawl()) {
+      if (!($this->shouldCrawl($url))) {
+        print "SKIP $url \r\n" ;
         array_push( $this->foundURLs, $url); //skip document
         return false;
       }
@@ -73,12 +81,17 @@ class Crawler
       $document->content = htmlentities($document->content,ENT_QUOTES);
       $document->save($this->collection->id);
       array_push($this->crawledURLs, $url);
-
+      if (count($this->crawledURLs) > $this->pageLimit) {
+         print "hit page limit!\r\n"; 
+         print " #crawledURLs:".$this->pageLimit."\r\n";
+         return;
+      }
+ 
       while($child=array_shift($this->processURLs)){
        if($child->url!=""){
          if(!in_array($child->url, ($this->crawledURLs))){
            $this->crawl($child->url, ($child->level), $url);
-         }
+        }
        }
      }
    }
@@ -91,13 +104,11 @@ class Crawler
     }
 
     if ($this->collection->inAllowedDomains($url) ==false) {
-      array_push( $this->crawledURLs, $url); //skip document
       return false;
     }
     if ($this->level > $this->collection->levelLimit ||
        count($this->crawledURLs)>$this->collection->pageLimit||
        URL::filter($this->collection->ownerId, $this->collection->getDomainId($url), $url, "crawlerfilter")){ 
-      array_push( $this->crawledURLs, $url); 
       return false;
     }
     return true;
