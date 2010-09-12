@@ -1,16 +1,16 @@
 <?php
 class URL
 {
-  public static function hasDuplicate($accountId, $url)
+  public static function hasDuplicate($collectionId, $url)
   {
-    $res = mysql_query("SELECT url from document where url='$url' and owner_id='".$accountId."'") or die(mysql_error());
+    $res = mysql_query("SELECT url from document where url='$url' and parent_id='".$collectionId."'") or die(mysql_error());
     if($row=mysql_fetch_array($res)){
       return  true;
     }
     return false;
   }
 
-  public static function filter($accountId, $domainId, $url, $name)
+  public static function filter($domainId, $url, $name)
   {
     if (strpos($url, "#")) {
       return true;
@@ -102,7 +102,8 @@ class URL
   public static function inDomain($url, $domain)
   {
     $host = URL::extractHost($url);
-    return (strpos($domain, $url)); 
+    $pos =  strpos($url, $domain);
+    return ( $pos !== false); 
   }
 
 }

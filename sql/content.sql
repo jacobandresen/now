@@ -37,7 +37,7 @@ create table domain (
 drop table if exists filter;
 create table filter (
   id				int NOT NULL primary key auto_increment,
-  name				varchar(12), 
+  name				varchar(64), 
   parent_id			int,
   regex				varchar(256),
   foreign key(parent_id)	references domain(id) 

@@ -1,20 +1,14 @@
 <?php
 require_once("../php/Framework.php");
 
-if(!isset($argv[1])){
-  $argv[1]="";
-}
-if(!isset($argv[2])){
-  $argv[2]="";
-}
-$account = $argv[1];
-if ($argv[1] == "" || $argv[2] == "") {
+if (sizeof($argv) < 4 || $argv[0] == "" || $argv[1] == "") {
    print "YASE searcher \r\n";
    print "  usage:\r\n";
-   print "  search.php [account] [query]\r\n";
+   print "  search.php [userName] [password] [query]\r\n";
    exit -1;
 }
 
-$s=new Searcher($argv[1]);
-print_r ($s->search($argv[2], 0));
+$account = Account::login($argv[1], $argv[2]);
+$s=new Searcher($account->collections[0]);
+print_r ($s->search($argv[3], 0));
 ?>

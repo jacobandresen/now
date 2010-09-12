@@ -85,7 +85,7 @@ class Collection
   }
 
   public function getDomainId ( $url ) 
-  {
+  { 
      foreach ($this->domains as $domain )
      {
 	if (URL::inDomain($url , $domain->name) )

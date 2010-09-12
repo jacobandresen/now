@@ -1,16 +1,16 @@
 <?php
 class PDFRobot
 {
-  private $collectionId;
-  public function __construct($collectionId)
+  private $parentId;
+  public function __construct($parentId)
   {
-    $this->collectionId=$collectionId;
+    $this->parentId=$parentId;
   }
 
   public function clean($document)
   {
    if(strlen($document->content)>0){
-      $tmpFile="/tmp/YASE".$this->collectionId."tmp";
+      $tmpFile="/tmp/YASE".$this->parentId."tmp";
       $tmpFilePdf = $tmpFile.".pdf";
       $tmpFileTxt = $tmpFile.".txt";
 

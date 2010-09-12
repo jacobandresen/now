@@ -20,6 +20,6 @@ $domain   = $argv[3];
 
 $account = Account::create( (object) array("userName"=>$userName, "password"=>$password, "firstName"=>"", "lastName"=>""));
 
-$collection = Collection::create( (object) array("ownerId"=>$account->id, "name" => "jacobs stuff", "startUrl" => "http://pedant.dk", "pageLimit" => 1500, "levelLimit" => 15));
-$collection->addDomain("pedant.dk"); 
+$collection = Collection::create( (object) array("parentId"=>$account->id, "name" => $domain, "startUrl" => $domain, "pageLimit" => 1500, "levelLimit" => 15));
+$collection->addDomain($userName); 
 ?>

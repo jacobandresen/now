@@ -17,8 +17,12 @@ class Crawler
       print "failed to find collection for :\r\n";
       print_r($params);
     }
- 
-    $this->pageLimit=$params->pageLimit; 
+
+    if (isset($params->pageLimit)) { 
+      $this->pageLimit=$params->pageLimit; 
+    } else {
+      $this->pageLimit=1500;
+    } 
     $this->processURLs=array();
     $this->seenURLS=array(); 
     $this->foundURLs=array(); 
@@ -32,7 +36,7 @@ class Crawler
   {
     $this->collection->log("page limit:".$this->pageLimit);
     if($this->shouldCrawl($this->startUrl)){
-      mysql_query("delete from document where collection_id='".$this->collection->id."'");
+      mysql_query("delete from document where parent_id='".$this->collection->id."'");
       $this->crawl( $this->startUrl, 0 , $this->startUrl);
     } else {
       $this->collection->log("failed to start crawl");
@@ -45,7 +49,7 @@ class Crawler
       return;
     } 
 
-    $this->collection->log("crawl #".count($this->crawledURLs)." [$level] - $url ");
+    $this->collection->log("crawl - [level:$level] [page:".count($this->crawledURLs)."]  - $url ");
 
     $document = $this->httpClient->getDocument($url);
     $document->level = $level;
@@ -108,7 +112,7 @@ class Crawler
     }
     if ($this->level > $this->collection->levelLimit ||
        count($this->crawledURLs)>$this->collection->pageLimit||
-       URL::filter($this->collection->parentId, $this->collection->getDomainId($url), $url, "crawlerfilter")){ 
+       URL::filter($this->collection->getDomainId($url), $url, "crawlerfilter")){ 
       return false;
     }
     return true;
