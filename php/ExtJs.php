@@ -9,17 +9,19 @@ class ExtJs
     print "  <script type=\"text/javascript\" src=\"$cacheFly/adapter/ext/ext-base.js\"></script>\r\n";
     print "  <script type=\"text/javascript\" src=\"$cacheFly/ext-all-debug.js\"></script>\r\n";
   }
-  
-  public static function includeDirectory ($directory)
+
+  public static function includeDesignerDirectory ($directory)
   {
-    if ($handle = opendir($directory))
-    {
-       while (false !== ($file = readdir($handle)))
-       {
-          if ($file != "." && $file != ".." && (strpos($file, "xds") === false))  
-            print "  <script type=\"text/javascript\" src=\"".$directory."/".$file."\"></script>\r\n";
-       } 
-    }
+    $contents = file_get_contents($directory."/xds_includeOrder.txt");
+    $contents = str_replace("src=\"", "src=\"$directory/", $contents);
+    print $contents;
+  }
+   
+  public static function shouldRead($file) 
+  {
+     return ($file != "." && $file != ".." 
+            && (strpos($file, ".swp") == false)   
+            && (strpos($file, "xds") === false));  
   }
 }
 ?>
