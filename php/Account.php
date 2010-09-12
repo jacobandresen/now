@@ -37,7 +37,7 @@ class Account
     $a->lastName 	= $row[4];
 
    //FIXME: use Collection::Retrieve instead 
-    $cids=array();
+/*    $cids=array();
     $SQL = "SELECT id from collection where parent_id=".$a->id;
     $res = mysql_query($SQL) or die("read collections failed:".$SQL.mysql_error());
     while( $row = mysql_fetch_array($res)) {
@@ -48,6 +48,9 @@ class Account
     foreach ($cids as $cid) { 
       array_push($a->collections, Collection::retrieve( (object) array('id'=> $cid)));
     }
+*/
+   $a->collections = Collection::retrieve( (object) array("parentId"=>$a->id));
+
     return $a; 
   } 
 

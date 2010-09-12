@@ -10,7 +10,8 @@ class Crawler
 
   public function __construct($params)
   {
-    $this->collection = Collection::retrieve($params); 
+    $this->collections = Collection::retrieve($params); 
+    $this->collection = $this->collections[0];
  
     if(!isset($this->collection)){
       print "failed to find collection for :\r\n";

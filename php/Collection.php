@@ -31,20 +31,26 @@ class Collection
 
   public static function retrieve ($data)
   { 
-     $SQL = "SELECT id,parent_id,name,page_limit,level_limit,start_url FROM collection where id=".$data->id;
+     if (isset($data->parentId)){
+       $SQL = "SELECT id,name,page_limit,level_limit,start_url FROM collection where parent_id=".$data->parentId;
+     } else {
+       $SQL = "SELECT id,name,page_limit,level_limit,start_url FROM collection where id=".$data->id;
+     } 
      $res = mysql_query($SQL) or die("collection read failed:".$SQL." -> ".mysql_error());
-   
-     if ($row = mysql_fetch_row($res)) { ;
+  
+     $collections = array(); 
+     while ($row = mysql_fetch_row($res)) { 
        $c = new Collection();
        $c->id = $row[0];
-       $c->parentId = $row[1];	    
-       $c->name = $row[2]; 
-       $c->pageLimit = $row[3];
-       $c->levelLImit = $row[4];
-       $c->startUrl = $row[5];
+       $c->name = $row[1]; 
+       $c->pageLimit = $row[2];
+       $c->levelLImit = $row[3];
+       $c->startUrl = $row[4];
        $c->domains = Domain::retrieve( json_decode('{"parentId":"'.$c->id.'"}')); 
-       return ($c);
+      
+       array_push($collections, $c); 
      }
+     return $collections;
   }
 
   public static function update ($data)

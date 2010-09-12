@@ -13,5 +13,4 @@ class CrawlerTest extends PHPUnit_Framework_TestCase
     $crawler->pageLimit=10; 
     $crawler->start();
   }
-
 }

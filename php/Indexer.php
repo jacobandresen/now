@@ -5,7 +5,8 @@ class Indexer
 
   public function __construct($params)
   {
-    $this->collection = Collection::retrieve($params); 
+    $this->collections = Collection::retrieve($params); 
+    $this->collection = $this->collections[0];
   }
 
   public function start()

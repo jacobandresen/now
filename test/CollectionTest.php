@@ -18,8 +18,8 @@ class CollectionTest extends PHPUnit_Framework_TestCase
   public function testCollectionDomains()
   {
     $params = json_decode('{"id":"'.$this->getTestColId().'"}');
-    $collection =  Collection::retrieve($params);
-    $this->assertEquals($collection->domains[0]->name, "pedant.dk");
+    $collections =  Collection::retrieve($params);
+    $this->assertEquals($collections[0]->domains[0]->name, "pedant.dk");
   }
 
   public function testGetDomains()
