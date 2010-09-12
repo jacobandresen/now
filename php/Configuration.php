@@ -5,4 +5,5 @@ define("MYSQL_USER", "yase");
 define("MYSQL_PASSWORD", "yase");
 define("MYSQL_DATABASE", "yase");
 define("TMP_YASE", "/tmp/yase/");
+define("YASE_WEB", "http://localhost/yase");
 ?>

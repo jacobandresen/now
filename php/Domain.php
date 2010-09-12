@@ -20,15 +20,22 @@ class Domain
     return $d; 
   }
 
-  public static function read ($data)
+  public static function retrieve ($data)
   {
-    $res = mysql_query("SELECT id,name FROM domain where id=".$data->id) or die (mysql_error());
-    $row = mysql_fetch_row($res); 
-    $d = new Domain();
-    $d->id = $row[0];
-    $d->name = $row[1];
+    if (isset($data->id)) { 
+     $res = mysql_query("SELECT id,name FROM domain where id=".$data->id) or die (mysql_error());
+    } else {
+     $res = mysql_query("SELECT id,name from domain where id=".$data->collectionId) or die (mysql_error());
+    } 
 
-    return $d; 
+    $domains = array();
+    while ( $row = mysql_fetch_row($res) ){
+      $d = new Domain();
+      $d->id = $row[0];
+      $d->name = $row[1];
+      array_push($domains, $d); 
+    }
+    return $domains; 
   }
 
   public static function update ($data)

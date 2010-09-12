@@ -29,7 +29,7 @@ class Collection
     return($c); 
   }
 
-  public static function read ($data)
+  public static function retrieve ($data)
   { 
      $SQL = "SELECT id,owner_id,name,page_limit,level_limit,start_url FROM collection where id=".$data->id;
      $res = mysql_query($SQL) or die("collection read failed:".$SQL." -> ".mysql_error());
@@ -42,7 +42,8 @@ class Collection
        $c->pageLimit = $row[3];
        $c->levelLImit = $row[4];
        $c->startUrl = $row[5];
-       $c->retrieveDomains();  
+      // $c->retrieveDomains();  
+       $c->domains = Domain::retrieve( json_decode('{"collectionId":"'.$c->id.'"}')); 
        return ($c);
      }
   }
@@ -63,28 +64,14 @@ class Collection
     $d->name  = $domain;
     $d->collectionId = $this->id; 
     Domain::create($d);
-    $this->retrieveDomains();
-  }
-
-  private function retrieveDomains ()
-  {
-    $domainIDs = array(); 
-    $this->collection->domains = array();
-    $res = mysql_query("SELECT id FROM domain where collection_id=".$this->id) or die (mysql_error());
-    while ( ($row = mysql_fetch_array($res)) )  {
-      array_push($domainIDs, $row[0]);
-    }
-
-    foreach($domainIDs as $d){
-       array_push($this->collection->domains, Domain::read( (object) array("id"=>$d)));  
-    }
+    $this->domains = Domain::retrieve( json_decode('{"collectionId":"'.$this->id.'"}')); 
   }
 
   //special commands
   public function inAllowedDomains ( $URL )
   { 
     $host = URL::extractHost($URL);
-    foreach ($this->collection->domains as $d) {
+    foreach ($this->domains as $d) {
       $domain = str_replace("www.", "", $d->name);
       if (strpos($host, $domain)!== false) {
         return true;

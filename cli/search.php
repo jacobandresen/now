@@ -15,8 +15,6 @@ if ($argv[1] == "" || $argv[2] == "") {
    exit -1;
 }
 
-
 $s=new Searcher($argv[1]);
 print_r ($s->search($argv[2], 0));
-
 ?>

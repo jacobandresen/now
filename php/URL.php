@@ -104,5 +104,6 @@ class URL
     $host = URL::extractHost($url);
     return (strpos($domain, $url)); 
   }
+
 }
 ?>

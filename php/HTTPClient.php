@@ -15,11 +15,10 @@ class HTTPClient
   private $reply;
   private $headers;
 
-  public function __construct($host)
+  public function __construct()
   {
     $this->port=80;
     $this->redirects=0;
-    $this->host=$host;
   }
 
   public function get ($incomingUrl)
@@ -144,7 +143,7 @@ class HTTPClient
         $this->getHeaders();
         $this->sReply="";
 
-        if (  !(isset($this->headers["content-length"]))||
+        if (!(isset($this->headers["content-length"]))||
            $this->headers["content-length"] < MAX_CONTENT_LENGTH)
         {
         try{

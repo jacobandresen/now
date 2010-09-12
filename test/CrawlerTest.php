@@ -6,7 +6,7 @@ class CrawlerTest extends PHPUnit_Framework_TestCase
 {
   public function testCrawl()
   {
-    $account = Account::login("jacob", "jacob");
+    $account = Account::login("pedant.dk", "test");
     $c = $account->collections[0];
     
     $crawler =  new Crawler($c->id);

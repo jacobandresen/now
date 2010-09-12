@@ -22,26 +22,32 @@ class JSONApplication
      }
 
      $params = json_decode($json);
-     $controllerObject = new $controller();
-     switch ($action) {
-       case "create":
-	 $collection = $controllerObject::create($params);	
-	 $resp->id = $collection->id;
-         break;
-       case "read":
-         $resp->data = $controllerObject::retrieve($params);
-         $resp->success = true;
-        break;
-      case "update":
-         $controllerObject::update($params);
-         $resp->success = true;
-	 break; 
-      case "destroy":
-         $controllerObject::destroy($params->id);
-         $resp->success = true;	         
-         break;
-    } 
-    return ( json_encode($resp) );
-  }
-}
+     $resp->success = false;
+
+     try{
+       switch ($action) {
+         case "create":
+	   $collection = $controller::create($params);	
+	   $resp->id = $collection->id;
+           break;
+         case "retrieve":
+           $resp->data = $controller::retrieve($params);
+           $resp->success = true;
+           print_r($data);
+           break;
+         case "update":
+           $controller::update($params);
+           $resp->success = true;
+	   break; 
+         case "destroy":
+           $controller::destroy($params->id);
+           $resp->success = true;	         
+           break;
+       } 
+       return ( json_encode($resp) );
+     } catch (Exeption $e) {
+       print "failed : ".$e->getMessage()."\r\n";
+     }
+   }
+ }
 ?>

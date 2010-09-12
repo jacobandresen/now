@@ -10,7 +10,7 @@ class Crawler
 
   public function __construct($params)
   {
-    $this->collection = Collection::read($params); 
+    $this->collection = Collection::retrieve($params); 
  
     if(!isset($this->collection)){
       print "failed to find collection for :\r\n";
@@ -23,7 +23,7 @@ class Crawler
     $this->crawledURLs=array();
     $this->startUrl = $this->collection->startUrl;
    
-    $this->httpClient = new HTTPClient($this->startUrl);
+    $this->httpClient = new HTTPClient();
   }
 
   public function start()
@@ -89,6 +89,7 @@ class Crawler
     if (in_array($url, $this->crawledURLs)){
       return false;
     }
+
     if ($this->collection->inAllowedDomains($url) ==false) {
       array_push( $this->crawledURLs, $url); //skip document
       return false;

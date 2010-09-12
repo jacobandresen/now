@@ -23,7 +23,7 @@ class Account
     return $a; 
   }
 
-  public static function read($data)
+  public static function retrieve($data)
   {
     $SQL = "SELECT id,username,password,first_name,last_name from account";
     $res =  mysql_query($SQL) or die ("read failed:".$SQL.mysql_error());
@@ -46,7 +46,7 @@ class Account
 
     $a->collections = array();  
     foreach ($cids as $cid) { 
-      array_push($a->collections, Collection::read( (object) array('id'=> $cid)));
+      array_push($a->collections, Collection::retrieve( (object) array('id'=> $cid)));
     }
     return $a; 
   } 
@@ -62,6 +62,8 @@ class Account
     mysql_query("DELETE FROM account where id=$accountId");
   }
 
+
+  //TODO: handle tokens
   public function login($userName, $password)
   {
     $res = mysql_query("SELECT id from account where username='".$userName."' and password='".$password."'") or die(mysql_error());
@@ -70,10 +72,11 @@ class Account
     $id = $row[0];
     
     if ( isset($id) ){
-       return (Account::read((object) array("id"=>$id)));
+       return (Account::retrieve((object) array("id"=>$id)));
     }else{
       throw (new Exception("login failed for user ".$userName)); 
     }
   }
+
 }
 ?>

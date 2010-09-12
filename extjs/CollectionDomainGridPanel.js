@@ -16,4 +16,4 @@ CollectionDomainGridPanel = Ext.extend(CollectionDomainGridPanelUi, {
         CollectionDomainGridPanel.superclass.initComponent.call(this);
     }
 });
-Ext.reg('mygrid', CollectionDomainGridPanel);
+Ext.reg('collectiondomaingrid', CollectionDomainGridPanel);
