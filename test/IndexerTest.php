@@ -9,8 +9,9 @@ class IndexerTest extends PHPUnit_Framework_TestCase
     $account = Account::login("pedant.dk", "test");
     $c = $account->collections[0];
 
-    $indexer = new Indexer($c->id);
+    $indexer = new Indexer($c);
     $indexer->start();
   }
+
 }
 ?>

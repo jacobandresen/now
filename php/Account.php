@@ -36,10 +36,10 @@ class Account
     $a->firstName	= $row[3];
     $a->lastName 	= $row[4];
 
+   //FIXME: use Collection::Retrieve instead 
     $cids=array();
-    $SQL = "SELECT id from collection where owner_id=".$a->id;
+    $SQL = "SELECT id from collection where parent_id=".$a->id;
     $res = mysql_query($SQL) or die("read collections failed:".$SQL.mysql_error());
-    
     while( $row = mysql_fetch_array($res)) {
       array_push($cids, $row[0]); 
     } 
@@ -57,11 +57,10 @@ class Account
     mysql_query($SQL) or die ("Account update failed:".$SQL.mysql_error());
   }
 
-  public static function destroy($accountId) 
+  public static function destroy($id) 
   {
-    mysql_query("DELETE FROM account where id=$accountId");
+    mysql_query("DELETE FROM account where id=$id");
   }
-
 
   //TODO: handle tokens
   public function login($userName, $password)

@@ -2,7 +2,7 @@
 class Domain
 {
   public $id; 
-  public $collectionId; 
+  public $parentId; 
   public $name;
 
   public function __construct () 
@@ -12,10 +12,10 @@ class Domain
   public static function create ($data)
   {
     $d= new Domain();
-    $SQL= "INSERT INTO domain(collection_id,name) values(".$data->collectionId.",'".$data->name."')";
+    $SQL= "INSERT INTO domain(parent_id,name) values(".$data->parentId.",'".$data->name."')";
     mysql_query($SQL) or die (mysql_error());
     $d->id=mysql_insert_id();
-    $d->collectionId=$data->collectionId;
+    $d->parentId=$data->parentId;
     $d->name = $data->name; 
     return $d; 
   }
@@ -25,7 +25,7 @@ class Domain
     if (isset($data->id)) { 
      $res = mysql_query("SELECT id,name FROM domain where id=".$data->id) or die (mysql_error());
     } else {
-     $res = mysql_query("SELECT id,name from domain where id=".$data->collectionId) or die (mysql_error());
+     $res = mysql_query("SELECT id,name from domain where id=".$data->parentId) or die (mysql_error());
     } 
 
     $domains = array();
@@ -40,11 +40,12 @@ class Domain
 
   public static function update ($data)
   {
-    $res = mysql_query("UPDATE domain WHERE id=".$data->id." SET collection_id=".$data->collectionId." and name='".$data->name."'") or die(mysql_error());
+    $res = mysql_query("UPDATE domain WHERE id=".$data->id." SET parent_id=".$data->parentId." and name='".$data->name."'") or die(mysql_error());
   }
 
   public static function destroy ($data)
   {
     mysql_query("DELETE FROM domain where id=".$data->id);
   }
+
 }

@@ -10,10 +10,10 @@ class Indexer
 
   public function start()
   { 
-    $SQL = "DELETE FROM facet where collection_id='".$this->collection->id."'";
+    $SQL = "DELETE FROM facet where parent_id='".$this->collection->id."'";
      mysql_query($SQL) or die (mysql_error());
          
-    $SQL="select max(retrieved),id,url,content_type,content,level from document where collection_id='".$this->collection->id."' group by owner_id,url";
+     $SQL="select max(retrieved),id,url,content_type,content,level from document where parent_id='".$this->collection->id."' group by url";
     $res = mysql_query($SQL) or die (mysql_error());
 
     while($row=mysql_fetch_array($res)){
@@ -37,7 +37,7 @@ class Indexer
         
         //analyze HTML as default
         $document->content = html_entity_decode($document->content, ENT_QUOTES);
-        $document->title = HTMLRobot::findTitle($this->collection->ownerId, $document->content);
+        $document->title = HTMLRobot::findTitle($this->collection->parentId, $document->content);
         $document->title = htmlentities($document->title, ENT_QUOTES);
         $document->content = HTMLRobot::clean($document->content);
       }
@@ -51,7 +51,7 @@ class Indexer
       $this->saveFacets($document);
 
     }catch(Exception $e){
-      $this->collection->log("failed adding $document->url ");
+      $this->collection->log("failed adding $document->url ".$e->getMessage());
     }
   }
 
@@ -62,10 +62,10 @@ class Indexer
 
     if($length>0 && strlen($document->url)>0 ){
 
-        $SQL = "INSERT INTO facet(owner_id,collection_id,document_id,name,content) values('".$this->collection->ownerId."','".$this->collection->id."','".$document->id."','title','".$document->title."');";
+        $SQL = "INSERT INTO facet(parent_id,name,content) values('".$document->id."','title','".$document->title."');";
         mysql_query( $SQL ) or die ("failed to insert title facet:".mysql_error());
 
-        $SQL = "INSERT INTO facet(owner_id,collection_id,document_id,name,content) values('".$this->collection->ownerId."','".$this->collection->id."','".$document->id."','content','".$document->content."');";
+        $SQL = "INSERT INTO facet(parent_id,name,content) values('".$document->id."','content','".$document->content."');";
         mysql_query( $SQL ) or die ("failed to insert content facet: ".mysql_error());
 
      }else{

@@ -2,7 +2,7 @@
 class Document{
   
   public $id;
-  public $collectionId;
+  public $parentId;
   public $level;
   public $url;
   public $contentType;
@@ -12,10 +12,10 @@ class Document{
   {
   }
 
-  public function save ($collectionId)
+  public function save ($parentId)
   {
-    if ($collectionId==""){
-      die ("coding error. save to empty collection\r\n");
+    if ($parentId==""){
+      die ("coding error. trying to save to empty collection\r\n");
     }
 
     if (strlen($this->url)>1028) {
@@ -28,22 +28,11 @@ class Document{
       return false;
     }
 
-   $this->url = urlencode($this->url);
-   $SQL= "INSERT IGNORE into document(collection_id, url, content_type, content, level) values('".$collectionId."','".$this->url."','".$this->contentType."','".$this->content."','".$this->level."')";
-   mysql_query($SQL) or die("SQL error:".$SQL." \r\nfailed to insert into document:".mysql_error());
-   return true;
+    $this->url = urlencode($this->url);
+    $SQL= "INSERT IGNORE into document(parent_id, url, content_type, content, level) values('".$parentId."','".$this->url."','".$this->contentType."','".$this->content."','".$this->level."')";
+    mysql_query($SQL) or die("SQL error:".$SQL." \r\nfailed to insert into document:".mysql_error());
+    return true;
   }
-
-/*  public static function hasDuplicateContent($accountId, $md5)
-  {
-    $result = mysql_query("SELECT d.url, i.md5 from document d,index_info i where i.md5='$md5' and i.document_id=d.id and d.account_id='".$accountId."'") or die(mysql_error());
-    $row = mysql_fetch_row($result);
-    if ($row) {
-      print "duplicate found for ".$row['url']."\r\n";
-      return true;
-    }
-    return false;
-  }*/
 
   public function shouldCrawl()
   {
@@ -62,5 +51,6 @@ class Document{
     }
     return true;
   }
+
 };
 ?>

@@ -17,8 +17,7 @@ class Crawler
       print_r($params);
     }
  
-
-    $this->pageLimit= 
+    $this->pageLimit=$params->pageLimit; 
     $this->processURLs=array();
     $this->seenURLS=array(); 
     $this->foundURLs=array(); 
@@ -30,7 +29,7 @@ class Crawler
 
   public function start()
   {
-    print "page limit:".$this->pageLimit."\r\n";
+    $this->collection->log("page limit:".$this->pageLimit);
     if($this->shouldCrawl($this->startUrl)){
       mysql_query("delete from document where collection_id='".$this->collection->id."'");
       $this->crawl( $this->startUrl, 0 , $this->startUrl);
@@ -51,7 +50,7 @@ class Crawler
     $document->level = $level;
 
     if ($document->contentType=="application/pdf") {
-      $p=new PDFRobot($this->collection->ownerId);
+      $p=new PDFRobot($this->collection->parentId);
       $document->content = $p->clean($document);
       $document->content = htmlentities($document->content,ENT_QUOTES);
 
@@ -60,7 +59,7 @@ class Crawler
     } else {
 
       if (!($this->shouldCrawl($url))) {
-        print "SKIP $url \r\n" ;
+        $this->collection->log("SKIP $url") ;
         array_push( $this->foundURLs, $url); //skip document
         return false;
       }
@@ -82,8 +81,8 @@ class Crawler
       $document->save($this->collection->id);
       array_push($this->crawledURLs, $url);
       if (count($this->crawledURLs) > $this->pageLimit) {
-         print "hit page limit!\r\n"; 
-         print " #crawledURLs:".$this->pageLimit."\r\n";
+         $this->collection->log("hit page limit!"); 
+         $this->collection->log("#crawledURLs:".count($this->crawledURLs));
          return;
       }
  
@@ -108,7 +107,7 @@ class Crawler
     }
     if ($this->level > $this->collection->levelLimit ||
        count($this->crawledURLs)>$this->collection->pageLimit||
-       URL::filter($this->collection->ownerId, $this->collection->getDomainId($url), $url, "crawlerfilter")){ 
+       URL::filter($this->collection->parentId, $this->collection->getDomainId($url), $url, "crawlerfilter")){ 
       return false;
     }
     return true;

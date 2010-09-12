@@ -25,7 +25,7 @@ class URL
       return true;
     }
    
-   $SQL ="select regex from filter where name='".$name."' and domain_id='".$domainId."';";
+   $SQL ="select regex from filter where name='".$name."' and parent_id='".$domainId."';";
    $res = mysql_query($SQL) or die ("SQL:".$SQL." failed:".mysql_error());
    while ($row = mysql_fetch_array($res) ){
      $item = urldecode($row[0]);

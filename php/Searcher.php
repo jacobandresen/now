@@ -1,12 +1,12 @@
 <?php
 class Searcher
 {
-  private $collectionId;
+  private $parentId;
   public $limit = 5;
 
-  public function __construct($collectionId)
+  public function __construct($data)
   {
-    $this->collectionId=$collectionId;
+    $this->parentId = $data->id;
   }
 
   public function search ($query, $page)
@@ -20,16 +20,14 @@ class Searcher
     }
 
     if($query!=""){
-     $SQL = "SELECT distinct(d.url) as url ,d.content_type as content_type ,t.content as title, c.content as content, MATCH(c.content) AGAINST('$query') as score from document d,facet t, facet c where d.collection_id='".$this->collectionId."' and d.id=t.document_id and t.name='title' and  d.id=c.document_id and c.name='content' order by score desc";
+     $SQL = "SELECT distinct(d.url) as url ,d.content_type as content_type ,t.content as title, c.content as content, MATCH(c.content) AGAINST('$query') as score from document d,facet t, facet c where d.parent_id='".$this->parentId."' and d.id=t.parent_id and t.name='title' and  d.id=c.parent_id and c.name='content' order by score desc";
      
-     print "SQL:".$SQL."\r\n";
      $result = mysql_query($SQL) or die("search failed:".mysql_error());
 
      $pos=0;
       while ($row=mysql_fetch_array($result)){
         $title=$row['title'];
         $content=$row['content'];
-	//$content=iconv("UTF-8", "ISO-8859-1", $content);
         $content=substr($content,1,400);
         $document = new Document();
         $document->url = urldecode($row['url']);

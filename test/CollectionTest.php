@@ -9,33 +9,24 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     mysql_query("DELETE FROM collection") or die(mysql_error());
 
     $account = Account::login("pedant.dk", "test");
-    $params = (object) array("ownerId" => $account->id, "name" => "jacobs stuff", "startUrl" => "http://pedant.dk", "pageLimit" => 1500, "levelLimit" => 15);
+    $params = (object) array("parentId" => $account->id, "name" => "jacobs stuff", "startUrl" => "http://pedant.dk", "pageLimit" => 1500, "levelLimit" => 15);
 
     $collection = Collection::create($params);
     $collection->addDomain("pedant.dk");
   }  
 
- public function testCollectionDomains()
+  public function testCollectionDomains()
   {
     $params = json_decode('{"id":"'.$this->getTestColId().'"}');
     $collection =  Collection::retrieve($params);
     $this->assertEquals($collection->domains[0]->name, "pedant.dk");
   }
 
-  public function testControllerRetrieve()
-  {
-    $client = new HTTPClient();
-    $json = $client->get(YASE_WEB.'/app.php?controller=Collection&action=retrieve&json={"id":"'.$this->getTestColid().'"}');
-
-    $response = json_decode($json);
-    $collection = $response->data;
-    $this->assertEquals($collection->domains[0]->name, "pedant.dk");
-  }
-
   public function testGetDomains()
   {
-    $params = json_decode('{"collectionId":"'.$this->getTestColId().'"}');
+    $params = json_decode('{"parentId":"'.$this->getTestColId().'"}');
     $domains = Domain::retrieve($params);
+    $this->assertEquals($domains[0]->name, "pedant.dk");
   }
   
   private function getTestColId()
