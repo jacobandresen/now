@@ -25,7 +25,7 @@ class Account
 
   public static function retrieve($data)
   {
-    $SQL = "SELECT id,username,password,first_name,last_name from account";
+    $SQL = "SELECT id,username,password,first_name,last_name from account where id='".$data->id."'";
     $res =  mysql_query($SQL) or die ("read failed:".$SQL.mysql_error());
     $row = mysql_fetch_array($res);
     

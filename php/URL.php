@@ -41,6 +41,7 @@ class URL
 
   public static function extractHost($url)
   {
+    $url = str_replace("\/", "/", $url);  
     preg_match("@(https?\://([^\/].*?))(\/|$)@", $url, $match);
     if ( count($match) > 1 ){
       $host = $match[2];
