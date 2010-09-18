@@ -16,6 +16,5 @@
   body.show();
 </script>
 
-?>
 </body>
 </html>
