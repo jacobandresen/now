@@ -34,6 +34,7 @@ class Document{
     return true;
   }
 
+  //TODO: rename to hasTextContent?
   public function shouldCrawl()
   {
     if (

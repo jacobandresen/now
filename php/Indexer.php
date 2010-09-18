@@ -74,11 +74,11 @@ class Indexer
       }
   }
   
-
   private function setMD5 ($id, $md5)
   {
     $SQL = "update document where id='".$id."' set md5='".$md5."'";
     mysql_query($SQL);
   }
+
 };
 ?>

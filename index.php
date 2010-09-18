@@ -9,12 +9,13 @@
 <body>
 
 <script type="text/javascript">
-  var body = new AdministrationPanel({
+  Ext.QuickTips.init();
+  var body = new YASE({
      renderTo : Ext.getBody() 
   });
   body.show();
-  console.log('hello world');
 </script>
 
+?>
 </body>
 </html>

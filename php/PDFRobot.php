@@ -9,7 +9,7 @@ class PDFRobot
 
   public function clean($document)
   {
-   if(strlen($document->content)>0){
+    if(strlen($document->content)>0){
       $tmpFile="/tmp/YASE".$this->parentId."tmp";
       $tmpFilePdf = $tmpFile.".pdf";
       $tmpFileTxt = $tmpFile.".txt";

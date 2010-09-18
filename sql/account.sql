@@ -9,10 +9,10 @@ create table account (
 
 drop table if exists token;
 create table token (
-  id				int NOT NULL primary key auto_increment,
-  account_id			int NOT NULL,
-  value				varchar(80),  
-  FOREIGN KEY(account_id)	references account(id)
+  id 				int NOT NULL primary key auto_increment,
+  value				varchar(60),
+  account_id			int,
+  FOREIGN KEY (account_id) 	references account(id)
 );
 
 drop table if exists account_privilege;

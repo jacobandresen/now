@@ -36,20 +36,7 @@ class Account
     $a->firstName	= $row[3];
     $a->lastName 	= $row[4];
 
-   //FIXME: use Collection::Retrieve instead 
-/*    $cids=array();
-    $SQL = "SELECT id from collection where parent_id=".$a->id;
-    $res = mysql_query($SQL) or die("read collections failed:".$SQL.mysql_error());
-    while( $row = mysql_fetch_array($res)) {
-      array_push($cids, $row[0]); 
-    } 
-
-    $a->collections = array();  
-    foreach ($cids as $cid) { 
-      array_push($a->collections, Collection::retrieve( (object) array('id'=> $cid)));
-    }
-*/
-   $a->collections = Collection::retrieve( (object) array("parentId"=>$a->id));
+    $a->collections = Collection::retrieve( (object) array("parentId"=>$a->id));
 
     return $a; 
   } 
@@ -65,8 +52,7 @@ class Account
     mysql_query("DELETE FROM account where id=$id");
   }
 
-  //TODO: handle tokens
-  public function login($userName, $password)
+  public static function login($userName, $password)
   {
     $res = mysql_query("SELECT id from account where username='".$userName."' and password='".$password."'") or die(mysql_error());
     $row = mysql_fetch_array($res);
@@ -74,10 +60,37 @@ class Account
     $id = $row[0];
     
     if ( isset($id) ){
+       Account::generateToken($userName, $password);
        return (Account::retrieve((object) array("id"=>$id)));
     }else{
       throw (new Exception("login failed for user ".$userName)); 
     }
+  }
+  
+  public static function tokenLogin($token)
+  {
+    $sql = "SELECT a.id from account a, token t where t.value='$token' and t.account_id=a.id";
+    $res = mysql_query($sql);
+ 
+    $row = mysql_fetch_array($res);
+    $id = $row[0];
+    return Account::retrieve((object) array("id"=>$id));
+  }
+
+  public static function generateToken($userName, $password) {
+    $token = md5($userName.$password.rand());
+    $sql = "insert into token(account_id, value) values( (select id from account where username='$userName' and password='$password'), '$token');";
+    mysql_query($sql) or die(mysql_error()); 
+    return $token;
+  }
+
+  public static function getToken($userName, $password) {
+    $sql = "select a.id,t.value from account a, token t where a.username='$userName' and a.password='$password' and t.account_id=a.id ;";
+ 
+    $res = mysql_query($sql) or die (" failed getting token:".mysql_error());
+    $row = mysql_fetch_array($res);
+
+    return $row['value']; 
   }
 
 }

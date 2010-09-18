@@ -23,5 +23,6 @@ class ExtJs
             && (strpos($file, ".swp") == false)   
             && (strpos($file, "xds") === false));  
   }
+
 }
 ?>

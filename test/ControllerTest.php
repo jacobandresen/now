@@ -17,9 +17,10 @@ class ControllerTest extends PHPUnit_Framework_TestCase
 
   public function testCollectionRetrieve()
   {
+    Account::generateToken("pedant.dk", "test");
     $client = new HTTPClient();
-    $json = $client->get(YASE_WEB.'/app.php?controller=Collection&action=retrieve&json={"id":"'.$this->getTestColid().'"}');
-
+    $token = $client->get(YASE_WEB.'/token.php?username=pedant.dk&password=test');
+    $json = $client->get(YASE_WEB.'/app.php?controller=Collection&token='.$token.'&action=retrieve&json={"id":"'.$this->getTestColid().'"}');
     $response = json_decode($json);
     $collections = $response->data;
     $this->assertEquals($collections[0]->domains[0]->name, "pedant.dk");
