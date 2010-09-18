@@ -3,7 +3,8 @@
 	"projectId": "8C14F400-A62D-43FA-8FC4-8DF6BF0D5773",
 	"settings": {
 		"urlPrefix": "http://localhost/",
-		"spacesToIndent": 4,
+		"directAPI": "",
+		"spacesToIndent": "2",
 		"codeGenFormat": "Class",
 		"extPath": "http://extjs.cachefly.net/ext-3.2.1/",
 		"exportPath": ".",

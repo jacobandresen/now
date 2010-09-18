@@ -77,10 +77,12 @@ class Account
     return Account::retrieve((object) array("id"=>$id));
   }
 
+  
   public static function generateToken($userName, $password) {
     $token = md5($userName.$password.rand());
     $sql = "insert into token(account_id, value) values( (select id from account where username='$userName' and password='$password'), '$token');";
-    mysql_query($sql) or die(mysql_error()); 
+    mysql_query($sql) or die; 
+
     return $token;
   }
 

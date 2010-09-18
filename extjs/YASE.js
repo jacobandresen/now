@@ -19,10 +19,18 @@ YASE = Ext.extend(YASEUi, {
       params: {username:userName, password:password},
       success: function( msg ) {
                  YASE.token = msg.responseText;
-                 this.loginWindow.close(); 
-                 console.log("got token:"+YASE.token);
+                 if (YASE.token!=='') {
+                   this.loginWindow.close(); 
+                   console.log("got token:"+YASE.token);
+                 } else {
+                   console.log("login failed");
+                 } 
                },
       scope: this
     });
+  },
+ 
+  getData: function (controller) {
+
   } 
 });
