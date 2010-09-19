@@ -8,7 +8,9 @@ YASE = Ext.extend(YASEUi, {
     this.loginWindow.show();
   }, 
  
-  handleLogin: function ( msg ) {
+  handleLogin: function ( token ) {
+    console.log(token); 
+    this.token = token;
     this.loginWindow.close();
   },
  

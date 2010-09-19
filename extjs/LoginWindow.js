@@ -8,13 +8,13 @@ LoginWindow = Ext.extend(LoginWindowUi, {
   },
 
   getToken: function () {
-
-    Ext.Ajax.request({
-      url: this.tokenUrl,
-      params: {username:this.userName.getValue(),
-               password:this.password.getValue()},
-      success: function ( msg ) {
-                 console.log("success!"); 
+    request = new Ajax.Request(
+      this.tokenUrl,
+        {
+          parameters:{username:this.userName.getValue(),
+                  password:this.password.getValue()},
+          asynchronous: false, 
+          onSuccess: function ( msg ) {
                  var token = msg.responseText;
                  this.token = token; 
                   if (token !== '') {
@@ -22,8 +22,7 @@ LoginWindow = Ext.extend(LoginWindowUi, {
                  } else {
                    Ext.MessageBox.alert('Login failed');
                  }
-               },
-      scope: this
-     });
-  }
+              }.bind(this)
+       });
+   }
 });
