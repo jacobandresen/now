@@ -2,7 +2,8 @@
 <head>
 
   <link rel="stylesheet" type="text/css" href="http://extjs.cachefly.net/ext-3.2.1/resources/css/ext-all.css"/>
-  <script type="text/javascript" src="http://extjs.cachefly.net/ext-3.2.1/adapter/ext/ext-base.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.1.0/prototype.js"></script>
+  <script type="text/javascript" src="http://extjs.cachefly.net/ext-3.2.1/adapter/prototype/ext-prototype-adapter.js"></script>
   <script type="text/javascript" src="http://extjs.cachefly.net/ext-3.2.1/ext-all-debug.js"></script>
   <script type"text/javascript" src="extjs/LoginWindow.ui.js"></script>
   <script type"text/javascript" src="extjs/LoginWindow.js"></script>
