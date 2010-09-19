@@ -1,13 +1,13 @@
-<?php 
- require_once('php/ExtJs.php');
-?>
 <html>
 <head>
-<?php 
-  ExtJs::cacheFly();
-  ExtJs::import('LoginWindow');
-  ExtJs::import('YASE');
-?>
+
+  <link rel="stylesheet" type="text/css" href="http://extjs.cachefly.net/ext-3.2.1/resources/css/ext-all.css"/>
+  <script type="text/javascript" src="http://extjs.cachefly.net/ext-3.2.1/adapter/ext/ext-base.js"></script>
+  <script type="text/javascript" src="http://extjs.cachefly.net/ext-3.2.1/ext-all-debug.js"></script>
+  <script type"text/javascript" src="extjs/LoginWindow.ui.js"></script>
+  <script type"text/javascript" src="extjs/LoginWindow.js"></script>
+  <script type"text/javascript" src="extjs/YASE.ui.js"></script>
+  <script type"text/javascript" src="extjs/YASE.js"></script>
 
 </head>
 <body>

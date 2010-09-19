@@ -1,5 +1,4 @@
 YASE = Ext.extend(YASEUi, {
-  tokenUrl:"token.php",
   appUrl:"app.php",
  
   initComponent: function() {

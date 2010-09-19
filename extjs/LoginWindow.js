@@ -14,14 +14,14 @@ LoginWindow = Ext.extend(LoginWindowUi, {
       params: {username:this.userName.getValue(),
                password:this.password.getValue()},
       success: function ( msg ) {
+                 console.log("success!"); 
                  var token = msg.responseText;
-                
-                 if (token !== '') {
+                 this.token = token; 
+                  if (token !== '') {
                    this.fireEvent('login',token);
                  } else {
                    Ext.MessageBox.alert('Login failed');
                  }
-
                },
       scope: this
      });
