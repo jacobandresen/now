@@ -1,4 +1,0 @@
-<script type="text/javascript" src="LoginWindow.ui.js"></script>
-<script type="text/javascript" src="LoginWindow.js"></script>
-<script type="text/javascript" src="YASE.ui.js"></script>
-<script type="text/javascript" src="YASE.js"></script>

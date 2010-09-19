@@ -3,8 +3,12 @@
 ?>
 <html>
 <head>
-<?php ExtJs::includeCacheFly();?>
-<?php ExtJs::includeDesignerDirectory('extjs');?> 
+<?php 
+  ExtJs::cacheFly();
+  ExtJs::import('LoginWindow');
+  ExtJs::import('YASE');
+?>
+
 </head>
 <body>
 

@@ -1,7 +1,7 @@
 <?php
 class ExtJs
 {
-  public static function includeCacheFly ()
+  public static function cacheFly ()
   {
     $cacheFly = "http://extjs.cachefly.net/ext-3.2.1";
 
@@ -10,13 +10,12 @@ class ExtJs
     print "  <script type=\"text/javascript\" src=\"$cacheFly/ext-all-debug.js\"></script>\r\n";
   }
 
-  public static function includeDesignerDirectory ($directory)
+  public static function import($component)
   {
-    $contents = file_get_contents($directory."/xds_includeOrder.txt");
-    $contents = str_replace("src=\"", "src=\"$directory/", $contents);
-    print $contents;
+    print "  <script type\"text/javascript\" src=\"extjs/$component.ui.js\"></script>\r\n";
+    print "  <script type\"text/javascript\" src=\"extjs/$component.js\"></script>\r\n";
   }
-   
+
   public static function shouldRead($file) 
   {
      return ($file != "." && $file != ".." 
