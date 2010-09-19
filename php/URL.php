@@ -12,6 +12,7 @@ class URL
 
   public static function filter($domainId, $url, $name)
   {
+//BEGIN:default filtering rules
     if (strpos($url, "#")) {
       return true;
     }  
@@ -24,6 +25,7 @@ class URL
     if ( strpos($url, "javascript:")) {
       return true;
     }
+//END:default filtering rules
    
    $SQL ="select regex from filter where name='".$name."' and parent_id='".$domainId."';";
    $res = mysql_query($SQL) or die ("SQL:".$SQL." failed:".mysql_error());

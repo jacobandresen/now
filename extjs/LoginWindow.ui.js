@@ -1,14 +1,14 @@
 LoginWindowUi = Ext.extend(Ext.Window, {
   title: 'Login',
   width: 220,
-  height: 163,
+  height: 160,
   layout: 'absolute',
   closable: false,
   initComponent: function() {
     this.items = [
       {
         xtype: 'textfield',
-        width: 130,
+        width: 120,
         name: 'userName',
         x: 60,
         y: 20,
@@ -16,6 +16,7 @@ LoginWindowUi = Ext.extend(Ext.Window, {
       },
       {
         xtype: 'textfield',
+        width: 120, 
         name: 'password',
         x: 60,
         y: 60,
@@ -36,7 +37,7 @@ LoginWindowUi = Ext.extend(Ext.Window, {
       },
       {
         xtype: 'button',
-        text: 'LoginButton',
+        text: 'Login',
         x: 110,
         y: 100,
         ref: 'loginButton'

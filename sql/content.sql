@@ -12,6 +12,16 @@ create table collection (
   foreign key(parent_id)       	references account(id)
 );
 
+-- Where the document has been stored
+drop table if exists domain;
+create table domain (
+  id				int NOT NULL primary key auto_increment, 
+  name				varchar(256),
+  parent_id			int,
+  foreign key(parent_id)	references collection(id)
+);
+
+-- original content  of document
 drop table if exists document;
 create table document (
   id 				int NOT NULL primary key auto_increment,
@@ -26,14 +36,7 @@ create table document (
   FULLTEXT(content)
 ) engine=MyISAM;
 
-drop table if exists domain;
-create table domain (
-  id				int NOT NULL primary key auto_increment, 
-  name				varchar(256),
-  parent_id			int,
-  foreign key(parent_id)	references collection(id)
-);
-
+-- for filtering pages from index
 drop table if exists filter;
 create table filter (
   id				int NOT NULL primary key auto_increment,
@@ -43,6 +46,18 @@ create table filter (
   foreign key(parent_id)	references domain(id) 
 );
 
+-- for extracting content from pages to facet
+drop table if exists extractor;
+create table extractor (
+  id				int NOT NULL primary key auto_increment,
+  name				varchar(64),
+  parent_id			int,
+  page_regex			varchar(256),
+  regex				varchar(256),
+  foreign key(parent_id)	references domain(id)			
+);
+
+-- extracted content
 drop table if exists facet;
 create table facet (
   id int 			NOT NULL primary key auto_increment,

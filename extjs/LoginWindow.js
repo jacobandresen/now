@@ -8,17 +8,14 @@ LoginWindow = Ext.extend(LoginWindowUi, {
   },
 
   getToken: function () {
-    console.log("token url:"+this.tokenUrl);
 
     Ext.Ajax.request({
       url: this.tokenUrl,
       params: {username:this.userName.getValue(),
                password:this.password.getValue()},
       success: function ( msg ) {
-                 console.log(msg);
                  var token = msg.responseText;
                 
-                 //chec if token is valid 
                  if (token !== '') {
                    this.fireEvent('login',token);
                  } else {

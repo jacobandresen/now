@@ -10,8 +10,7 @@ YASE = Ext.extend(YASEUi, {
   }, 
  
   handleLogin: function ( msg ) {
-    console.log("logged in");
-    console.log(msg);
+    this.loginWindow.close();
   },
  
   getData: function (controller) {
