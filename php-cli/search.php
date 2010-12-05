@@ -1,5 +1,5 @@
 <?php
-require_once("../php/Framework.php");
+require_once("../php/YASE/Framework.php");
 
 if (sizeof($argv) < 4 || $argv[0] == "" || $argv[1] == "") {
    print "YASE searcher \r\n";

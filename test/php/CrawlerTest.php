@@ -1,6 +1,6 @@
 <?php
 require_once 'PHPUnit/Framework.php';
-require_once '../../php/Framework.php';
+require_once '../../php/YASE/Framework.php';
 
 class CrawlerTest extends PHPUnit_Framework_TestCase
 {

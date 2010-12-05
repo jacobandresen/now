@@ -1,9 +1,3 @@
-YASE is released under the GPL v3 and is available under a commercial license from the authors.
+a search engine framework in php
 
-dependencies:
-	mysql
-	pdftotext (xpdf)
-
-how to install:
-	alter the settings in php/Configuration.php
-	load the files in sql/ into mysql
+2010, Jacob Andresen <jacob.andresen@gmail.com>

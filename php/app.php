@@ -1,5 +1,5 @@
 <?php
-require_once("php/Framework.php");
+require_once("YASE/Framework.php");
 
 $token		= $_REQUEST['token'];
 $controller  	= $_REQUEST['controller'];
@@ -12,5 +12,4 @@ if (isset($account)){
   $app = new JSONApplication();
   print $app->dispatch($controller, $action, $json);
 }
-
 ?>

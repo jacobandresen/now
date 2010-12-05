@@ -1,6 +1,6 @@
 <?php
 require_once 'PHPUnit/Framework.php';
-require_once '../../php/Framework.php';
+require_once '../../php/YASE/Framework.php';
 
 require_once 'AccountTest.php';
 require_once 'CollectionTest.php';
