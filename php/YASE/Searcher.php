@@ -25,20 +25,20 @@ class Searcher
      $result = mysql_query($SQL) or die("search failed:".mysql_error());
 
      $pos=0;
-      while ($row=mysql_fetch_array($result)){
-        $title=$row['title'];
-        $content=$row['content'];
-        $content=substr($content,1,400);
-        $document = new Document();
-        $document->url = urldecode($row['url']);
-        $document->title = trim(html_entity_decode($title));
-        $document->content = htmlentities($content);
-        $document->contentType = $row['content_type'];
-        $pos++;
-        $results[$pos] = $document;
-      }
+     while ($row=mysql_fetch_array($result)){
+       $title         =$row['title'];
+       $content       =$row['content'];
+       $content       =substr($content,1,400);
+       $document      = new Document();
+       $document->url = urldecode($row['url']);
+       $document->title = trim(html_entity_decode($title));
+       $document->content = htmlentities($content);
+       $document->contentType = $row['content_type'];
+       $pos++;
+       $results[$pos] = $document;
     }
-    return $results;
+   }
+   return $results;
   }
 }
 ?>

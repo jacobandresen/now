@@ -18,12 +18,12 @@ class Indexer
     $res = mysql_query($SQL) or die (mysql_error());
 
     while($row=mysql_fetch_array($res)){
-      $document = new Document();
-      $document->id = $row['id'];
-      $document->url = $row['url'];
+      $document             = new Document();
+      $document->id         = $row['id'];
+      $document->url        = $row['url'];
       $document->contentType= $row['content_type'];
-      $document->content =  $row['content'] ;
-      $document->level =$row['level'];
+      $document->content    = $row['content'] ;
+      $document->level      = $row['level'];
 
       $this->analyze($document);
     }
