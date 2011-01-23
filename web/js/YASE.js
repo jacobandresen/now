@@ -21,8 +21,6 @@ YASE = Ext.extend(Ext.Viewport, {
   handleLogin: function ( token ) {
     this.token = token;
     this.loginWindow.close();
-  },
- 
-  getData: function (controller) {
   }
+ 
 });
