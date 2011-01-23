@@ -1,6 +1,6 @@
 <?php
-require_once 'PHPUnit/Framework.php';
-require_once '../../php/YASE/Framework.php';
+require_once 'PHPUnit/Autoload.php';
+require_once 'YASE/Framework.php';
 
 class IndexerTest extends PHPUnit_Framework_TestCase
 {
@@ -12,6 +12,6 @@ class IndexerTest extends PHPUnit_Framework_TestCase
     $indexer = new Indexer($c);
     $indexer->start();
   }
-
 }
+
 ?>

@@ -1,6 +1,6 @@
 <?php
-require_once 'PHPUnit/Framework.php';
-require_once '../../php/YASE/Framework.php';
+require_once 'PHPUnit/Autoload.php';
+require_once 'YASE/Framework.php';
 
 class AccountTest extends PHPUnit_Framework_TestCase
 {
@@ -32,5 +32,4 @@ class AccountTest extends PHPUnit_Framework_TestCase
      $url = YASE_WEB."/token.php?username=pedant.dk&password=test";
      $token =  $client->get($url)  ;    
   }
-
 }

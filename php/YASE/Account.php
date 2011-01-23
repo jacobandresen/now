@@ -2,7 +2,8 @@
 class Account
 {
   public $id; 
-  public $userName; 
+  public $userName;
+  public $password;
   public $firstName;
   public $lastName; 
 
@@ -43,7 +44,7 @@ class Account
 
   public static function update($data) 
   {
-    $SQL = "UPDATE account where id=".$data->id." set username='".$data-userName."',password='".$data->password."',first_name='".$data->firstName."',last_name='".$data->lastName."'";
+    $SQL = "UPDATE account where id=".$data->id." set username='".$data->userName."',password='".$data->password."',first_name='".$data->firstName."',last_name='".$data->lastName."'";
     mysql_query($SQL) or die ("Account update failed:".$SQL.mysql_error());
   }
 
@@ -66,7 +67,7 @@ class Account
       throw (new Exception("login failed for user ".$userName)); 
     }
   }
-  
+
   public static function tokenLogin($token)
   {
     $sql = "SELECT a.id from account a, token t where t.value='$token' and t.account_id=a.id";
@@ -77,7 +78,6 @@ class Account
     return Account::retrieve((object) array("id"=>$id));
   }
 
-  
   public static function generateToken($userName, $password) {
     $token = md5($userName.$password.rand());
     $sql = "insert into token(account_id, value) values( (select id from account where username='$userName' and password='$password'), '$token');";

@@ -5,6 +5,7 @@ class Document{
   public $parentId;
   public $level;
   public $url;
+  public $title;
   public $contentType;
   public $content;
 

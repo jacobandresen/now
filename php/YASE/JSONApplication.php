@@ -5,7 +5,7 @@ class JSONApplication
 
   public function __construct ( )
   {
-    $resp =new Response();;
+    $resp =new Response();
   }
 
   public function dispatch ($controller, $action, $json)
@@ -45,7 +45,7 @@ class JSONApplication
            break;
        } 
        return ( json_encode($resp) );
-     } catch (Exeption $e) {
+     } catch (Exception $e) {
        print "failed : ".$e->getMessage()."\r\n";
      }
    }
