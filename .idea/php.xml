@@ -6,6 +6,7 @@
         <include_paths>
           <path value="." />
           <path value="C:\php\pear" />
+          <path value="c:\projects\yase\php" />
         </include_paths>
       </PhpSdkConfig>
     </sdk>
