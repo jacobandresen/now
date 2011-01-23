@@ -22,6 +22,7 @@ class JSONApplication
      }
 
      $params = json_decode($json);
+     $resp = new Response();
      $resp->success = false;
 
      try{
