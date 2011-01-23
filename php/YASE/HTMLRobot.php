@@ -1,5 +1,5 @@
 <?php
-
+//2011, Jacob Andresen <jacob.andresen@gmail.com>
 class HTMLRobot
 {
   public static function clean($html)

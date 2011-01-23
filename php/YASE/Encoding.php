@@ -1,4 +1,5 @@
 <?php
+//2011, Jacob Andresen <jacob.andresen@gmail.com>
 class Encoding{
   public static function isUTF8($string)
   {

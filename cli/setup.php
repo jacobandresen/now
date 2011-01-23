@@ -1,4 +1,6 @@
 <?php
+//2011, Jacob Andresen <jacob.andresen@gmail.com>
+
 require_once("../php/YASE/Framework.php");
 
 if (!isset($argv[1])){

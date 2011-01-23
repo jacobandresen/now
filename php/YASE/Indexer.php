@@ -1,4 +1,5 @@
 <?php
+//2011, Jacob Andresen <jacob.andresen@gmail.com>
 class Indexer
 {
   public $collection;
@@ -79,6 +80,5 @@ class Indexer
     $SQL = "update document where id='".$id."' set md5='".$md5."'";
     mysql_query($SQL);
   }
-
 };
 ?>

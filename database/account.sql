@@ -1,3 +1,4 @@
+-- 2011, Jacob Andresen <jacob.andresen@gmail.com>
 create table account (
   id 				int NOT NULL primary key auto_increment ,
   username			varchar(256) NOT NULL UNIQUE,

@@ -1,3 +1,5 @@
+-- 2011, Jacob Andresen <jacob.andresen@gmail.com>
+
 create table collection (
   id 				              int NOT NULL primary key auto_increment,
   parent_id			              int,

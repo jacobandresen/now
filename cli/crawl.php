@@ -1,5 +1,6 @@
 <?php
-require_once('../php/YASE/Framework.php');
+//2011, Jacob Andresen <jacob.andresen@gmail.com>
+require_once('YASE/Framework.php');
 
 if (sizeof($argv) < 3 || $argv[0] == "" || $argv[1] == "") {
   print "YASE crawler\r\n";

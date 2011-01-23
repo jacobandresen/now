@@ -1,4 +1,5 @@
 <?php
+//2011, Jacob Andresen <jacob.andresen@gmail.com>
 define("MAX_CONTENT_LENGTH",2000000);
 define("MYSQL_HOST", "127.0.0.1");
 define("MYSQL_USER", "yase");

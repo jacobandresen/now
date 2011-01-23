@@ -38,7 +38,6 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     if ($colid=='') {
       die( "missing test collection\r\n" );
     }
-    return $colid;
+     return $colid;
   }
-
 }

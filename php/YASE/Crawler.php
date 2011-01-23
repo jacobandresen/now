@@ -1,5 +1,6 @@
 <?php
-class Crawler 
+//2011, Jacob Andresen <jacob.andresen@gmail.com>
+class Crawler
 {
   public $collection;
   public $level;

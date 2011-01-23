@@ -1,4 +1,5 @@
 <?php
+//2011, Jacob Andresen <jacob.andresen@gmail.com>
 require_once('Configuration.php');
 require_once('Account.php');
 require_once('Collection.php');

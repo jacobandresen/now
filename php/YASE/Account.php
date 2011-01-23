@@ -1,4 +1,5 @@
 <?php
+//2011, Jacob Andresen <jacob.andresen@gmail.com>
 class Account
 {
   public $id; 
@@ -94,6 +95,5 @@ class Account
 
     return $row['value']; 
   }
-
 }
 ?>
