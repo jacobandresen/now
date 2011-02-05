@@ -1,53 +1,53 @@
 -- 2011, Jacob Andresen <jacob.andresen@gmail.com>
 
 create table collection (
-  id 				              int NOT NULL primary key auto_increment,
-  parent_id			              int,
+  id 				                int NOT NULL primary key auto_increment,
+  parent_id			            int,
   name				              varchar(256),
   page_limit			          int,
   level_limit			          int,
-  seen_documents		          int,
-  indexed_documents		          int,
-  start_url			              varchar(512),
-  last_updated			          datetime,
-  foreign key(parent_id)       	  references account(id)
+  seen_documents		        int,
+  indexed_documents		      int,
+  start_url			            varchar(512),
+  last_updated			        datetime,
+  foreign key(parent_id)    references account(id) on delete cascade
 );
 
 create table domain (
-  id				              int NOT NULL primary key auto_increment,
+  id				                int NOT NULL primary key auto_increment,
   name				              varchar(256),
-  parent_id			              int,
-  foreign key(parent_id)	      references collection(id)
+  parent_id			            int,
+  foreign key(parent_id)	  references collection(id) on delete cascade
 );
 
 create table document (
-  id 				              int NOT NULL primary key auto_increment,
-  parent_id			              int,
-  url 		        	          varchar(256),
-  md5				              varchar(20),
-  level           		          int,
-  content_type     		          varchar(256),
+  id 				                int NOT NULL primary key auto_increment,
+  parent_id			            int,
+  url 		        	        varchar(256),
+  md5				                varchar(20),
+  level           		      int,
+  content_type     		      varchar(256),
   retrieved 	    		      timestamp,
-  content 	      		          LONGTEXT,
-  FOREIGN KEY(parent_id)          REFERENCES collection(id),
+  content 	      		      LONGTEXT,
+  FOREIGN KEY(parent_id)    REFERENCES collection(id) on delete cascade,
   FULLTEXT(content)
 ) engine=MyISAM;
 
 create table filter (
-  id				              int NOT NULL primary key auto_increment,
+  id				                int NOT NULL primary key auto_increment,
   name				              varchar(64),
-  parent_id			              int,
+  parent_id			            int,
   regex				              varchar(256),
-  foreign key(parent_id)	      references domain(id) 
+  foreign key(parent_id)	  references domain(id) on delete cascade
 );
 
 create table extractor (
-  id				              int NOT NULL primary key auto_increment,
+  id				                int NOT NULL primary key auto_increment,
   name				              varchar(64),
-  parent_id			              int,
+  parent_id			            int,
   page_regex			          varchar(256),
   regex				              varchar(256),
-  foreign key(parent_id)	      references domain(id)			
+  foreign key(parent_id)	      references domain(id) on delete cascade
 );
 
 create table facet (
@@ -56,5 +56,5 @@ create table facet (
   name				              varchar(256),
   content			              LONGTEXT,
   FULLTEXT(content),
-  foreign key(parent_id) 	      references document(id)
+  foreign key(parent_id) 	      references document(id) on delete cascade
 ) engine=MyISAM;

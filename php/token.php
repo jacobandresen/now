@@ -10,5 +10,4 @@ if (!(isset($token))){
   $token = Account::generateToken($userName, $password);
   }
 print $token;
-
 ?>

@@ -1,4 +1,7 @@
-LoginWindow = Ext.extend(LoginWindowUi, {
+Ext.namespace('YASE');
+
+YASE.LoginWindow = Ext.extend(Ext.Window, {
+  
     title: 'Login',
     width: 220,
     height: 160,
@@ -7,42 +10,42 @@ LoginWindow = Ext.extend(LoginWindowUi, {
 
     initComponent: function(config) {
         this.items = [
-            {
-                xtype: 'textfield',
-                width: 120,
-                name: 'userName',
-                x: 60,
-                y: 20,
-                ref: 'userName'
-            },
-            {
-                xtype: 'textfield',
-                width: 120,
-                name: 'password',
-                x: 60,
-                y: 60,
-                inputType: 'password',
-                ref: 'password'
-            },
-            {
-                xtype: 'label',
-                text: 'username',
-                x: 0,
-                y: 20
-            },
-            {
-                xtype: 'label',
-                text: 'password',
-                x: 0,
-                y: 60
-            },
-            {
-                xtype: 'button',
-                text: 'Login',
-                x: 110,
-                y: 100,
-                ref: 'loginButton'
-            }
+        {
+            xtype: 'textfield',
+            width: 120,
+            name: 'userName',
+            x: 60,
+            y: 20,
+            ref: 'userName'
+        },
+        {
+            xtype: 'textfield',
+            width: 120,
+            name: 'password',
+            x: 60,
+            y: 60,
+            inputType: 'password',
+            ref: 'password'
+        },
+        {
+            xtype: 'label',
+            text: 'username',
+            x: 0,
+            y: 20
+        },
+        {
+            xtype: 'label',
+            text: 'password',
+            x: 0,
+            y: 60
+        },
+        {
+            xtype: 'button',
+            text: 'Login',
+            x: 110,
+            y: 100,
+            ref: 'loginButton'
+        }
         ];
         LoginWindow.superclass.initComponent.call(this);
         this.addEvents(['login']);
@@ -51,10 +54,10 @@ LoginWindow = Ext.extend(LoginWindowUi, {
 
     getToken: function () {
         request = new Ajax.Request(
-                this.tokenUrl,
+          this.tokenUrl,
         {
             parameters:{username:this.userName.getValue(),
-                password:this.password.getValue()},
+            password:this.password.getValue()},
             asynchronous: false,
             onSuccess: function (msg) {
                 var token = msg.responseText;
@@ -65,6 +68,6 @@ LoginWindow = Ext.extend(LoginWindowUi, {
                     Ext.MessageBox.alert('Login failed');
                 }
             }.bind(this)
-        });
+      });
     }
 });

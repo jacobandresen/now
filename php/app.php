@@ -11,4 +11,5 @@ if (isset($account)){
   $app = new JSONApplication();
   print $app->dispatch($controller, $action, $json);
 }
+
 ?>

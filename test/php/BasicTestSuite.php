@@ -1,5 +1,5 @@
 <?php
-require_once 'PHPUnit/Framework.php';
+require_once 'PHPUnit/Autoload.php';
 require_once 'YASE/Framework.php';
 
 require_once 'AccountTest.php';
