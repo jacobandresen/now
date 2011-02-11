@@ -47,12 +47,12 @@ YASE.LoginWindow = Ext.extend(Ext.Window, {
             ref: 'loginButton'
         }
         ];
-        LoginWindow.superclass.initComponent.call(this);
+        YASE.LoginWindow.superclass.initComponent.call(this);
         this.addEvents(['login']);
     },
 
     initEvents: function ()  {
-        LoginWindow.supperclass.initEvents.call(this);
+        YASE.LoginWindow.superclass.initEvents.call(this);
         this.loginButton.on('click', this.getToken, this);
     },
 

@@ -113,13 +113,10 @@ class Crawler
 
         if ($this->level > $this->collection->levelLimit ||
             count($this->crawledURLs) > $this->collection->pageLimit ||
-            URL::filter($this->collection->getDomainId($url), $url, "crawlerfilter")) {
+            URL::   filter($this->collection->getDomainId($url), $url, "crawlerfilter")) {
             return false;
         }
         return true;
     }
-
-}
-
-;
+};
 ?>

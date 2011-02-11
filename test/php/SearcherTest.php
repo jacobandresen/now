@@ -14,5 +14,4 @@ class SearcherTest extends PHPUnit_Framework_TestCase
         $this->assertContains("ExtJS", $result[1]->content);
     }
 }
-
 ?>

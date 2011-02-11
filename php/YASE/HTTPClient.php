@@ -165,6 +165,4 @@ class HTTPClient
         return ($this->reply);
     }
 }
-
-;
 ?>

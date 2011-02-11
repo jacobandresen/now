@@ -57,7 +57,5 @@ class HTMLRobot
         }
         return ($title);
     }
-}
-
-;
+};
 ?>
