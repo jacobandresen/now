@@ -1,8 +1,9 @@
 <?php
+require_once("configuration.php");
 require_once("YASE/Framework.php");
 
 $token			= $_REQUEST['token'];
-$controller     = $_REQUEST['controller'];
+$controller     	= $_REQUEST['controller'];
 $json   		= $_REQUEST['json'];
 $action 		= $_REQUEST['action'];
 $account 		= Account::tokenLogin($token);

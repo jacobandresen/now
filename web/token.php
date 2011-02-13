@@ -1,4 +1,5 @@
 <?php
+require_once "configuration.php";
 require_once "YASE/Framework.php";
 
 $userName = $_REQUEST['username'];

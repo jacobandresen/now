@@ -1,5 +1,6 @@
 <?php
 //2011, Jacob Andresen <jacob.andresen@gmail.com>
+require_once("configuration.php");
 require_once("YASE/Framework.php");
 mysql_query("delete from account");
 mysql_query("delete from collection");

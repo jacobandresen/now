@@ -1,6 +1,6 @@
 <?php
 //2011, Jacob Andresen <jacob.andresen@gmail.com>
-require_once('Configuration.php');
+//NOTE: YASE assumes that you have the settings from configuration.php.example
 require_once('Account.php');
 require_once('Collection.php');
 require_once('Domain.php');
