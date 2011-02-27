@@ -1,5 +1,6 @@
 <?php
-require_once 'PHPUnit/Autoload.php';
+require_once 'configuration.php';
+require_once 'PHPUnit/Framework.php';
 require_once 'YASE/Framework.php';
 
 class CrawlerTest extends PHPUnit_Framework_TestCase

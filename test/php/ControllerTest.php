@@ -1,5 +1,6 @@
 <?php
-require_once 'PHPUnit/Autoload.php';
+require_once 'configuration.php';
+require_once 'PHPUnit/Framework.php';
 require_once 'YASE/Framework.php';
 
 class ControllerTest extends PHPUnit_Framework_TestCase
@@ -18,11 +19,18 @@ class ControllerTest extends PHPUnit_Framework_TestCase
     public function testCollectionRetrieve()
     {
         Account::generateToken("pedant.dk", "test");
-        $client = new HTTPClient();
+        $client = new HTTPClient(true);
         $token = $client->get(YASE_WEB . '/token.php?username=pedant.dk&password=test');
-        $json = $client->get(YASE_WEB . '/app.php?controller=Collection&token=' . $token . '&action=retrieve&json={"id":"' . $this->getTestColid() . '"}');
+
+	$testCollectionIdentifier = $this->getTestColid();
+ 
+        $data = '{"id":'.$testCollectionIdentifier.'}';      
+        $url = YASE_WEB."/app.php?controller=Collection&action=retrieve&json=".$data;
+        $json = $client->get($url);
+
         $response = json_decode($json);
         $collections = $response->data;
+    //    $collections = Collection::retrieve( json_decode('{"id":'.$testCollectionIdentifier.'}')); 
         $this->assertEquals($collections[0]->domains[0]->name, "pedant.dk");
     }
 

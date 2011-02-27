@@ -19,6 +19,12 @@ class Collection
     public static function create($data)
     {
         $c = new Collection();
+        
+        if (!isset($data) || !isset($data->parentId) ){
+           throw new Exception("missing data");
+	   return; 
+       } 
+
         $c->parentId = $data->parentId;
         $c->name = $data->name;
 
@@ -32,12 +38,16 @@ class Collection
 
     public static function retrieve($data)
     {
-        if (isset($data->parentId)) {
+        if (!isset($data)) {
+	    print "missing data";
+            return;
+        }
+        if (isset($data->parentId) && $data->parentId!="") {
             $SQL = "SELECT id,name,page_limit,level_limit,start_url FROM collection where parent_id=" . $data->parentId;
         } else {
             $SQL = "SELECT id,name,page_limit,level_limit,start_url FROM collection where id=" . $data->id;
         }
-        $res = mysql_query($SQL) or die("collection read failed:" . $SQL . " -> " . mysql_error());
+        $res = mysql_query($SQL) or die("collection retrieve failed:" . $SQL . " -> " . mysql_error());
 
         $collections = array();
         while ($row = mysql_fetch_row($res)) {
@@ -99,7 +109,5 @@ class Collection
     {
         print $message . "\r\n";
     }
-
 }
-
 ?>

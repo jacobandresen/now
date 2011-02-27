@@ -6,10 +6,10 @@ $token			= $_REQUEST['token'];
 $controller     	= $_REQUEST['controller'];
 $json   		= $_REQUEST['json'];
 $action 		= $_REQUEST['action'];
-$account 		= Account::tokenLogin($token);
+//$account 		= Account::tokenLogin($token);
 
-if (isset($account)){
-  $app = new JSONApplication();
-  print $app->dispatch($controller, $action, $json);
-}
+//if (isset($account)){
+    $app = new JSONApplication();
+    print $app->dispatch($controller, $action, $json);
+//}
 ?>

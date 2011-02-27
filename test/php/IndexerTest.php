@@ -1,4 +1,5 @@
 <?php
+require_once 'configuration.php';
 require_once 'PHPUnit/Autoload.php';
 require_once 'YASE/Framework.php';
 

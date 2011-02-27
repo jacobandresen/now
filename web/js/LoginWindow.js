@@ -1,3 +1,4 @@
+//2011, Jacob Andresen <jacob.andresen@gmail.com>
 Ext.namespace('YASE');
 
 YASE.LoginWindow = Ext.extend(Ext.Window, {
@@ -56,6 +57,7 @@ YASE.LoginWindow = Ext.extend(Ext.Window, {
         this.loginButton.on('click', this.getToken, this);
     },
 
+    //TODO: make the login asynchronous
     getToken: function () {
         request = new Ajax.Request(
           this.tokenUrl,

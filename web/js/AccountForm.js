@@ -17,11 +17,10 @@ YASE.AccountsDataStore = Ext.extend(Ext.data.JsonDataStore, {
                     'lastName' 
                 ]
             }),
-            writer: new Ext.data.Writer({
+	    /*writer: new Ext.data.Writer({
                 updateRecord: function (record)  {
-
                 }           
-            }),
+            }),*/
             proxy: new Ext.data.HttpProxy({
                 api {
                     create:'app.php?controller=account&action=create&token=' + YASE.token
@@ -69,7 +68,7 @@ YASE.AccountForm = Ext.extend(Ext.form.FormPanel, {
                 items: [{
                     text: 'save',
                     handler: function () {
-            /*            this.getForm().submit({
+            	    /*      this.getForm().submit({
                             url:'app.php?controller=account&action=update&token='+YASE.token,
                             waitMsg: 'opdaterer data', 
                             submitEmptyText: false

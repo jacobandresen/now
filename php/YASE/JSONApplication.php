@@ -21,6 +21,7 @@ class JSONApplication
             throw new Exception("missing JSON parameter");
         }
 
+        //$params = $json;
         $params = json_decode($json);
         $resp = new Response();
         $resp->success = false;
@@ -28,20 +29,19 @@ class JSONApplication
         try {
             switch ($action) {
                 case "create":
-                    $collection = $controller->create($params);
+                    $collection = $controller::create($params);
                     $resp->id = $collection->id;
                     break;
                 case "retrieve":
-                    $resp->data = $controller->retrieve($params);
+                    $resp->data = $controller::retrieve($params);
                     $resp->success = true;
-                    print_r($data);
                     break;
                 case "update":
-                    $controller->update($params);
+                    $controller::update($params);
                     $resp->success = true;
                     break;
                 case "destroy":
-                    $controller->destroy($params->id);
+                    $controller::destroy($params->id);
                     $resp->success = true;
                     break;
             }
