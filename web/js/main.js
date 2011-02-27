@@ -25,9 +25,7 @@ Ext.onReady(function() {
     var loginWindow = new YASE.LoginWindow({tokenUrl:'token.php'});
     loginWindow.on('login',  function (token) {
         token = token; 
-        console.log(token);
         yase = buildYASE(); 
-        console.log("logged in");
         loginWindow.close();
     });
     loginWindow.show();

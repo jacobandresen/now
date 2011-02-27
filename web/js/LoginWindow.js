@@ -57,14 +57,13 @@ YASE.LoginWindow = Ext.extend(Ext.Window, {
         this.loginButton.on('click', this.getToken, this);
     },
 
-    //TODO: make the login asynchronous
     getToken: function () {
         request = new Ajax.Request(
           this.tokenUrl,
         {
             parameters:{username:this.userName.getValue(),
             password:this.password.getValue()},
-            asynchronous: false,
+            asynchronous: true,
             onSuccess: function (msg) {
                 var token = msg.responseText;
                 this.token = token;

@@ -5,7 +5,7 @@ YASE.AccountsDataStore = Ext.extend(Ext.data.JsonStore, {
     constructor: function (config) {
         var config = config || {};
         config = Ext.applyIf(config, {
-/*            reader: new Ext.data.JsonReader({
+            reader: new Ext.data.JsonReader({
                 root:'account',
                 id:'id',
                 succes:'success', 
@@ -15,15 +15,15 @@ YASE.AccountsDataStore = Ext.extend(Ext.data.JsonStore, {
                     'firstName',
                     'lastName' 
                 ]
-            }),*/
-          /*  proxy: new Ext.data.HttpProxy({
+            }),
+            proxy: new Ext.data.HttpProxy({
                 api:{
                     load:'app.php?controller=account&action=retrieve&token=' + token,
                     create:'app.php?controller=account&action=create&token=' + token,
                     update:'app.php?controller=account&action=update&token=' + token,
                     destroy:'app.php?controller=account&action=destroy&token=' + token
                 }
-            })*/
+            })
         }); 
         YASE.AccountsDataStore.superclass.constructor.call(this, config);   
     }
@@ -33,7 +33,7 @@ YASE.AccountForm = Ext.extend(Ext.form.FormPanel, {
     constructor: function (config) {
         var config = config || {}; 
         config = Ext.applyIf(config, { 
-           // store: new YASE.AccountsDataStore({}),
+            store: new YASE.AccountsDataStore({}),
             title: 'account',
             ref: 'account',
             height: 200,
@@ -48,8 +48,8 @@ YASE.AccountForm = Ext.extend(Ext.form.FormPanel, {
             }, {
                 xtype: "textfield", 
                 fieldLabel: "Password",
-                name: "password"//,
-               // inputType: "password"
+                name: "password",
+                inputType: "password"
             }, { 
                 xtype: "textfield", 
                 fieldLabel: "First Name", 
