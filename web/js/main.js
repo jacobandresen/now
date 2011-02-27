@@ -1,7 +1,8 @@
 //2011, Jacob Andresen <jacob.andresen@gmail.com>
+Ext.namespace("YASE");
+
 function buildYASE(token) {
-    var YASE =new Ext.Viewport({
-        token: token, 
+    return (new Ext.Viewport({
         layout: 'border',
         items: [{
             xtype: 'accountform',
@@ -16,16 +17,17 @@ function buildYASE(token) {
                 {xtype:'grid', title:'filters'}
             ]
         }]
-    });
-    return YASE;
+    }));
 };
-
-var yase;
+var token;
 
 Ext.onReady(function() {
     var loginWindow = new YASE.LoginWindow({tokenUrl:'token.php'});
     loginWindow.on('login',  function (token) {
-        yase = buildYASE(token); 
+        token = token; 
+        console.log(token);
+        yase = buildYASE(); 
+        console.log("logged in");
         loginWindow.close();
     });
     loginWindow.show();

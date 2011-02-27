@@ -1,12 +1,11 @@
 //2011, Jacob Andresen <jacob.andresen@gmail.com>       
-Ext.ns('YASE');
+Ext.namespace('YASE');
 
-YASE.AccountsDataStore = Ext.extend(Ext.data.JsonDataStore, {
-    storeId: 'accountsDataStore',
+YASE.AccountsDataStore = Ext.extend(Ext.data.JsonStore, {
     constructor: function (config) {
         var config = config || {};
         config = Ext.applyIf(config, {
-            reader: new Ext.data.JsonReader({
+/*            reader: new Ext.data.JsonReader({
                 root:'account',
                 id:'id',
                 succes:'success', 
@@ -16,28 +15,25 @@ YASE.AccountsDataStore = Ext.extend(Ext.data.JsonDataStore, {
                     'firstName',
                     'lastName' 
                 ]
-            }),
-	    /*writer: new Ext.data.Writer({
-                updateRecord: function (record)  {
-                }           
             }),*/
-            proxy: new Ext.data.HttpProxy({
-                api {
-                    create:'app.php?controller=account&action=create&token=' + YASE.token
-                    retrieve:'app.php?controller=account&action=retrieve&token=' + YASE.token
-                    update:'app.php?controller=account&action=update&token=' + YASE.token
-                    destroy:'app.php?controller=account&action=destroy&token=' + YASE.token
+          /*  proxy: new Ext.data.HttpProxy({
+                api:{
+                    load:'app.php?controller=account&action=retrieve&token=' + token,
+                    create:'app.php?controller=account&action=create&token=' + token,
+                    update:'app.php?controller=account&action=update&token=' + token,
+                    destroy:'app.php?controller=account&action=destroy&token=' + token
                 }
-            ])
+            })*/
         }); 
         YASE.AccountsDataStore.superclass.constructor.call(this, config);   
-    },
-));
+    }
+});
 
 YASE.AccountForm = Ext.extend(Ext.form.FormPanel, {
     constructor: function (config) {
         var config = config || {}; 
         config = Ext.applyIf(config, { 
+           // store: new YASE.AccountsDataStore({}),
             title: 'account',
             ref: 'account',
             height: 200,
@@ -50,9 +46,10 @@ YASE.AccountForm = Ext.extend(Ext.form.FormPanel, {
                 fieldLabel: "Username", 
                 name: "username"
             }, {
-                xtype: "textfield",
+                xtype: "textfield", 
                 fieldLabel: "Password",
-                name: "password"
+                name: "password"//,
+               // inputType: "password"
             }, { 
                 xtype: "textfield", 
                 fieldLabel: "First Name", 
@@ -66,20 +63,25 @@ YASE.AccountForm = Ext.extend(Ext.form.FormPanel, {
                 width: 600,
                 height: 20,
                 items: [{
-                    text: 'save',
-                    handler: function () {
-            	    /*      this.getForm().submit({
-                            url:'app.php?controller=account&action=update&token='+YASE.token,
-                            waitMsg: 'opdaterer data', 
-                            submitEmptyText: false
-                        });
-                    }.bind(this)*/
-                }]
+                    text: 'save'//,
+                    //handler: this.onSave.CreateDelegate( this,  [ ])
+               }]
             })
         }); 
 
-        YASE.AccountForm.superclass.constructor.call(this, config);   
+        YASE.AccountForm.superclass.constructor.call(this, config);  
+     //   this.onLoad(); 
+    }, 
+
+    onSave: function () {
+        console.log("clicked save");
+        console.log(this);
+    },
+
+    onLoad: function () {
+        console.log("on load");
     }
+
 });
 
 Ext.reg("accountform", YASE.AccountForm);

@@ -76,8 +76,7 @@ class Account
 
         $row = mysql_fetch_array($res);
         $id = $row[0];
-        return $id;
-        //return Account::retrieve((object)array("id" => $id));
+        return (isset($id));    
     }
 
     public static function generateToken($userName, $password)
