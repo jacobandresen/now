@@ -15,7 +15,7 @@ describe("AccountsDataStore", function() {
                 });
             accountsDataStore.insert(0, accountRecord);
             accountsDataStore.save();
-            saveAccountDetails = true;
+            savedAccountDetails = true;
             expect(savedAccountDetails).toBeTruthy();
     });
 

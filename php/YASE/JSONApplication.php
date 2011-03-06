@@ -31,6 +31,7 @@ class JSONApplication
                 case "create":
                     $collection = $controller::create($params);
                     $resp->id = $collection->id;
+                    $resp->success = true;
                     break;
                 case "retrieve":
                     $resp->data = $controller::retrieve($params);

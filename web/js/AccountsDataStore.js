@@ -14,11 +14,13 @@ YASE.AccountsDataStore = Ext.extend(Ext.data.JsonStore, {
         config = Ext.applyIf(config, {
             storeId: 'accountsDataStore',
             autoLoad: false, 
+            autoSave: false,
             batch: false,
             writer: new Ext.data.JsonWriter({
-                updateRecord: function (record) {
-
-                });
+                render: function (params, baseParams, data) {
+                    params = Ext.apply(params,baseParams); 
+                    params.json = Ext.encode(data);
+                }
             }),
             reader: new Ext.data.JsonReader({
                     root:'account',
@@ -27,17 +29,13 @@ YASE.AccountsDataStore = Ext.extend(Ext.data.JsonStore, {
                     fields: YASE.AccountRecord 
                    }),
             proxy: new Ext.data.HttpProxy({
-                url:'/yase/app.php?controller=account' //TODO: configure base url
+                url:'/yase/app.php?controller=account' 
             })
         }); 
         YASE.AccountsDataStore.superclass.constructor.call(this, config);   
 
         this.on("beforesave", function (store, record ){
-            //TODO: find out if we are doing a create, retrieve, update or destroy 
-            store.baseParams.action="save";
-            console.log(store.data.items[0].data);
-            store.baseParams.json=Object.toJSON(store.data.items[0].data);
-            //console.log(record);
+            store.baseParams.action="create";
         });
    }
 });
