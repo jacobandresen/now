@@ -1,39 +1,11 @@
 //2011, Jacob Andresen <jacob.andresen@gmail.com>       
 Ext.namespace('YASE');
 
-YASE.AccountsDataStore = Ext.extend(Ext.data.JsonStore, {
-    constructor: function (config) {
-        var config = config || {};
-        config = Ext.applyIf(config, {
-            reader: new Ext.data.JsonReader({
-                root:'account',
-                id:'id',
-                succes:'success', 
-                items:[
-                    'username',
-                    'password',
-                    'firstName',
-                    'lastName' 
-                ]
-            }),
-            proxy: new Ext.data.HttpProxy({
-                api:{
-                    load:'app.php?controller=account&action=retrieve&token=' + token,
-                    create:'app.php?controller=account&action=create&token=' + token,
-                    update:'app.php?controller=account&action=update&token=' + token,
-                    destroy:'app.php?controller=account&action=destroy&token=' + token
-                }
-            })
-        }); 
-        YASE.AccountsDataStore.superclass.constructor.call(this, config);   
-    }
-});
-
 YASE.AccountForm = Ext.extend(Ext.form.FormPanel, {
     constructor: function (config) {
+        var me = this; 
         var config = config || {}; 
         config = Ext.applyIf(config, { 
-            store: new YASE.AccountsDataStore({}),
             title: 'account',
             ref: 'account',
             height: 200,
@@ -42,6 +14,11 @@ YASE.AccountForm = Ext.extend(Ext.form.FormPanel, {
                 size: 10
             },
             items: [{
+                xtype: "hidden",
+                name: "AccountIdentifier",
+                ref: "AccountIdentifier"
+            },
+            {
                 xtype: "textfield", 
                 fieldLabel: "Username", 
                 name: "username"
@@ -63,23 +40,26 @@ YASE.AccountForm = Ext.extend(Ext.form.FormPanel, {
                 width: 600,
                 height: 20,
                 items: [{
-                    text: 'save'//,
-                    //handler: this.onSave.CreateDelegate( this,  [ ])
+                    text: 'save',
+                    handler: this.onSave.createDelegate( this,  [ ])
                }]
             })
         }); 
 
         YASE.AccountForm.superclass.constructor.call(this, config);  
-     //   this.onLoad(); 
     }, 
 
     onSave: function () {
         console.log("clicked save");
-        console.log(this);
+        accountsDataStore.add( new accountsDataStore.recordType({firstName:'Jacob', lastName:'Andresen'}, Ext.id()));
+        accountsDataStore.save();
     },
 
     onLoad: function () {
-        console.log("on load");
+        accountsDataStore.baseParams.controller="account";
+        accountsDataStore.baseParams.action="read"; 
+        accountsDataStore.baseParams.json =Object.toJSON({id:yase.accountId});
+        accountsDataStore.load();
     }
 
 });

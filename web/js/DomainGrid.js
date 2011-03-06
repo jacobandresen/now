@@ -1,2 +1,2 @@
-Ext.ns('YASE');
+Ext.namespace('YASE');
 

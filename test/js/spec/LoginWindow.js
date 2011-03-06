@@ -3,10 +3,10 @@ describe("LoginWindow", function() {
     var tokenUrl = 'http://localhost/yase/token.php';
 
     beforeEach(function() {
-        loginWindow = new LoginWindow({tokenUrl:tokenUrl});
+        loginWindow = new YASE.LoginWindow({tokenUrl:tokenUrl});
     }); 
 
-    it("should be able to get a token using a username and a password using a synchronous call",
+    it("should be able to get a token using a username and a password",
         function() {
             loginWindow.userName.setValue('pedant.dk');
             loginWindow.password.setValue('test');

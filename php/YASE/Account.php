@@ -76,15 +76,22 @@ class Account
 
         $row = mysql_fetch_array($res);
         $id = $row[0];
-        return (isset($id));    
+       
+        if (isset($id)) { 
+	    return '{id:"'.$id.'",token:"'.$token.'"}';
+        }
     }
 
     public static function generateToken($userName, $password)
     {
         $token = md5($userName . $password . rand());
-        $sql = "insert into token(account_id, value) values( (select id from account where username='$userName' and password='$password'), '$token');";
-        mysql_query($sql) or die;
+        $sql = "select id from account where username='$userName' and password='$password'";
+        $res = mysql_query($sql) or die (" failed logging in");
+        $row = mysql_fetch_array($res); 
+        $id = $row['id'];
 
+        $sql = "insert into token(account_id, value) values( '$id', '$token');";
+        mysql_query($sql) or die;
         return $token;
     }
 

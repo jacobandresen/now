@@ -30,7 +30,6 @@ class ControllerTest extends PHPUnit_Framework_TestCase
 
         $response = json_decode($json);
         $collections = $response->data;
-    //    $collections = Collection::retrieve( json_decode('{"id":'.$testCollectionIdentifier.'}')); 
         $this->assertEquals($collections[0]->domains[0]->name, "pedant.dk");
     }
 

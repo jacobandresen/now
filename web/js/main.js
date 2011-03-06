@@ -6,6 +6,7 @@ function buildYASE(token) {
         layout: 'border',
         items: [{
             xtype: 'accountform',
+            ref: 'accountform',
             region: 'north' 
         }, 
         {
@@ -19,13 +20,13 @@ function buildYASE(token) {
         }]
     }));
 };
-var token;
 
+var yase;
 Ext.onReady(function() {
     var loginWindow = new YASE.LoginWindow({tokenUrl:'token.php'});
-    loginWindow.on('login',  function (token) {
-        token = token; 
+    loginWindow.on('login',  function (token, accountId) {
         yase = buildYASE(); 
+        yase.accountform.onLoad();
         loginWindow.close();
     });
     loginWindow.show();

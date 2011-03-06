@@ -65,10 +65,10 @@ YASE.LoginWindow = Ext.extend(Ext.Window, {
             password:this.password.getValue()},
             asynchronous: true,
             onSuccess: function (msg) {
-                var token = msg.responseText;
-                this.token = token;
-                if (token !== '') {
-                    this.fireEvent('login', token);
+                this.token = msg.responseJSON.token;
+                this.accountId = msg.responseJSON.id; 
+                if (this.token !== '') {
+                    this.fireEvent('login', this.token, this.accountId);
                 } else {
                     Ext.MessageBox.alert('Login failed');
                 }
