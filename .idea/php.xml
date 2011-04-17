@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PhpProjectConfiguration">
+    <sdk>
+      <PhpSdkConfig version="5.3.5" home="C:\PHP">
+        <include_paths>
+          <path value="." />
+          <path value="c:\php\includes" />
+          <path value="c:\php\pear" />
+          <path value="c:\projects\yase\php" />
+        </include_paths>
+      </PhpSdkConfig>
+    </sdk>
+  </component>
+</project>
+
