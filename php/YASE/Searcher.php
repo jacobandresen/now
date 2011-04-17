@@ -21,11 +21,13 @@ class Searcher
         }
 
         if ($query != "") {
+
             $SQL = "SELECT distinct(d.url) as url ,d.content_type as content_type ,t.content as title, c.content as content, MATCH(c.content) AGAINST('$query') as score from document d,facet t, facet c where d.parent_id='" . $this->parentId . "' and d.id=t.parent_id and t.name='title' and  d.id=c.parent_id and c.name='content' order by score desc";
 
             $result = mysql_query($SQL) or die("search failed:" . mysql_error());
 
             $pos = 0;
+ 
             while ($row = mysql_fetch_array($result)) {
                 $title = $row['title'];
                 $content = $row['content'];
@@ -38,6 +40,7 @@ class Searcher
                 $pos++;
                 $results[$pos] = $document;
             }
+
         }
         return $results;
     }

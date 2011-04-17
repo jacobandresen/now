@@ -48,5 +48,4 @@ class Domain
     {
         mysql_query("DELETE FROM domain where id=" . $data->id);
     }
-
 }

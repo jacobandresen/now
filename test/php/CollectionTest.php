@@ -7,18 +7,18 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 {
     public static function setUpBeforeClass()
     {
-        mysql_query("DELETE FROM collection") or die("could not delete collections:" . mysql_error());
-
         $account = Account::login("pedant.dk", "test");
         $params = (object)array("parentId" => $account->id, "name" => "jacobs stuff", "startUrl" => "http://pedant.dk", "pageLimit" => 1500, "levelLimit" => 15);
 
-        $collection = Collection::create($params);
-        $collection->addDomain("pedant.dk");
+        $c = new Collection();
+        $c->create($params);
+        //$c->addDomain("pedant.dk");
     }
 
     public function testCollectionDomains()
     {
         $params = json_decode('{"id":"' . $this->getTestColId() . '"}');
+
         $collections = Collection::retrieve($params);
         $this->assertEquals($collections[0]->domains[0]->name, "pedant.dk");
     }

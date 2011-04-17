@@ -21,7 +21,6 @@ class JSONApplication
             throw new Exception("missing JSON parameter");
         }
 
-        //$params = $json;
         $params = json_decode($json);
         $resp = new Response();
         $resp->success = false;
@@ -52,5 +51,4 @@ class JSONApplication
         }
     }
 }
-
 ?>

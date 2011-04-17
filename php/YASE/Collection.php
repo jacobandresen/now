@@ -7,71 +7,32 @@ class Collection
     public $name;
     public $pageLimit;
     public $levelLimit;
-    public $startUrl;
+    public $startUrl;                       b
 
     public $domains;
 
     public function __construct()
     {
-        $this->domains = array();
     }
 
     public static function create($data)
     {
-        $c = new Collection();
-        
-        if (!isset($data) || !isset($data->parentId) ){
-           throw new Exception("missing data");
-	   return; 
-       } 
-
-        $c->parentId = $data->parentId;
-        $c->name = $data->name;
-
-        $SQL = "INSERT INTO collection(parent_id, name, page_limit, level_limit, start_url) VALUES(" . $data->parentId . ", '" . $data->name . "', " . $data->pageLimit . ", " . $data->levelLimit . ",'" . $data->startUrl . "')";
-        mysql_query($SQL) or die ("collection create failed: $SQL" . mysql_error());
-        $c->domains = array();
-        $c->id = mysql_insert_id();
-
-        return ($c);
+        parent::create($data);
     }
 
     public static function retrieve($data)
     {
-        if (!isset($data)) {
-	    print "missing data";
-            return;
-        }
-        if (isset($data->parentId) && $data->parentId!="") {
-            $SQL = "SELECT id,name,page_limit,level_limit,start_url FROM collection where parent_id=" . $data->parentId;
-        } else {
-            $SQL = "SELECT id,name,page_limit,level_limit,start_url FROM collection where id=" . $data->id;
-        }
-        $res = mysql_query($SQL) or die("collection retrieve failed:" . $SQL . " -> " . mysql_error());
-
-        $collections = array();
-        while ($row = mysql_fetch_row($res)) {
-            $c = new Collection();
-            $c->id = $row[0];
-            $c->name = $row[1];
-            $c->pageLimit = $row[2];
-            $c->levelLImit = $row[3];
-            $c->startUrl = $row[4];
-            $c->domains = Domain::retrieve(json_decode('{"parentId":"' . $c->id . '"}'));
-
-            array_push($collections, $c);
-        }
-        return $collections;
+        parent::retrieve($data);
     }
 
     public static function update($data)
     {
-        mysql_query("UPDATE collection where id=" . $data->id . " set  parent_id=" . $data->parentId . ",name='" . $data->name . "', page_limit='" . $data->pageLimit . "', level_limit='" . $data->levelLimit . ")") or die (mysql_error());
+        parent::update($data);
     }
 
     public static function destroy($id)
     {
-        mysql_query("DELETE FROM collection WHERE ID=$id") or die (mysql_error());
+        parent::destroy($id);
     }
 
     public function addDomain($domain)

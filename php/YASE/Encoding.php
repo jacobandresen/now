@@ -31,6 +31,5 @@ class Encoding
         return true;
     }
 }
-
 ;
 ?>

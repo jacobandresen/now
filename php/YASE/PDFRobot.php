@@ -28,7 +28,5 @@ class PDFRobot
             return ($txt);
         }
     }
-}
-
-;
+};
 ?>

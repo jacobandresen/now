@@ -79,7 +79,6 @@ class HTTPClient
         $request .= "\r\nUser-Agent: YASE";
         $request .= "\r\nHost: " . $this->host;
         $request .= "\r\nAccept-Charset: iso-8859-1";
-       // $request .= "\r\nCookie: token={\"username\":\"pedant.dk\", \"token\":1}";
         $request .= "\r\nConnection: close\r\n\r\n";
 
         if ($this->socket)
@@ -153,8 +152,8 @@ class HTTPClient
                     try {
                         while (!feof($this->socket)) {
                             $line = fgets($this->socket, 512);
-			   print $line."\r\n"; 
-                           if (strlen($this->reply) < MAX_CONTENT_LENGTH) {
+			                print $line."\r\n";
+                            if (strlen($this->reply) < MAX_CONTENT_LENGTH) {
                                 $this->reply .= $line;
                             }
                         }
