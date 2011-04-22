@@ -1,13 +1,13 @@
 <?php
-//2011, Jacob Andresen <jacob.andresen@gmail.com>
 class Indexer
 {
     public $collection;
 
-    public function __construct($params)
+    public function __construct($ownerId)
     {
-        $this->collections = Collection::retrieve($params);
-        $this->collection = $this->collections[0];
+        $account = new Account();
+        $account->retrieve(json_encode("{'id':".$ownerid)); 
+        $this->collection = $account->collections[0];
     }
 
     public function start()
@@ -37,14 +37,12 @@ class Indexer
 
             if ($document->contentType != "application/pdf") {
 
-                //analyze HTML as default
                 $document->content = html_entity_decode($document->content, ENT_QUOTES);
                 $document->title = HTMLRobot::findTitle($this->collection->parentId, $document->content);
                 $document->title = htmlentities($document->title, ENT_QUOTES);
                 $document->content = HTMLRobot::clean($document->content);
             }
 
-            //default rules
             if ($document->title == "") {
                 $document->title = $document->url;
             }

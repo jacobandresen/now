@@ -1,5 +1,4 @@
 <?php
-//2011, Jacob Andresen <jacob.andresen@gmail.com>bbbbbbbb
 class Model
 {
     public function __construct()
@@ -80,7 +79,6 @@ class Model
     public function retrieve($data)
     {
         $SQL = "SELECT ";
-
         $vars = get_object_vars($this);
 
         foreach ($vars as $var){
@@ -95,6 +93,7 @@ class Model
             $this->$var = $row[$this->sqlIze[$var]];
         }
     }
+
 
     public function update($data)
     {
@@ -115,7 +114,7 @@ class Model
         mysql_query($SQL) or die ("delete failed:" . mysql_error());
     }
 
-    public function assoc($child, $assockey)
+    public function associate($child, $assockey)
     {
         $SQL = "SELECT FROM ". $child. " where parent_id=".$this->id;
         $res = mysql_query($SQL) or die ("failed associating ".$assockey." to ".$this->getTableName());
@@ -129,5 +128,12 @@ class Model
             array_push($this->assockey, $var);
         }
     }
+
+
+    public function log($message)
+    {
+        print $message . "\r\n";
+    }
+
 }
 ?>

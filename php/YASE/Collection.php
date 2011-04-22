@@ -1,5 +1,4 @@
 <?php
-//2011, Jacob Andresen <jacob.andresen@gmail.com>
 class Collection
 {
     public $id;
@@ -7,25 +6,32 @@ class Collection
     public $name;
     public $pageLimit;
     public $levelLimit;
-    public $startUrl;                       b
+    public $startUrl;
 
-    public $domains;
 
     public function __construct()
     {
     }
 
-    public static function create($data)
+    public function create($data)
     {
-        parent::create($data);
+      parent::create($data);
+      
+      if (issset($data->domains)) {
+          foreach ($data->domains as $d) {
+              $domain = new Domain();
+              $domain->create($d);
+          }
+      }
     }
 
-    public static function retrieve($data)
+    public function retrieve($data)
     {
         parent::retrieve($data);
+        parent::associate("Domain", "domains");
     }
 
-    public static function update($data)
+    public function update($data)
     {
         parent::update($data);
     }
@@ -40,8 +46,9 @@ class Collection
         $d = new Domain();
         $d->name = $domain;
         $d->parentId = $this->id;
-        Domain::create($d);
-        $this->domains = Domain::retrieve(json_decode('{"parentId":"' . $this->id . '"}'));
+        $d->create($d);
+
+        $this->associate("Domain", "domains");
     }
 
     public function inAllowedDomains($URL)
@@ -66,9 +73,5 @@ class Collection
         }
     }
 
-    public function log($message)
-    {
-        print $message . "\r\n";
-    }
 }
 ?>

@@ -2,6 +2,7 @@
 //2011, Jacob Andresen <jacob.andresen@gmail.com>
 //NOTE: YASE assumes that you have the settings from configuration.php.example
 require_once('Model.php');
+require_once('Token.php');
 require_once('Account.php');
 require_once('Collection.php');
 require_once('Domain.php');

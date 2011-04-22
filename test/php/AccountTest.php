@@ -21,18 +21,4 @@ class AccountTest extends PHPUnit_Framework_TestCase
         $a->destroy($a->id);
     }
 
-    public function testTokenLogin()
-    { 
-        $token = Account::generateToken("pedant.dk", "test");
-        $loggedIn = Account::tokenLogin($token);
-        $this->assertEquals($loggedIn, true);
-    }
-
- /*   public function testWebLogin()
-    {
-        Account::generateToken("pedant.dk", "test");
-        $client = new HTTPClient();
-        $url = YASE_WEB . "/token.php?username=pedant.dk&password=test";
-        $token = $client->get($url);
-    } */
 }

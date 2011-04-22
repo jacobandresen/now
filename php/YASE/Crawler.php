@@ -1,5 +1,4 @@
 <?php
-//2011, Jacob Andresen <jacob.andresen@gmail.com>
 class Crawler
 {
     public $collection;
@@ -9,10 +8,11 @@ class Crawler
     public $crawledURLs;
     public $httpClient;
 
-    public function __construct($params)
+    public function __construct($ownerId)
     {
-        $this->collections = Collection::retrieve($params);
-        $this->collection = $this->collections[0];
+        $account = new Account();
+        $account->retrieve(json_encode("{'id':".$ownerId));
+        $this->collection = $accont->collections[0];
 
         if (!isset($this->collection)) {
             print "failed to find collection for :\r\n";
