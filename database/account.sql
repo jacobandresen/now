@@ -11,5 +11,6 @@ create table token (
   id                int NOT NULL primary key auto_increment,
   value             varchar(60),
   account_id        int NOT NULL,
+  last_seen	    date,
   FOREIGN KEY       (account_id)     references account(id)
 );
