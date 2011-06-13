@@ -153,7 +153,7 @@ class HTTPClient
                     try {
                         while (!feof($this->socket)) {
                             $line = fgets($this->socket, 512);
-			   print $line."\r\n"; 
+			   //print $line."\r\n"; 
                            if (strlen($this->reply) < MAX_CONTENT_LENGTH) {
                                 $this->reply .= $line;
                             }

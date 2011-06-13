@@ -12,7 +12,7 @@ class CollectionDomain
 
     public static function create($data)
     {
-        $d = new Domain();
+        $d = new CollectionDomain();
         $SQL = "INSERT INTO collection_domain(collection_id,domain) values(" . $data->collectionId . ",'" . $data->domain . "')";
         mysql_query($SQL) or die (mysql_error());
         $d->id = mysql_insert_id();
@@ -26,12 +26,12 @@ class CollectionDomain
         if (isset($data->id)) {
             $res = mysql_query("SELECT id,domain FROM collection_domain where id=" . $data->id) or die (mysql_error());
         } else {
-            $res = mysql_query("SELECT id,domain from collection_domain where id=" . $data->parentId) or die (mysql_error());
+            $res = mysql_query("SELECT id,domain from collection_domain where collection_id=" . $data->collectionId) or die (mysql_error());
         }
 
         $domains = array();
         while ($row = mysql_fetch_row($res)) {
-            $d = new Domain();
+            $d = new CollectionDomain();
             $d->id = $row[0];
             $d->domain = $row[1];
             array_push($domains, $d);

@@ -15,8 +15,8 @@ class Crawler
         $this->collection = $this->collections[0];
 
         if (!isset($this->collection)) {
-            print "failed to find collection for :\r\n";
-            print_r($params);
+            
+            throw new Exception("failed to find collection for");
         }
 
         if (isset($params->pageLimit)) {
@@ -37,7 +37,7 @@ class Crawler
     {
         $this->collection->log("page limit:" . $this->pageLimit);
         if ($this->shouldCrawl($this->startUrl)) {
-            mysql_query("delete from document where parent_id='" . $this->collection->id . "'");
+            mysql_query("delete from document where coolection_id='" . $this->collection->id . "'");
             $this->crawl($this->startUrl, 0, $this->startUrl);
         } else {
             $this->collection->log("failed to start crawl");
@@ -56,7 +56,7 @@ class Crawler
         $document->level = $level;
 
         if ($document->contentType == "application/pdf") {
-            $p = new PDFRobot($this->collection->parentId);
+            $p = new PDFRobot($this->collection->accountId);
             $document->content = $p->clean($document);
             $document->content = htmlentities($document->content, ENT_QUOTES);
 

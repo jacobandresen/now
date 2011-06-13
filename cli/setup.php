@@ -22,6 +22,6 @@ $password = $argv[2];
 $domain = $argv[3];
 
 $account = Account::create((object)array("userName" => $userName, "password" => $password, "firstName" => "", "lastName" => ""));
-$collection = Collection::create((object)array("parentId" => $account->id, "name" => $domain, "startUrl" => $domain, "pageLimit" => 1500, "levelLimit" => 15));
+$collection = Collection::create((object)array("accountId" => $account->id, "name" => $domain, "startUrl" => $domain, "pageLimit" => 1500, "levelLimit" => 15));
 $collection->addDomain($userName);
 ?>

@@ -3,7 +3,7 @@
 class Collection
 {
     public $id;
-    public $parentId;
+    public $accountId;
     public $name;
     public $pageLimit;
     public $levelLimit;
@@ -20,16 +20,18 @@ class Collection
     {
         $c = new Collection();
         
-        if (!isset($data) || !isset($data->parentId) ){
+        if (!isset($data) || !isset($data->accountId) ){
            throw new Exception("missing data");
 	   return; 
        } 
 
-        $c->parentId = $data->parentId;
+        $c->accountId = $data->accountId;
         $c->name = $data->name;
 
-        $SQL = "INSERT INTO collection(parent_id, name, page_limit, level_limit, start_url) VALUES(" . $data->parentId . ", '" . $data->name . "', " . $data->pageLimit . ", " . $data->levelLimit . ",'" . $data->startUrl . "')";
+        $SQL = "INSERT INTO collection(account_id, name, page_limit, level_limit, start_url) VALUES(" . $data->accountId . ", '" . $data->name . "', " . $data->pageLimit . ", " . $data->levelLimit . ",'" . $data->startUrl . "')";
+    
         mysql_query($SQL) or die ("collection create failed: $SQL" . mysql_error());
+   
         $c->domains = array();
         $c->id = mysql_insert_id();
 
@@ -42,8 +44,8 @@ class Collection
 	    print "missing data";
             return;
         }
-        if (isset($data->parentId) && $data->parentId!="") {
-            $SQL = "SELECT id,name,page_limit,level_limit,start_url FROM collection where parent_id=" . $data->parentId;
+        if (isset($data->accountId) && $data->accountId!="") {
+            $SQL = "SELECT id,name,page_limit,level_limit,start_url FROM collection where account_id=" . $data->accountId;
         } else {
             $SQL = "SELECT id,name,page_limit,level_limit,start_url FROM collection where id=" . $data->id;
         }
@@ -57,7 +59,7 @@ class Collection
             $c->pageLimit = $row[2];
             $c->levelLImit = $row[3];
             $c->startUrl = $row[4];
-            $c->domains = Domain::retrieve(json_decode('{"parentId":"' . $c->id . '"}'));
+            $c->domains = CollectionDomain::retrieve(json_decode('{"collectionId":"' . $c->id . '"}'));
 
             array_push($collections, $c);
         }
@@ -66,7 +68,7 @@ class Collection
 
     public static function update($data)
     {
-        mysql_query("UPDATE collection where id=" . $data->id . " set  parent_id=" . $data->parentId . ",name='" . $data->name . "', page_limit='" . $data->pageLimit . "', level_limit='" . $data->levelLimit . ")") or die (mysql_error());
+        mysql_query("UPDATE collection where id=" . $data->id . " set  account_id=" . $data->accountId . ",name='" . $data->name . "', page_limit='" . $data->pageLimit . "', level_limit='" . $data->levelLimit . ")") or die (mysql_error());
     }
 
     public static function destroy($id)
@@ -76,18 +78,18 @@ class Collection
 
     public function addDomain($domain)
     {
-        $d = new Domain();
-        $d->name = $domain;
-        $d->parentId = $this->id;
-        Domain::create($d);
-        $this->domains = Domain::retrieve(json_decode('{"parentId":"' . $this->id . '"}'));
+        $d = new CollectionDomain();
+        $d->domain = $domain;
+        $d->collectionId = $this->id;
+        CollectionDomain::create($d);
+        $this->domains = CollectionDomain::retrieve(json_decode('{"collectionId":"' . $this->id . '"}'));
     }
 
     public function inAllowedDomains($URL)
     {
         $host = URL::extractHost($URL);
         foreach ($this->domains as $d) {
-            $domain = str_replace("www.", "", $d->name);
+            $domain = str_replace("www.", "", $d->domain);
             if (strpos($host, $domain) !== false) {
                 return true;
             }
@@ -99,7 +101,7 @@ class Collection
     {
         foreach ($this->domains as $domain)
         {
-            if (URL::inDomain($url, $domain->name)) {
+            if (URL::inDomain($url, $domain->domain)) {
                 return ($domain->id);
             }
         }

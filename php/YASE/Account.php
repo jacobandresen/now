@@ -38,7 +38,7 @@ class Account
         $a->firstName = $row[3];
         $a->lastName = $row[4];
 
-        $a->collections = Collection::retrieve((object)array("parentId" => $a->id));
+        $a->collections = Collection::retrieve((object)array("accountId" => $a->id));
 
         return $a;
     }

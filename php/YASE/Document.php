@@ -3,7 +3,7 @@
 class Document
 {
     public $id;
-    public $parentId;
+    public $collectionId;
     public $level;
     public $url;
     public $title;
@@ -14,9 +14,9 @@ class Document
     {
     }
 
-    public function save($parentId)
+    public function save($collectionId)
     {
-        if ($parentId == "") {
+        if ($collectionId == "") {
             die ("coding error. trying to save to empty collection\r\n");
         }
 
@@ -31,7 +31,7 @@ class Document
         }
 
         $this->url = urlencode($this->url);
-        $SQL = "INSERT IGNORE into document(parent_id, url, content_type, content, level) values('" . $parentId . "','" . $this->url . "','" . $this->contentType . "','" . $this->content . "','" . $this->level . "')";
+        $SQL = "INSERT IGNORE into document(collection_id, url, content_type, content, level) values('" . $collectionId . "','" . $this->url . "','" . $this->contentType . "','" . $this->content . "','" . $this->level . "')";
         mysql_query($SQL) or die("SQL error:" . $SQL . " \r\nfailed to insert into document:" . mysql_error());
         return true;
     }
