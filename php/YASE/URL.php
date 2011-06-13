@@ -13,7 +13,8 @@ class URL
 
     public static function filter($domainId, $url, $name)
     {
-        //BEGIN:default filtering rules
+        $url = strtolower($url);
+
         if (strpos($url, "#")) {
             return true;
         }
@@ -26,19 +27,19 @@ class URL
         if (strpos($url, "javascript:")) {
             return true;
         }
-        //END:default filtering rules
 
-       /* $SQL = "select regex from filter where name='" . $name . "' and document_id='" . $domainId . "';";
-        $res = mysql_query($SQL) or die ("SQL:" . $SQL . " failed:" . mysql_error());
-        while ($row = mysql_fetch_array($res)) {
-            $item = urldecode($row[0]);
-            if ($item != "") {
-                preg_match("|$item|", $url, $match);
-                if (count($match) > 0) {
-                    return true;
-                }
-            }
-        }*/
+        if (strpos($url, ".jpg")) {
+            return true;
+        }
+       
+        if (strpos($url, ".gif")) {
+            return true; 
+        }
+
+        if (strpos($url, ".bmp")) {
+            return true;
+        }
+
         return false;
     }
 

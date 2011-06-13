@@ -51,7 +51,7 @@ class Indexer
             $md5 = md5($document->content);
             $this->setMD5($document->id, $md5);
 
-            $this->saveFacets($document);
+            $this->saveFields($document);
 
         } catch (Exception $e) {
             $this->collection->log("failed adding $document->url " . $e->getMessage());
