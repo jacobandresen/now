@@ -1,57 +1,42 @@
--- 2011, Jacob Andresen <jacob.andresen@gmail.com>
+create sequence collection_seq START 1;
+create sequence collection_domain_seq START 1;
+create sequence document_seq START 1;
+
 create table collection (
-  id                              int NOT NULL primary key auto_increment,
-  account_id                      int,
+  collection_id                   integer PRIMARY KEY DEFAULT nextval('collection_seq'),
+  account_id                      integer,
   name                            varchar(256),
-  page_limit                      int,
-  level_limit                     int,
-  seen_documents                  int,
-  indexed_documents               int,
+  page_limit                      integer,
+  level_limit                     integer,
+  seen_documents                  integer,
+  indexed_documents               integer,
   start_url                       varchar(512),
-  last_updated                    datetime,
-  foreign key(account_id)         references account(id)
+  last_updated                    date,
+  foreign key(account_id)         references account(account_id)
 );
 
 create table collection_domain (
-  id 				  int NOT NULL primary key auto_increment,
-  collection_id			  int,
-  domain			  varchar(255),
-  foreign key(collection_id)      references collection(id)
+  id 				                      integer  PRIMARY KEY DEFAULT nextval('collection_domain_seq'), 
+  collection_id			              integer,
+  domain			                    varchar(255),
+  foreign key(collection_id)      references collection(collection_id)
 );
 
 create table document (
-  id                              int NOT NULL primary key auto_increment,
-  collection_id                   int,
+  document_id                     integer  PRIMARY KEY DEFAULT nextval('document_seq'),
+  collection_id                   integer,
   url                             varchar(256),
   md5                             varchar(20),
-  level                           int,
+  level                           integer,
   content_type                    varchar(256),
   retrieved                       timestamp,
-  content                         LONGTEXT,
-  FOREIGN KEY(collection_id)      references collection(id),
-  FULLTEXT(content)
-) engine=MyISAM;
+  content                         TEXT,
+  FOREIGN KEY(collection_id)      references collection(collection_id)
+);
 
-create table filter (
-  id                              int NOT NULL primary key auto_increment,
-  name                            varchar(64),
-  path				  varchar(255),
-  regex                           varchar(255)
-) engine=MyISAM;
-
-create table field (
-  id                              int NOT NULL primary key auto_increment,
-  document_id                     int,
+create table facet (
+  facet_id                        integer PRIMARY KEY DEFAULT nextval('facet_seq'),
+  document_id                     integer,
   name                            varchar(256),
-  content                         LONGTEXT,
-  foreign key(document_id)        references document(id),
-  FULLTEXT(content)
-) engine=MyISAM;
-
-create table document_field (
-  id				  int NOT NULL primary key auto_increment,
-  field_id			  int, 
-  filter_id			  int,
-  foreign key(field_id)           references field(id),
-  foreign key(filter_id)          references filter(id)
-) engine=MyISAM;
+  content                         varchar(256) 
+)
