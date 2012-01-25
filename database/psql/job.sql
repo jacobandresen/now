@@ -16,5 +16,3 @@ create table job (
   stop_time          datetime,
   FOREIGN KEY        (collection_id) references collection(collection_id)
 );
-
-

@@ -1,5 +1,5 @@
 <?php 
-class Facet extends Resource
+class FacetDAO
 {
     public function create($token, $data)
     {
@@ -17,3 +17,4 @@ class Facet extends Resource
     {
     }
 }
+?>

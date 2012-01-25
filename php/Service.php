@@ -1,5 +1,4 @@
 <?php
-
 class Crawler
 {
     public $collection;

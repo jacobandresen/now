@@ -3,7 +3,7 @@ create sequence token_seq START 1;
 
 create table account (
   account_id         integer  PRIMARY KEY DEFAULT nextval('account_seq'),
-  username           varchar(60) NOT NULL UNIQUE,
+  user_name          varchar(60) NOT NULL UNIQUE,
   password           varchar(60) NOT NULL,
   first_name         varchar(60),
   last_name          varchar(60)
