@@ -1,4 +1,5 @@
 <?php
+//TODO: replace mysql
 class Searcher
 {
     private $collectionId;
