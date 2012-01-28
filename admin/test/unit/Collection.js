@@ -1,4 +1,4 @@
-describe("CollectionGrid", function() {
+describe("Collection", function() {
 
   it("should create a collection if none is present", function () {
     expect(true).toBeFalsy();

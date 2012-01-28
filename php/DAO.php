@@ -24,12 +24,20 @@ class DAO
     pg_query($this->getConnection(), $SQL);
   }
 
-  public function find ($SQLFragment) 
-  {
-  }
-
   public function findById ($id) {
     $SQL = $this->generateRetrieveSQL($id);
+    return $this->retrieveObjectBySQL($SQL); 
+  }
+
+  public function find ($SQLFragment) 
+  {
+    $tableName = $this->GetTableName();
+    $SQL = "SELECT * from ".$tableName." WHERE ".$SQLFragment;
+    return $this->retrieveObjectBySQL($SQL);
+  }
+
+  private function retrieveObjectBySQL($SQL) 
+  {
     $result = pg_query($this->getConnection(), $SQL);
 
     if (!$result) {

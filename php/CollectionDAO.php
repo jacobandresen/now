@@ -1,5 +1,6 @@
 <?php 
-public class CollectionDAO extends DAO
+require_once("DAO.php");
+class CollectionDAO extends DAO
 {
 }
 ?>
