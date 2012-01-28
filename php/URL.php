@@ -1,4 +1,5 @@
 <?php
+//TODO: replace mysql
 class URL
 {
     public static function hasDuplicate($collectionId, $url)

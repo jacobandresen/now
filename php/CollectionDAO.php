@@ -1,4 +1,5 @@
 <?php 
-public class collectionDAO extends DAO
+public class CollectionDAO extends DAO
 {
 }
+?>
