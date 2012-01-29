@@ -10,7 +10,7 @@ class URL
         return false;
     }
 
-    public static function filter($domainId, $url, $name)
+    public static function filter($url)
     {
         $url = strtolower($url);
 

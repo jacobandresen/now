@@ -1,12 +1,10 @@
 <?php
 require_once("CollectionDAO.php");
-require_once("NodeDAO.php");
+require_once("DocumentDAO.php");
 require_once("FacetDAO.php");
 
-class Service 
-{
-  public function __construct($accountId)
-  {
+class Service {
+  public function __construct($accountId) {
     $collectionDAO = new CollectionDAO();
     $this->httpClient = new HTTPClient();
     $this->collection = $collectionDAO->find("account_id='".$accountId."'");
@@ -19,14 +17,12 @@ class Service
     $this->startUrl = $this->collection->startUrl;
   }
   
-  public function start()
-  {
+  public function start() {
     mysql_query("delete from document where collection_id='" . $this->collection->id . "'");
     $this->crawl($this->startUrl, 0, $this->startUrl);
   }
 
-  public function crawl($url, $level, $parent)
-  {
+  public function crawl($url, $level, $parent) {
     if (count($this->crawledURLs) > $this->pageLimit) {
       return;
     }
@@ -70,8 +66,7 @@ class Service
     }
   }
 
-  private function shouldCrawl($url)
-  {
+  private function shouldCrawl($url) {
     if (in_array($url, $this->crawledURLs)) {
       return false;
     }
@@ -88,8 +83,7 @@ class Service
     return true;
   }
 
-  private function crawleable($contentType) 
-  {
+  private function crawleable($contentType) {
     if (
       ($contentType == "application/x-zip") ||
       ($contentType == "application/xml") ||
@@ -105,8 +99,7 @@ class Service
     return true;
   }
 
-  public function start2()
-  {
+  public function start2() {
     $SQL = "select max(retrieved),id,url,content_type,content,level from document where collection_id='" . $this->collection->id . "' group by url";
     $res = mysql_query($SQL) or die (mysql_error());
 
@@ -121,8 +114,7 @@ class Service
     }
   }
 
-  protected function analyze($document)
-  {
+  protected function analyze($document) {
     $title = "";
     if ($document->contentType != "application/pdf") {
 
@@ -141,8 +133,7 @@ class Service
     $this->saveFacets($document);
   }
   
-  protected function saveFacets($document)
-  {
+  protected function saveFacets($document) {
     $length = strlen($document->content);
     if ($length > 0 && strlen($document->url) > 0) {
 
@@ -154,8 +145,7 @@ class Service
     } 
   }
 
-  private function setMD5($id, $md5)
-  {
+  private function setMD5($id, $md5) {
     $SQL = "update document where id='" . $id . "' set md5='" . $md5 . "'";
     mysql_query($SQL);
   }

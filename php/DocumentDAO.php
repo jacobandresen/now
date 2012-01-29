@@ -1,4 +1,4 @@
 <?php 
-class NodeDAO extends DAO {
+class DocumentDAO extends DAO {
 }
 ?>

@@ -7,12 +7,10 @@ public class HTTPClient {
     }
 
     public Document getDocument(String url){
-        Document doc = new Document();
-        return doc;
+        return new Document();
     }
 
     public void connection(String host){
-
     }
 
 }
