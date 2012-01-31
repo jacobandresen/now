@@ -1,7 +1,7 @@
 package now;
 
 public class URL {
-  public static boolean hasDuplicate(int collectionId, String url) {
+/*  public static boolean hasDuplicate(int collectionId, String url) {
   }
 
   public static boolean filter(String url) {
@@ -14,5 +14,5 @@ public class URL {
   }
 
   public static boolean inDomain(String url, String domain) {
-  }
+  } */
 }

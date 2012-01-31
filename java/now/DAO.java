@@ -6,92 +6,158 @@ import com.google.gson.JsonObject;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public abstract class DAO {
+    public int create(JsonObject json)
+            throws SQLException, ClassNotFoundException {
+        String tableName = getTableName();
+        String identifier = tableName + "_id";
+        Connection conn = getConnection();
 
-    public void create(JsonObject json) {
-        String SQL = this.generateCreateSQL(json);
+        StringBuilder tableBuilder = new StringBuilder();
+        StringBuilder valueBuilder = new StringBuilder();
+        tableBuilder.append("INSERT INTO ");
+        tableBuilder.append(tableName);
+        tableBuilder.append("(");
+        valueBuilder.append("(");
+        List<String> columnNames = getColumnNames();
+
+        String delimiter = "";
+        for (String columnName : columnNames) {
+            if (!columnName.equals(identifier)) {
+                tableBuilder.append(delimiter);
+                valueBuilder.append(delimiter);
+                tableBuilder.append(columnName);
+                valueBuilder.append('?');
+                delimiter = ",";
+            }
+        }
+        tableBuilder.append(")");
+        valueBuilder.append(")");
+        tableBuilder.append(" VALUES ");
+        tableBuilder.append(valueBuilder.toString());
+        String SQL = tableBuilder.toString();
+
+        PreparedStatement createStatement = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+        int pos = 1;
+        for (String columnName : columnNames) {
+            if (!columnName.equals(identifier)) {
+                JsonElement jsonElement = json.get(camelize(columnName));
+                createStatement.setString(pos++, jsonElement.getAsString());
+            }
+        }
+        createStatement.executeUpdate();
+
+        ResultSet rs = createStatement.getGeneratedKeys();
+        int key = -1;
+        if (rs.next()) {
+            key = rs.getInt(1);
+        }
+        return key;
     }
 
-    public JsonObject retrieve(int id) {
-        return this.findById(id);
+    public JsonObject retrieve(int id)
+            throws SQLException, ClassNotFoundException {
+        String tableName = getTableName();
+        String idName = tableName + "_id";
+
+        String SQL = "SELECT * from " + tableName + " where " + idName + "=" + id;
+        Connection conn = getConnection();
+        Statement retrieveStatement = conn.createStatement();
+        ResultSet resultSet = retrieveStatement.executeQuery(SQL);
+        JsonObject json = new JsonObject();
+        if (resultSet.next()) {
+            for (String columnName : getColumnNames()) {
+                String jsonName = camelize(columnName);
+                json.addProperty(jsonName, resultSet.getString(columnName));
+            }
+        }
+        conn.close();
+        return json;
     }
 
-    public void update(JsonObject json) {
-        String SQL = this.generateUpdateSQL(json);
+    public void update(JsonObject json)
+            throws SQLException, ClassNotFoundException {
+        String tableName = getTableName();
+        String identifier = tableName + "_id";
 
+        List<String> columnNames = getColumnNames();
+
+        String updateFragment = "UPDATE " + tableName + " where " + identifier + " = " + json.get("id").toString() + "SET ";
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append(updateFragment);
+
+        String delimiter = "";
+        for (String columnName : columnNames) {
+            queryBuilder.append(delimiter);
+            if (!columnName.equals(identifier)) {
+                queryBuilder.append(columnName);
+                queryBuilder.append("=");
+                queryBuilder.append(camelize(columnName));
+            }
+            delimiter = ",";
+        }
+
+        String SQL = queryBuilder.toString();
+        Connection conn = getConnection();
+        PreparedStatement updateStatement = conn.prepareCall(SQL);
+        int pos = 1;
+        for (String columnName : columnNames) {
+            if (!columnName.equals(identifier)) {
+                JsonElement jsonElement = json.get(camelize(columnName));
+                updateStatement.setString(pos++, jsonElement.getAsString());
+            }
+        }
+        updateStatement.executeUpdate();
     }
 
     public void destroy(int id) {
     }
 
-    public JsonObject findById(int id) {
-        JsonObject json = new JsonObject();
-        return json;
-    }
-
-    public Object find(String SQLFragment) {
-        JsonObject json = new JsonObject();
-        return json;
-    }
-
-    private JsonObject retrieveObjectBySQL(String SQL) {
-        JsonObject json = new JsonObject();
-        return json;
-    }
-
-    private String generateCreateSQL(JsonObject json) {
-        return "";
-    }
-
-    private String generateUpdateSQL(JsonObject json) {
-        String tableName = this.getTableName();
-        String id = json.get("id").toString();
-        String SQL = "UPDATE " + tableName + "where " + tableName + "_id='" + id + "' set ";
-        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-            entry.getKey();
-        }
-        return SQL;
-    }
-
-    private String generateDestroySQL(int id) {
-        return "";
-    }
-
-    private List<String> getSQLAttributeNames()
+    private List<String> getColumnNames()
             throws SQLException, ClassNotFoundException {
+        List<String> columnNames = new ArrayList<String>();
 
-        ArrayList<String> SQLAttributeNames = new ArrayList<String>();
+        Connection conn = getConnection();
         String tableName = getTableName();
-        String SQL = "SELECT attname FROM pg_attribute, pg_type where typename=? and attrelid = typrelid AND attname NOT IN ('cmin','cmax', 'ctid', 'oid', 'tableoid', 'xmin', 'xmax')";
-        Connection connection = getConnection();
-        PreparedStatement attributeSelector = connection.prepareStatement(SQL);
-        attributeSelector.setString(1, tableName);
-        ResultSet resultSet = attributeSelector.executeQuery();
-        while( resultSet.next()){
-            String attributeName = resultSet.getString(1);
-            SQLAttributeNames.add(attributeName);
-        }
-        connection.close();
-        return SQLAttributeNames;
-    }
+        DatabaseMetaData md = conn.getMetaData();
+        ResultSet columnsResultSet = md.getColumns(null, null, tableName, "%");
 
-    private List<String> getAttributeNames() {
-        return new ArrayList<String>();
+        while (columnsResultSet.next()) {
+            String columnName = columnsResultSet.getString(4);
+            columnNames.add(columnName);
+        }
+        return columnNames;
     }
 
     private String camelize(String SQLName) {
-        return "";
+        String toks[] = SQLName.split("_");
+
+        String tableName = getTableName();
+        String identifier = tableName + "_id";
+        if (SQLName.equals(identifier)) {
+            return "id";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(toks[0]);
+        for (int i = 1; i < toks.length; i++) {
+            sb.append(toks[i].substring(0, 1).toUpperCase());
+            sb.append(toks[i].substring(1));
+
+        }
+        return sb.toString();
     }
 
     private String getTableName() {
-        return "";
+        String className = this.getClass().getSimpleName();
+        return className.replace("DAO", "").toLowerCase();
+
     }
 
-    private Connection getConnection()
+    public Connection getConnection()
             throws ClassNotFoundException, SQLException {
-        String url = "host=localhost user=postgres password=postgres";
+        String url = "jdbc:postgresql";
         Class.forName("org.postgresql.Driver");
         Connection conn = DriverManager.getConnection(url, "postgres", "postgres");
         return conn;

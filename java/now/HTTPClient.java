@@ -1,7 +1,6 @@
 package now;
 
 public class HTTPClient {
-
     public String get(String url){
         return "";
     }
@@ -12,5 +11,4 @@ public class HTTPClient {
 
     public void connection(String host){
     }
-
 }
