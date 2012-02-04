@@ -65,8 +65,9 @@ public abstract class DAO {
         Connection conn = getConnection();
         Statement retrieveStatement = conn.createStatement();
         ResultSet resultSet = retrieveStatement.executeQuery(SQL);
-        JsonObject json = new JsonObject();
+        JsonObject json = null;
         if (resultSet.next()) {
+            json = new JsonObject();
             for (String columnName : getColumnNames()) {
                 String jsonName = camelize(columnName);
                 json.addProperty(jsonName, resultSet.getString(columnName));
@@ -80,10 +81,9 @@ public abstract class DAO {
             throws SQLException, ClassNotFoundException {
         String tableName = getTableName();
         String identifier = tableName + "_id";
-
         List<String> columnNames = getColumnNames();
 
-        String updateFragment = "UPDATE " + tableName + " where " + identifier + " = " + json.get("id").toString() + "SET ";
+        String updateFragment = "UPDATE " + tableName +  " SET ";
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append(updateFragment);
 
@@ -92,13 +92,17 @@ public abstract class DAO {
             queryBuilder.append(delimiter);
             if (!columnName.equals(identifier)) {
                 queryBuilder.append(columnName);
-                queryBuilder.append("=");
-                queryBuilder.append(camelize(columnName));
+                queryBuilder.append("=?");
+                delimiter = ",";
             }
-            delimiter = ",";
         }
 
+        queryBuilder.append(" where ");
+        queryBuilder.append(identifier);
+        queryBuilder.append("=");
+        queryBuilder.append(json.get("id").getAsBigInteger());
         String SQL = queryBuilder.toString();
+
         Connection conn = getConnection();
         PreparedStatement updateStatement = conn.prepareCall(SQL);
         int pos = 1;
@@ -111,7 +115,18 @@ public abstract class DAO {
         updateStatement.executeUpdate();
     }
 
-    public void destroy(int id) {
+    public void destroy(int id)
+        throws SQLException, ClassNotFoundException
+    {
+        String tableName = getTableName();
+        String identifierName = tableName +"_id";
+        String SQL ="delete from "+tableName +" where "+ identifierName +"=?";
+
+        Connection conn = getConnection();
+        PreparedStatement destroyStatement = conn.prepareStatement(SQL);
+        destroyStatement.setInt(1, id);
+        destroyStatement.executeUpdate();
+        conn.close();
     }
 
     private List<String> getColumnNames()
@@ -152,7 +167,6 @@ public abstract class DAO {
     private String getTableName() {
         String className = this.getClass().getSimpleName();
         return className.replace("DAO", "").toLowerCase();
-
     }
 
     public Connection getConnection()
