@@ -30,8 +30,8 @@ class Document
         }
 
         $this->url = urlencode($this->url);
-        $SQL = "INSERT IGNORE into document(collection_id, url, content_type, content, level) values('" . $collectionId . "','" . $this->url . "','" . $this->contentType . "','" . $this->content . "','" . $this->level . "')";
-        mysql_query($SQL) or die("SQL error:" . $SQL . " \r\nfailed to insert into document:" . mysql_error());
+        $SQL = "INSERT into document(collection_id, url, content_type, content, level) values('" . $collectionId . "','" . $this->url . "','" . $this->contentType . "','" . $this->content . "','" . $this->level . "')";
+        pg_query($SQL) or die("SQL error:" . $SQL);
         return true;
     }
 

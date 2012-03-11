@@ -7,7 +7,7 @@ class SearcherTest extends PHPUnit_Framework_TestCase
 {
     public function testSearch()
     {
-        $account = Account::login("pedant.dk", "test");
+        $account = Account::login("searchzen.org", "test");
         $collection = $account->collections[0];
         $searcher = new Searcher($collection);
         $result = $searcher->search("ExtJS", 0);

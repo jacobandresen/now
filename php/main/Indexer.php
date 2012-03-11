@@ -11,14 +11,12 @@ class Indexer
 
     public function start()
     {
-        //TODO: delete fields in current collection 
+        $SQL = "select max(retrieved),document_id,url,content_type,content,level from document where collection_id='" . $this->collection->id . "' group by document_id,url,content_type,level,content";
+        $res = pg_query($SQL);
 
-        $SQL = "select max(retrieved),id,url,content_type,content,level from document where collection_id='" . $this->collection->id . "' group by url";
-        $res = mysql_query($SQL) or die (mysql_error());
-
-        while ($row = mysql_fetch_array($res)) {
+        while ($row = pg_fetch_array($res)) {
             $document = new Document();
-            $document->id = $row['id'];
+            $document->id = $row['document_id'];
             $document->url = $row['url'];
             $document->contentType = $row['content_type'];
             $document->content = $row['content'];
@@ -65,10 +63,10 @@ class Indexer
         if ($length > 0 && strlen($document->url) > 0) {
 
             $SQL = "INSERT INTO field(document_id,name,content) values('" . $document->id . "','title','" . $document->title . "');";
-            mysql_query($SQL) or die ("failed to insert title field:" . mysql_error());
+            pg_query($SQL);
 
             $SQL = "INSERT INTO field(document_id,name,content) values('" . $document->id . "','content','" . $document->content . "');";
-            mysql_query($SQL) or die ("failed to insert content field: " . mysql_error());
+            pg_query($SQL);
 
         } else {
             $this->collection->log($document->url . " empty doc");
@@ -77,8 +75,8 @@ class Indexer
 
     private function setMD5($id, $md5)
     {
-        $SQL = "update document where id='" . $id . "' set md5='" . $md5 . "'";
-        mysql_query($SQL);
+        $SQL = "update document set md5='" . $md5 . "' where document_id='$id'";
+        pg_query($SQL);
     }
 }
 ?>

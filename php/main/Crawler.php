@@ -35,7 +35,7 @@ class Crawler
     {
         $this->collection->log("page limit:" . $this->pageLimit);
         if ($this->shouldCrawl($this->startUrl)) {
-            mysql_query("delete from document where collection_id='" . $this->collection->id . "'");
+            pg_query("delete from document where collection_id='" . $this->collection->id . "'");
             $this->crawl($this->startUrl, 0, $this->startUrl);
         } else {
             $this->collection->log("failed to start crawl");
@@ -61,7 +61,6 @@ class Crawler
             array_push($this->crawledURLs, $url);
             return $document->save($this->collection->id);
         } else {
-
             if (!($this->shouldCrawl($url))) {
                 $this->collection->log("SKIP $url");
                 array_push($this->foundURLs, $url); //skip document

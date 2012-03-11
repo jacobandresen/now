@@ -6,29 +6,31 @@ class Account
     public $password;
     public $firstName;
     public $lastName;
+    public $lastSeen;
+    public $token;
 
     public $collections;
 
     public static function create($data)
     {
-        $SQL = "INSERT INTO account(username, password, first_name, last_name) VALUES('" . $data->userName . "','" . $data->password . "','" . $data->firstName . "','" . $data->lastName . "')";
-        mysql_query($SQL) or die("create failed:" . $SQL . mysql_error());
+        $SQL = "INSERT INTO account(user_name, password, first_name, last_name) VALUES('" . $data->userName . "','" . $data->password . "','" . $data->firstName . "','" . $data->lastName . "') returning account_id";
+        $res = pg_query($SQL) or die("create failed:" . $SQL);
+        $row = pg_fetch_row($res);
 
         $a = new Account();
-        $a->id = mysql_insert_id();
+        $a->id = $row[0];
         $a->userName = $data->userName;
         $a->password = $data->password;
         $a->firstName = $data->firstName;
         $a->lastName = $data->lastName;
-
         return $a;
     }
 
     public static function retrieve($data)
     {
-        $SQL = "SELECT id,username,password,first_name,last_name from account where id='" . $data->id . "'";
-        $res = mysql_query($SQL) or die ("read failed:" . $SQL . mysql_error());
-        $row = mysql_fetch_array($res);
+        $SQL = "SELECT account_id,user_name,password,first_name,last_name,token from account where account_id='" . $data->id . "'";
+        $res = pg_query($SQL) or die ("read failed:" . $SQL);
+        $row = pg_fetch_array($res);
 
         $a = new Account();
         $a->id = $row[0];
@@ -36,6 +38,7 @@ class Account
         $a->password = $row[2];
         $a->firstName = $row[3];
         $a->lastName = $row[4];
+        $a->token = $row[5];
 
         $a->collections = Collection::retrieve((object)array("accountId" => $a->id));
 
@@ -44,19 +47,22 @@ class Account
 
     public static function update($data)
     {
-        $SQL = "UPDATE account where id=" . $data->id . " set username='" . $data->userName . "',password='" . $data->password . "',first_name='" . $data->firstName . "',last_name='" . $data->lastName . "'";
-        mysql_query($SQL) or die ("Account update failed:" . $SQL . mysql_error());
+        $SQL = "UPDATE account where account_id=" . $data->id . " set username='" . $data->userName . "',password='" . $data->password . "',first_name='" . $data->firstName . "',last_name='" . $data->lastName . "'";
+        pg_query($SQL) or die ("Account update failed:" . $SQL);
     }
 
     public static function destroy($id)
     {
-        mysql_query("DELETE FROM account where id=$id");
+        if ($id=="") {
+            die ("missing id");
+        }
+        pg_query("DELETE FROM account where account_id=$id");
     }
 
     public static function login($userName, $password)
     {
-        $res = mysql_query("SELECT id from account where username='" . $userName . "' and password='" . $password . "'") or die(mysql_error());
-        $row = mysql_fetch_array($res);
+        $res = pg_query("SELECT account_id from account where user_name='" . $userName . "' and password='" . $password . "'");
+        $row = pg_fetch_array($res);
 
         $id = $row[0];
 
@@ -70,10 +76,10 @@ class Account
 
     public static function tokenLogin($token)
     {
-        $sql = "SELECT a.id from account a, token t where t.value='$token' and t.account_id=a.id";
-        $res = mysql_query($sql);
+        $sql = "SELECT account_id from account where token='$token'";
+        $res = pg_query($sql);
 
-        $row = mysql_fetch_array($res);
+        $row = pg_fetch_array($res);
         $id = $row[0];
 
         if (isset($id)) {
@@ -84,24 +90,25 @@ class Account
     public static function generateToken($userName, $password)
     {
         $token = md5($userName . $password . rand());
-        $sql = "select id from account where username='$userName' and password='$password'";
-        $res = mysql_query($sql) or die (" failed logging in");
-        $row = mysql_fetch_array($res);
-        $id = $row['id'];
+        $sql = "select account_id from account where user_name='$userName' and password='$password'";
+        $res = pg_query($sql) or die (" failed logging in");
+        $row = pg_fetch_array($res);
+        $id = $row['account_id'];
 
-        $sql = "insert into token(account_id, value) values( '$id', '$token');";
-        mysql_query($sql) or die;
+        $now = date("m/d/Y");
+        $sql = "update account set token='$token', last_seen='$now' where account_id=$id;";
+        pg_query($sql) or die;
         return $token;
     }
 
     public static function getToken($userName, $password)
     {
-        $sql = "select a.id,t.value from account a, token t where a.username='$userName' and a.password='$password' and t.account_id=a.id ;";
+        $sql = "select a.account_id,a.token from account a  where a.user_name='$userName' and a.password='$password';";
 
-        $res = mysql_query($sql) or die (" failed getting token:" . mysql_error());
-        $row = mysql_fetch_array($res);
+        $res = pg_query($sql) or die (" failed getting token:");
+        $row = pg_fetch_array($res);
 
-        return $row['value'];
+        return $row['token'];
     }
 }
 ?>

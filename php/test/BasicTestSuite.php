@@ -16,7 +16,6 @@ class BasicTestSuite extends PHPUnit_Framework_TestSuite
         $suite = new PHPUnit_Framework_TestSuite();
 
         $suite->addTest(new AccountTest("testCreate"));
-       // $suite->addTest(new AccountTest("testDelete"));
         $suite->addTest(new CollectionTest("testCollectionDomains"));
         $suite->addtest(new CollectionTest("testgetDomains"));
         $suite->addTest(new ControllerTest("testCollectionRetrieve"));

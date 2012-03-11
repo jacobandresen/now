@@ -3,8 +3,8 @@ class URL
 {
     public static function hasDuplicate($collectionId, $url)
     {
-        $res = mysql_query("SELECT url from document where url='$url' and parent_id='" . $collectionId . "'") or die(mysql_error());
-        if ($row = mysql_fetch_array($res)) {
+        $res = pg_query("SELECT url from document where url='$url' and parent_id='" . $collectionId . "'");
+        if ($row = pg_fetch_array($res)) {
             return true;
         }
         return false;
@@ -30,9 +30,9 @@ class URL
         if (strpos($url, ".jpg")) {
             return true;
         }
-       
+
         if (strpos($url, ".gif")) {
-            return true; 
+            return true;
         }
 
         if (strpos($url, ".bmp")) {

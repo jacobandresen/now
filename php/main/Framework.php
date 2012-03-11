@@ -12,10 +12,5 @@ require_once('Searcher.php');
 require_once('HTMLRobot.php');
 require_once('PDFRobot.php');
 
-$conn = pg_connect("dbname=postgres host=localhost user=postgres password=postgres");
-
-print_r($conn);
-
-//mysql_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD) or die(mysql_error());
-//mysql_select_db(MYSQL_DATABASE) or die(mysql_error());
+$conn = pg_connect("host=localhost user=jacob dbname=jacob");
 ?>

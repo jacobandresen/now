@@ -17,41 +17,32 @@ class Collection
 
     public static function create($data)
     {
+        $SQL = "INSERT INTO collection(account_id, name, page_limit, level_limit, start_url) VALUES($data->accountId,'".$data->name."',".$data->pageLimit.", " . $data->levelLimit . ",'" . $data->startUrl . "') returning collection_id";
+
+        $res = pg_query($SQL);
+        $row = pg_fetch_array($res);
+
+        //TODO: support create with nested domains
         $c = new Collection();
-
-        if (!isset($data) || !isset($data->accountId) ){
-           throw new Exception("missing data");
-	       return;
-       }
-
-        $c->accountId = $data->accountId;
-        $c->name = $data->name;
-
-        $SQL = "INSERT INTO collection(account_id, name, page_limit, level_limit, start_url) VALUES(" . $data->accountId . ", '" . $data->name . "', " . $data->pageLimit . ", " . $data->levelLimit . ",'" . $data->startUrl . "')";
-
-        mysql_query($SQL) or die ("collection create failed: $SQL" . mysql_error());
-
         $c->domains = array();
-        $c->id = mysql_insert_id();
-
+        $c->id = $row[0];
+        $c->pageLimit = $data->pageLimit;
+        $c->levelLimit = $data->levelLimit;
+        $c->startUrl = $data->startUrl;
         return ($c);
     }
 
     public static function retrieve($data)
     {
-        if (!isset($data)) {
-	    print "missing data";
-            return;
-        }
         if (isset($data->accountId) && $data->accountId!="") {
-            $SQL = "SELECT id,name,page_limit,level_limit,start_url FROM collection where account_id=" . $data->accountId;
+            $SQL = "SELECT collection_id,name,page_limit,level_limit,start_url FROM collection where account_id=" . $data->accountId;
         } else {
-            $SQL = "SELECT id,name,page_limit,level_limit,start_url FROM collection where id=" . $data->id;
+            $SQL = "SELECT collection_id,name,page_limit,level_limit,start_url FROM collection where collection_id=" . $data->id;
         }
-        $res = mysql_query($SQL) or die("collection retrieve failed:" . $SQL . " -> " . mysql_error());
+        $res = pg_query($SQL) or die("collection retrieve failed:" . $SQL );
 
         $collections = array();
-        while ($row = mysql_fetch_row($res)) {
+        while ($row = pg_fetch_array($res)) {
             $c = new Collection();
             $c->id = $row[0];
             $c->name = $row[1];
@@ -72,7 +63,7 @@ class Collection
 
     public static function destroy($id)
     {
-        mysql_query("DELETE FROM collection WHERE ID=$id") or die (mysql_error());
+        pg_query("DELETE FROM collection WHERE ID=$id");
     }
 
     public function addDomain($domain)
@@ -81,7 +72,8 @@ class Collection
         $d->domain = $domain;
         $d->collectionId = $this->id;
         CollectionDomain::create($d);
-        $this->domains = CollectionDomain::retrieve(json_decode('{"collectionId":"' . $this->id . '"}'));
+        $this->domains =
+            CollectionDomain::retrieve(json_decode('{"collectionId":"' . $this->id . '"}'));
     }
 
     public function inAllowedDomains($URL)

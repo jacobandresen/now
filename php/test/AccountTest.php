@@ -7,21 +7,27 @@ class AccountTest extends PHPUnit_Framework_TestCase
 {
     public function testCreate()
     {
-        mysql_query("DELETE FROM account where username='pedant.dk'") or die ("delete failed:" . mysql_error());
-        $params = (object)array("userName" => "pedant.dk", "password" => "test", "firstName" => "Jacob", "lastName" => "Andresen");
+        pg_query("DELETE FROM account where user_name='searchzen.org'") ;
+        $params = (object)array("userName" => "searchzen.org",
+            "password" => "test",
+            "firstName" => "Jacob",
+            "lastName" => "Andresen");
         Account::create($params);
     }
 
     public function testDelete()
     {
-        mysql_query("DELETE FROM account where username='deleteme'");
-        $account = Account::create((object)array("userName" => "deleteme", "password" => "deleteme", "firstName" => "Jacob", "lastName" => "Andresen"));
+        pg_query("DELETE FROM account where user_name='deleteme'");
+        $account = Account::create((object)array("userName" => "deleteme",
+            "password" => "deleteme",
+            "firstName" => "Jacob",
+            "lastName" => "Andresen"));
         Account::destroy($account->id);
     }
 
     public function testTokenLogin()
-    { 
-        $token = Account::generateToken("pedant.dk", "test");
+    {
+        $token = Account::generateToken("searchzen.org", "test");
         $loggedIn = Account::tokenLogin($token);
         $this->assertEquals($loggedIn, true);
     }
