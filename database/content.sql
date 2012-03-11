@@ -38,7 +38,7 @@ create table document (
 create table node (
     node_id                         integer PRIMARY KEY DEFAULT nextval('node_seq'),
     name                            varchar(256),
-    content                         varchar(256),
+    content                         TEXT,
     path                            TEXT,
     document_id                     integer,
     parent_node_id                  integer,

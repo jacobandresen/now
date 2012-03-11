@@ -32,15 +32,12 @@ class Indexer
             $title = "";
 
             if ($document->contentType != "application/pdf") {
-
-                //analyze HTML as default
                 $document->content = html_entity_decode($document->content, ENT_QUOTES);
                 $document->title = HTMLRobot::findTitle($document->content);
                 $document->title = htmlentities($document->title, ENT_QUOTES);
                 $document->content = HTMLRobot::clean($document->content);
             }
 
-            //default rules
             if ($document->title == "") {
                 $document->title = $document->url;
             }
@@ -62,10 +59,10 @@ class Indexer
 
         if ($length > 0 && strlen($document->url) > 0) {
 
-            $SQL = "INSERT INTO field(document_id,name,content) values('" . $document->id . "','title','" . $document->title . "');";
+            $SQL = "INSERT INTO node(document_id,name,content) values('" . $document->id . "','title','" . $document->title . "');";
             pg_query($SQL);
 
-            $SQL = "INSERT INTO field(document_id,name,content) values('" . $document->id . "','content','" . $document->content . "');";
+            $SQL = "INSERT INTO node(document_id,name,content) values('" . $document->id . "','content','" . $document->content . "');";
             pg_query($SQL);
 
         } else {

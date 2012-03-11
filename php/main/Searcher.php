@@ -20,7 +20,11 @@ class Searcher
         }
 
         if ($query != "") {
-            $SQL = "SELECT distinct(d.url) as url,d.content_type as content_type ,t.content as title, c.content as content, MATCH(c.content) AGAINST('$query') as score from document d,field t, field c where d.collection_id='" . $this->collectionId . "' and d.id=t.document_id and t.name='title' and  d.id=c.document_id and c.name='content' order by score desc";
+
+            $SQL = "SELECT ts_rank( to_tsvector('english', n.content), to_tsquery('english', '$query')) ";
+            $SQL.= ",  d.content, d.url, d.content_type, (select n1.content from node n1 where n1.name='title' and n1.document_id = d.document_id) as title  ";
+            $SQL.= " from document d, node n where n.document_id = d.document_id and n.name='content'";
+
             $result = pg_query($SQL);
 
             $pos = 0;
