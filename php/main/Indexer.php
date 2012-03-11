@@ -45,24 +45,32 @@ class Indexer
             $md5 = md5($document->content);
             $this->setMD5($document->id, $md5);
 
-            $this->saveFields($document);
+            $this->saveNodes($document);
 
         } catch (Exception $e) {
             $this->collection->log("failed adding $document->url " . $e->getMessage());
         }
     }
 
-    protected function saveFields($document)
+    protected function saveNodes($document)
     {
         $length = strlen($document->content);
         $this->collection->log("[" . $length . "]INDEX " . urldecode($document->url) . " type:" . $document->contentType);
 
         if ($length > 0 && strlen($document->url) > 0) {
 
-            $SQL = "INSERT INTO node(document_id,name,content) values('" . $document->id . "','title','" . $document->title . "');";
+            if (!Encoding::isUTF8($document->title)) {
+                $document->title = iconv("ISO-8859-1", "UTF-8", $document->title);
+            }
+
+            if (!Encoding::isUTF8($document->content)){
+                $document->content = iconv("ISO-8859-1", "UTF-8", $document->content);
+            }
+
+            $SQL = "INSERT INTO node(document_id,name,content) values('". $document->id . "','title','" . $document->title . "');";
             pg_query($SQL);
 
-            $SQL = "INSERT INTO node(document_id,name,content) values('" . $document->id . "','content','" . $document->content . "');";
+            $SQL = "INSERT INTO node(document_id,name,content) values('". $document->id . "','content','" . $document->content . "');";
             pg_query($SQL);
 
         } else {

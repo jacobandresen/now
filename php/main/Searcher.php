@@ -2,43 +2,41 @@
 class Searcher
 {
     private $collectionId;
-    public $limit = 5;
 
     public function __construct($data)
     {
         $this->collectionId = $data->id;
     }
 
-    public function search($query, $page)
+    public function search($query)
     {
         $results = array();
-        $index = 0;
-        $limit = '';
-        if ($page != 0) {
-            $offset = ($page * $this->limit) - $this->limit;
-            $limit = " LIMIT " . $this->limit . " OFFSET $offset";
-        }
 
         if ($query != "") {
+            $SQL = "SELECT ts_rank( to_tsvector('english', n.content), to_tsquery('english', '$query')) as rank ";
+            $SQL.= ", n1.content as title, n.content, d.url, d.content_type ";
+            $SQL.= " from document d, node n, node n1 where n1.document_id=d.document_id ";
+            $SQL.= " and n1.name='title' and n.document_id = d.document_id and n.name='content' order by rank desc";
 
-            $SQL = "SELECT ts_rank( to_tsvector('english', n.content), to_tsquery('english', '$query')) ";
-            $SQL.= ",  d.content, d.url, d.content_type, (select n1.content from node n1 where n1.name='title' and n1.document_id = d.document_id) as title  ";
-            $SQL.= " from document d, node n where n.document_id = d.document_id and n.name='content'";
-
-            $result = pg_query($SQL);
+            $res = pg_query($SQL);
 
             $pos = 0;
-            while ($row = pg_fetch_array($result)) {
-                $title = $row['title'];
-                $content = $row['content'];
-                $content = substr($content, 1, 400);
-                $document = new Document();
-                $document->url = urldecode($row['url']);
-                $document->title = trim(html_entity_decode($title));
-                $document->content = htmlentities($content);
-                $document->contentType = $row['content_type'];
-                $pos++;
-                $results[$pos] = $document;
+            while ($row = pg_fetch_array($res)) {
+                $rank = $row['rank'];
+
+                if ($rank > 0.005 ) {
+                    $title = $row['title'];
+                    $content = $row['content'];
+                    $content = substr($content, 1, 400);
+
+                    $result = new Result();
+                    $result->url = urldecode($row['url']);
+                    $result->rank = $rank; 
+                    $result->title = HTMLRobot::clean(html_entity_decode($title));
+                    $result->fragment = HTMLRobot::clean(html_entity_decode($content));
+                    $results[$pos] = $result;
+                    $pos++;
+                }
             }
         }
         return $results;

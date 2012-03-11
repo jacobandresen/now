@@ -21,7 +21,7 @@ class Encoding
                 if (($i + $bits) > $len) return false;
                 while ($bits > 1) {
                     $i++;
-                    $b = ord($str[$i]);
+                    $b = ord($string[$i]);
                     if ($b < 128 || $b > 191) return false;
                     $bits--;
                 }

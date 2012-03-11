@@ -1,5 +1,4 @@
 <?php
-//2011, Jacob Andresen <jacob.andresen@gmail.com>
 class HTMLRobot
 {
     public static function clean($html)
@@ -13,6 +12,7 @@ class HTMLRobot
         $html = preg_replace("/\s+/is", ' ', $html);
         $html = preg_replace("/<.*?>/is", '', $html);
         $html = strip_tags($html);
+
         return $html;
     }
 

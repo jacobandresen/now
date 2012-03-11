@@ -22,7 +22,6 @@ class Collection
         $res = pg_query($SQL);
         $row = pg_fetch_array($res);
 
-        //TODO: support create with nested domains
         $c = new Collection();
         $c->domains = array();
         $c->id = $row[0];
