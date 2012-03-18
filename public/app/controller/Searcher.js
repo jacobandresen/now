@@ -4,25 +4,19 @@ Ext.define('now.controller.Searcher', {
     views: ['Searcher', 'ResultList'],
     stores: ['Result'],
 
-    refs: [ {
-        ref: 'searcher',
-        selector: 'searcher'
-    },{
-        ref: 'button',
-        selector: 'button'
-    },{
-        ref: 'resultlist',
-        selector: 'resultlist'
-    }],
+    refs: [
+        {ref: 'searcher', selector: 'searcher' },
+        {ref: 'resultlist', selector: 'resultlist'}
+    ],
 
     init: function () {
         this.control({
-            button: {
+            'button[text=search]': {
                 click: this.doSearch
             },
             resultlist: {
-                click: function (a,b,c){
-                    console.log("click list: %o, %o, %o", a,b,c);
+                select: function (grid){
+                    window.location = grid.selected.items[0].get("url");
                 }
             }
         });
@@ -32,17 +26,17 @@ Ext.define('now.controller.Searcher', {
         var query = this.getSearcher().down("textfield").getValue();
         var resultList = this.getResultlist();
 
+        console.log("SEARCH");
         Ext.Ajax.request({
             url: now.search,
             method: 'get',
             params:  {
-                user : now.user,
-                pass : now.pass,
+                token: now.token,
                 query: query
             },
             success: function (response, request) {
+                console.log("search response:%o", response);
                 var data = Ext.decode (response.responseText );
-                console.log("data:%o", data);
                 resultList.store.loadData( data, false);
             },
             scope: this

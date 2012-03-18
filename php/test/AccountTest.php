@@ -28,7 +28,7 @@ class AccountTest extends PHPUnit_Framework_TestCase
     public function testTokenLogin()
     {
         $token = Account::generateToken("searchzen.org", "test");
-        $loggedIn = Account::tokenLogin($token);
-        $this->assertEquals($loggedIn, true);
+        $account = Account::tokenLogin($token);
+        $this->assertEquals($account->userName, "searchzen.org");
     }
 }

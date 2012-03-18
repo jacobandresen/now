@@ -1,13 +1,11 @@
-Ext.namespace('now');
-
 Ext.application({
     name: 'now',
-    controllers: ['Searcher'],
+    controllers: ['Application', 'Searcher'],
     requires: [
-        'now.view.Searcher'
+        'now.view.Viewport'
     ],
     launch: function () {
-        Ext.create('now.view.Searcher',
+        Ext.create('now.view.Viewport',
             {renderTo: Ext.getBody()}
         );
     }

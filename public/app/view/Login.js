@@ -1,14 +1,21 @@
 Ext.define('now.view.Login', {
-    extend: 'Ext.Container'
+    extend: 'Ext.Container',
     alias: 'widget.login',
     title: 'Login',
-    items = [{
+    frame: false,
+    align: 'center',
+    items: [{
         xtype: 'textfield',
         fieldLabel: 'user',
-        allowBlank: false
+        allowBlank: false,
+        name: 'user'
     },{
-        xtype: 'passwordfield',
-        fieldLabel: 'pass'
-        allowBlank: false
-    }];
+        xtype : 'textfield',
+        fieldLabel: 'pass',
+        allowBlank: false,
+        name: 'pass'
+    },{
+        xtype : 'button',
+        text : 'login'
+    }]
 });

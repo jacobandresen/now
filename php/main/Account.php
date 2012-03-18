@@ -83,7 +83,7 @@ class Account
         $id = $row[0];
 
         if (isset($id)) {
-	        return '{id:"'.$id.'",token:"'.$token.'"}';
+            return (Account::retrieve((object)array("id" => $id)));
         }
     }
 
@@ -94,10 +94,10 @@ class Account
         $res = pg_query($sql) or die (" failed logging in");
         $row = pg_fetch_array($res);
         $id = $row['account_id'];
-
-        $now = date("m/d/Y");
-     //   $sql = "update account set token='$token', last_seen='$now' where account_id=$id;";
-     //   pg_query($sql) or die;
+        if (isset($id)) {
+            $sql = "update account set token='$token' where account_id=$id;";
+            pg_query($sql) or die;
+        }
         return $token;
     }
 
