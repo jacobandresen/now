@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
 
   <name>searchzen</name>
-  <url>http://maven.apache.org</url>
+  <url>http://searchzen.org</url>
 
   <dependencies>
       <dependency>

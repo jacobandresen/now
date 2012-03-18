@@ -13,7 +13,7 @@ create table collection (
     indexed_documents               integer,
     start_url                       varchar(512),
     last_updated                    date,
-    foreign key(account_id)         references account(account_id)
+    foreign key(account_id)         references account(account_id) on delete cascade
 );
 
 create table collection_domain (
@@ -42,6 +42,6 @@ create table node (
     path                            TEXT,
     document_id                     integer,
     parent_node_id                  integer,
-    FOREIGN KEY(document_id)        references document(document_id),
+    FOREIGN KEY(document_id)        references document(document_id) on delete cascade,
     FOREIGN KEY(parent_node_id)     references node(node_id)
 )

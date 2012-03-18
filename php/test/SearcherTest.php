@@ -10,8 +10,8 @@ class SearcherTest extends PHPUnit_Framework_TestCase
         $account = Account::login("searchzen.org", "test");
         $collection = $account->collections[0];
         $searcher = new Searcher($collection);
-        $result = $searcher->search("ExtJS", 0);
-        $this->assertContains("ExtJS", $result[1]->content);
+        $results = $searcher->search("Jacob", 0);
+        $this->assertContains("Jacob", $results[0]->fragment);
     }
 }
 ?>

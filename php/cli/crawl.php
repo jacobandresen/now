@@ -10,7 +10,6 @@ if (sizeof($argv) < 3 || $argv[0] == "" || $argv[1] == "") {
 }
 
 $account = Account::login($argv[1], $argv[2]);
-
 $crawler = new Crawler($account->collections[0]);
 $crawler->start();
 ?>

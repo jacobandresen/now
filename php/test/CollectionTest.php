@@ -25,7 +25,6 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     {
         $params = json_decode('{"id":"' . $this->getTestColId() . '"}');
         $collections = Collection::retrieve($params);
-        print_r($collections);
         $this->assertEquals($collections[0]->domains[0]->domain, "searchzen.org");
     }
 
