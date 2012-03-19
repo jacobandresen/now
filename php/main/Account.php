@@ -66,7 +66,7 @@ class Account
 
         $id = $row[0];
 
-        if (isset($id)) {
+        if (isset($id) && $id!="") {
             Account::generateToken($userName, $password);
             return (Account::retrieve((object)array("id" => $id)));
         } else {
@@ -89,12 +89,13 @@ class Account
 
     public static function generateToken($userName, $password)
     {
-        $token = md5($userName . $password . rand());
+        $token ="";
         $sql = "select account_id from account where user_name='$userName' and password='$password'";
         $res = pg_query($sql) or die (" failed logging in");
         $row = pg_fetch_array($res);
         $id = $row['account_id'];
-        if (isset($id)) {
+        if (isset($id) && $id!="") {
+            $token = md5($userName . $password . rand());
             $sql = "update account set token='$token' where account_id=$id;";
             pg_query($sql) or die;
         }

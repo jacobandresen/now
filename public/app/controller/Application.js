@@ -10,7 +10,18 @@ Ext.define('now.controller.Application', {
     ],
 
     init: function () {
-        this.control({ 'button[text=login]': { click: this.doLogin } });
+        this.control({
+            "button[text=login]": {
+                 click: this.doLogin
+             },
+            "login textfield": {
+                 specialkey: function (field,e) {
+                     if (e.getKey() == e.ENTER) {
+                         this.doLogin();
+                     }
+                 }
+            }
+        });
     },
 
     doLogin: function () {
@@ -24,10 +35,12 @@ Ext.define('now.controller.Application', {
                 pass: pass
             },
             success: function (response, request) {
-                console.log("response:%o", response);
                 var resp = Ext.decode( response.responseText);
                 now.token = resp.token;
-                this.getViewport().layout.setActiveItem(this.getApplication());
+                console.log("token:%o", now.token);
+                if (now.token !== "") {
+                    this.getViewport().layout.setActiveItem(this.getApplication());
+                }
             },
             scope: this
         });
