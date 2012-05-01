@@ -1,5 +1,5 @@
 <?php
-require_once('now/Framework.php');
+require_once('../php/main/Framework.php');
 
 $token  = $_GET['token'];
 $query = $_GET['query'];

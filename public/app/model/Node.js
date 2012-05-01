@@ -1,8 +1,9 @@
-Ext.define('now.model.Document', {
+Ext.define('now.model.Node', {
     extend: 'Ext.data.Model',
     fields: [
         'document_id',
-        'url',
+        'node_id',
+        'name',
         'content'
     ]
 });

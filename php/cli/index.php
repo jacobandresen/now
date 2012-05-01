@@ -16,7 +16,6 @@ if ($argv[1] == "") {
 
 $account = Account::login($argv[1], $argv[2]);
 $collection = $account->collections[0];
-
 $indexer = new Indexer($collection);
 $indexer->start();
 ?>

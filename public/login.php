@@ -1,9 +1,8 @@
 <?php
-require_once('now/Framework.php');
+require_once('../php/main/Framework.php');
 
 $user  = $_GET["user"];
 $pass  = $_GET['pass'];
-
 
 try{
     $token = Account::generateToken($user,$pass);

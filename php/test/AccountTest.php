@@ -1,6 +1,6 @@
 <?php
 require_once 'configuration.php';
-require_once 'PHPUnit/Framework.php';
+require_once 'PHPUnit/Framework/TestCase.php';
 require_once '../main/Framework.php';
 
 class AccountTest extends PHPUnit_Framework_TestCase

@@ -26,12 +26,19 @@ class HTMLRobot
             }
         }
         if ($title == '') {
-            preg_match("|<h1>(.*?)<\/h1>|is", $html, $matches);
+            preg_match("|<title>(.*?)<\/title>|is", $html, $matches);
             if (sizeof($matches)) {
                 $title = $matches[1];
             }
         }
         if ($title == '') {
+            preg_match("|<h1>(.*?)<\/h1>|is", $html, $matches);
+            if (sizeof($matches)) {
+                $title = $matches[1];
+            }
+        }
+ 
+       if ($title == '') {
             preg_match("|<h2>(.*?)<\/h2>|is", $html, $matches);
             if (sizeof($matches)) {
                 $title = $matches[1];

@@ -1,6 +1,6 @@
 Ext.define('now.view.Viewport', {
     extend: 'Ext.container.Viewport',
-    alias: 'widget.viewport', 
+    alias: 'widget.viewport',
     requires: [
         'now.view.Login',
         'now.view.Application'

@@ -1,6 +1,6 @@
 Ext.application({
     name: 'now',
-    controllers: ['Application', 'Searcher'],
+    controllers: ['Application', 'Login', 'Searcher'],
     requires: [
         'now.view.Viewport'
     ],

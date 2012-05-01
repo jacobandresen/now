@@ -1,27 +1,30 @@
 Ext.define('now.view.Searcher', {
     extend: 'Ext.Container',
     alias: 'widget.searcher',
-    requires: [ 'now.view.ResultList' ],
+    requires: [
+        'Ext.form.Field',
+        'Ext.Button',
+        'now.view.ResultList'
+        ],
 
     layout: { type: 'vbox' },
+    width: 800,
     items: [
     {
-        xtype: 'container',
-        height: '10%',
+        height: '25%',
         layout: {
             type:   'hbox'
         },
         items: [{
             xtype:  'textfield',
-            width:  '80%'
+            width:  500
         },{
             xtype:  'button',
-            text:   'search',
-            width:  '20%'
+            text:   'search'
         }]
     },
     {
-       height: '90%',
+       height: '75%',
        xtype: 'resultlist'
     }]
 });

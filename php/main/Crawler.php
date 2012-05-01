@@ -34,6 +34,7 @@ class Crawler
     public function start()
     {
         $this->collection->log("page limit:" . $this->pageLimit);
+        $this->collection->log("startUrl:" . $this->startUrl);
         if ($this->shouldCrawl($this->startUrl)) {
             pg_query("delete from document where collection_id='" . $this->collection->id . "'");
             $this->crawl($this->startUrl, 0, $this->startUrl);
@@ -57,7 +58,6 @@ class Crawler
             $p = new PDFRobot($this->collection->accountId);
             $document->content = $p->clean($document);
             $document->content = htmlentities($document->content, ENT_QUOTES);
-
             array_push($this->crawledURLs, $url);
             return $document->save($this->collection->id);
         } else {
@@ -104,6 +104,7 @@ class Crawler
         if (in_array($url, $this->crawledURLs)) {
             return false;
         }
+
         if ($this->collection->inAllowedDomains($url) == false) {
             return false;
         }

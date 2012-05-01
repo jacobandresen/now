@@ -13,13 +13,17 @@ class URL
     public static function filter($domainId, $url, $name)
     {
         $url = strtolower($url);
-
-        if (strpos($url, "#")) {
-            return true;
-        }
+     // #'s are needed for indexing dynamical applications
+     //   if (strpos($url, "#")) {
+     //       return true;
+     //   }
 
         preg_match("|\@|", $url, $match);
         if (count($match) > 0) {
+            return true;
+        }
+
+        if (strpos($url, ".js")) {
             return true;
         }
 
@@ -39,20 +43,21 @@ class URL
             return true;
         }
 
+        if (strpos($url, ".png")) {
+            return true;
+        }
         return false;
     }
 
     public static function extractHost($url)
     {
-        $url = str_replace("\/", "/", $url);
+        $match = array();
         preg_match("@(https?\://([^\/].*?))(\/|$)@", $url, $match);
-        if (count($match) > 1) {
-            $host = $match[2];
+        if (sizeof($match)>1) {
+            return $match[2];
+        } else {
+            return "";
         }
-        if (!isset($host)) {
-            print "missing HOST for URL: $url \r\n";
-        }
-        return $host;
     }
 
     public static function extractRelativeUrl($host, $url)
@@ -67,40 +72,40 @@ class URL
 
     public static function expandUrl($item, $parent)
     {
-        $page = "";
-        if ($item == './') {
-            $item = '/';
-        }
-        preg_match("@(http\s?\://[^\/].*?)(\/|$)@", $parent, $match);
-        if (count($match) > 0) {
-            $base = $match[1];
-        }
-        preg_match("@(http\s?\://[^\/].*?)\/([^\?]*?)(\?|$)@", $parent, $match);
-        if (count($match) > 0) {
-            $page = $match[2];
-        }
-        preg_match("|^http|", $item, $match);
-        if (count($match) > 0) {
-            return $item;
-        }
+       $page = "";
+       if ($item == './') {
+           $item = '/';
+       }
+      preg_match("@(http\s?\://[^\/].*?)(\/|$)@", $parent, $match);
+      if (count($match) > 0) {
+         $base = $match[1];
+      }
+      preg_match("@(http\s?\://[^\/].*?)\/([^\?]*?)(\?|$)@", $parent, $match);
+      if (count($match) > 0) {
+          $page = $match[2];
+      }
+      preg_match("|^http|", $item, $match);
+      if (count($match) > 0) {
+          return $item;
+      }
 
-        if ($page) {
-            preg_match("|^\/$page|", $item, $match);
-            if (count($match) > 0) {
-                return $base . $item;
-            }
-            preg_match("|^$page|", $item, $match);
-            if (count($match) > 0) {
-                return $base . '/' . $item;
-            }
-        }
+      if ($page) {
+          preg_match("|^\/$page|", $item, $match);
+          if (count($match) > 0) {
+              return $base . $item;
+          }
+          preg_match("|^$page|", $item, $match);
+          if (count($match) > 0) {
+              return $base . '/' . $item;
+          }
+      }
 
-        preg_match("|^\?|", $item, $match);
-        if (count($match) > 0) {
-            return $base . '/' . $page . $item;
-        }
-        $url = $base . '/' . $item;
-        return $url;
+      preg_match("|^\?|", $item, $match);
+      if (count($match) > 0) {
+          return $base . '/' . $page . $item;
+      }
+      $url = $base . '/' . $item;
+      return $url;
     }
 
     public static function inDomain($url, $domain)

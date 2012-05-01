@@ -6,6 +6,7 @@ class PDFRobot
     public function __construct($parentId)
     {
         $this->parentId = $parentId;
+        mkdir ("/tmp/now");
     }
 
     public function clean($document)
