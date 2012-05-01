@@ -18,7 +18,7 @@ Ext.onReady(function(){
     ds = Ext.create('Ext.data.Store', {
         model: 'Result',
         proxy: {
-            type: 'ajax',
+            type: 'jsonp',
             url: 'ext4.1-api-search.php',
             reader: {
                 type: 'json',

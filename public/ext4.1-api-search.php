@@ -2,8 +2,8 @@
 require_once('../php/main/Framework.php');
 
 $query = $_GET['query'];
-$start = $_GET['start'];
-$limit = $_GET['limit'];
+$callback = $_GET['callback'];
+
 
 try{
     $token = Account::generateToken("ext4", "test");
@@ -15,7 +15,11 @@ try{
     $response->data= $s->search($query);
     $response->meta = new StdClass();
     $response->meta->success = true;
-    print (json_encode($response));
+    if (isset($callback)){
+        print $callback."(".json_encode($response).")";
+    } else {
+        print (json_encode($response));
+    }
 } catch (Exception $e) {
     print "error: $e";
 }
