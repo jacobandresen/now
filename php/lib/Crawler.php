@@ -8,8 +8,7 @@ class Crawler
     public $crawledURLs;
     public $httpClient;
 
-    public function __construct($params)
-    {
+    public function __construct ($params) {
         $this->collections = Collection::retrieve($params);
         $this->collection = $this->collections[0];
 
@@ -31,8 +30,7 @@ class Crawler
         $this->httpClient = new HTTPClient();
     }
 
-    public function start()
-    {
+    public function start () {
         $this->collection->log("page limit:" . $this->pageLimit);
         $this->collection->log("startUrl:" . $this->startUrl);
         if ($this->shouldCrawl($this->startUrl)) {
@@ -43,8 +41,7 @@ class Crawler
         }
     }
 
-    public function crawl($url, $level, $parent)
-    {
+    public function crawl ($url, $level, $parent) {
         if (count($this->crawledURLs) > $this->pageLimit) {
             return;
         }
@@ -99,8 +96,7 @@ class Crawler
         }
     }
 
-    private function shouldCrawl($url)
-    {
+    private function shouldCrawl ($url) {
         if (in_array($url, $this->crawledURLs)) {
             return false;
         }
@@ -116,5 +112,6 @@ class Crawler
         }
         return true;
     }
+
 };
 ?>

@@ -1,8 +1,7 @@
 <?php
 class HTMLRobot
 {
-    public static function clean($html)
-    {
+    public static function clean ($html) {
         $html = preg_replace("/<script.*?<\/script>/is", ' ', $html);
         $html = preg_replace("/<link.*?\/>/is", ' ', $html);
         $html = preg_replace("/<style type\=\"text\/css\">.*?<\/style>/is", '', $html);
@@ -16,8 +15,7 @@ class HTMLRobot
         return $html;
     }
 
-    public static function findTitle($html)
-    {
+    public static function findTitle ($html) {
         $title = '';
         if ($title == '') {
             preg_match("|<.*?content_header[^>]*?\>(.*?)<\/[^>]*?\>|is", $html, $matches);

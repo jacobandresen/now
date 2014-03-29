@@ -11,23 +11,22 @@ class Account
 
     public $collections;
 
-    public static function create($data)
-    {
+    public static function create($data) {
         $SQL = "INSERT INTO account(user_name, password, first_name, last_name) VALUES('" . $data->userName . "','" . $data->password . "','" . $data->firstName . "','" . $data->lastName . "') returning account_id";
-        $res = pg_query($SQL) or die("create failed:" . $SQL);
-        $row = pg_fetch_row($res);
+ 
+        $res          = pg_query($SQL) or die("create failed:" . $SQL);
+        $row          = pg_fetch_row($res);
 
-        $a = new Account();
-        $a->id = $row[0];
-        $a->userName = $data->userName;
-        $a->password = $data->password;
+        $a            = new Account();
+        $a->id        = $row[0];
+        $a->userName  = $data->userName;
+        $a->password  = $data->password;
         $a->firstName = $data->firstName;
-        $a->lastName = $data->lastName;
+        $a->lastName  = $data->lastName;
         return $a;
     }
 
-    public static function retrieve($data)
-    {
+    public static function retrieve($data) {
         $SQL = "SELECT account_id,user_name,password,first_name,last_name,token from account where account_id='" . $data->id . "'";
         $res = pg_query($SQL) or die ("read failed:" . $SQL);
         $row = pg_fetch_array($res);
@@ -45,22 +44,19 @@ class Account
         return $a;
     }
 
-    public static function update($data)
-    {
+    public static function update($data) {
         $SQL = "UPDATE account where account_id=" . $data->id . " set username='" . $data->userName . "',password='" . $data->password . "',first_name='" . $data->firstName . "',last_name='" . $data->lastName . "'";
         pg_query($SQL) or die ("Account update failed:" . $SQL);
     }
 
-    public static function destroy($id)
-    {
+    public static function destroy($id) {
         if ($id=="") {
             die ("missing id");
         }
         pg_query("DELETE FROM account where account_id=$id");
     }
 
-    public static function login($userName, $password)
-    {
+    public static function login($userName, $password) {
         $res = pg_query("SELECT account_id from account where user_name='" . $userName . "' and password='" . $password . "'");
         $row = pg_fetch_array($res);
 
@@ -74,8 +70,7 @@ class Account
         }
     }
 
-    public static function tokenLogin($token)
-    {
+    public static function tokenLogin($token) {
         $sql = "SELECT account_id from account where token='$token'";
         $res = pg_query($sql);
 
@@ -87,8 +82,7 @@ class Account
         }
     }
 
-    public static function generateToken($userName, $password)
-    {
+    public static function generateToken($userName, $password) {
         $token ="";
         $sql = "select account_id from account where user_name='$userName' and password='$password'";
         $res = pg_query($sql) or die (" failed logging in");
@@ -102,8 +96,7 @@ class Account
         return $token;
     }
 
-    public static function getToken($userName, $password)
-    {
+    public static function getToken($userName, $password) {
         $sql = "select a.account_id,a.token from account a  where a.user_name='$userName' and a.password='$password';";
 
         $res = pg_query($sql) or die (" failed getting token:");

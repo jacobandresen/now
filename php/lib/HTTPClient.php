@@ -17,14 +17,12 @@ class HTTPClient
 
     private $debug;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->port = 80;
         $this->redirects = 0;
     }
 
-    public function get($incomingUrl)
-    {
+    public function get ($incomingUrl) {
         $host = URL::extractHost($incomingUrl);
         if ($host != "") {
             $this->host = $host;
@@ -40,8 +38,7 @@ class HTTPClient
         return ($response);
     }
 
-    public function getDocument($url)
-    {
+    public function getDocument ($url) {
         $document = new Document();
         $document->url = $url;
         $document->content = $this->get($url);
@@ -50,8 +47,7 @@ class HTTPClient
         return $document;
     }
 
-    private function connect($host)
-    {
+    private function connect ($host) {
         $this->host = $host;
 
         if ($this->host == "") {
@@ -66,14 +62,12 @@ class HTTPClient
         $this->headers = array();
     }
 
-    private function close()
-    {
+    private function close () {
         if (is_resource($this->socket))
             fclose($this->socket);
     }
 
-    private function sendRequest($request)
-    {
+    private function sendRequest ($request) {
         $request .= " HTTP/1.0";
         $request .= "\r\nUser-Agent: NOW";
         $request .= "\r\nHost: " . $this->host;
@@ -84,8 +78,7 @@ class HTTPClient
             fputs($this->socket, $request . "\r\n");
     }
 
-    private function getHeaders()
-    {
+    private function getHeaders () {
         $this->headers = array();
         $this->contentType = "";
         while (!feof($this->socket)) {
@@ -104,8 +97,7 @@ class HTTPClient
         }
     }
 
-    private function redirect()
-    {
+    private function redirect () {
         $this->redirects++;
         if ($this->redirects < 5) {
             $newUrl = chop($this->headers['location']);
@@ -123,8 +115,7 @@ class HTTPClient
         }
     }
 
-    private function getReply()
-    {
+    private function getReply() {
         $this->reply = "";
         if (!$this->socket) {
             return ("");
@@ -165,5 +156,6 @@ class HTTPClient
         }
         return ($this->reply);
     }
+
 }
 ?>

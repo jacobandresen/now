@@ -13,10 +13,6 @@ class URL
     public static function filter($domainId, $url, $name)
     {
         $url = strtolower($url);
-     // #'s are needed for indexing dynamical applications
-     //   if (strpos($url, "#")) {
-     //       return true;
-     //   }
 
         preg_match("|\@|", $url, $match);
         if (count($match) > 0) {
