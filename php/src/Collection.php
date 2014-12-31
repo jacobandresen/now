@@ -49,7 +49,6 @@ class Collection
             $c->pageLimit = $row[2];
             $c->levelLImit = $row[3];
             $c->startUrl = $row[4];
-            $c->domains = CollectionDomain::retrieve(json_decode('{"collectionId":"' . $c->id . '"}'));
 
             array_push($collections, $c);
         }
@@ -64,38 +63,6 @@ class Collection
     public static function destroy($id)
     {
         pg_query("DELETE FROM collection WHERE ID=$id");
-    }
-
-    public function addDomain($domain)
-    {
-        $d = new CollectionDomain();
-        $d->domain = $domain;
-        $d->collectionId = $this->id;
-        CollectionDomain::create($d);
-        $this->domains =
-            CollectionDomain::retrieve(json_decode('{"collectionId":"' . $this->id . '"}'));
-    }
-
-    public function inAllowedDomains($URL)
-    {
-        $host = URL::extractHost($URL);
-        foreach ($this->domains as $d) {
-            $domain = str_replace("www.", "", $d->domain);
-            if (strpos($host, $domain) !== false) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public function getDomainId($url)
-    {
-        foreach ($this->domains as $domain)
-        {
-            if (URL::inDomain($url, $domain->domain)) {
-                return ($domain->id);
-            }
-        }
     }
 
     public function log($message)

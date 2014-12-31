@@ -35,7 +35,7 @@ class HTMLRobot
                 $title = $matches[1];
             }
         }
- 
+
        if ($title == '') {
             preg_match("|<h2>(.*?)<\/h2>|is", $html, $matches);
             if (sizeof($matches)) {

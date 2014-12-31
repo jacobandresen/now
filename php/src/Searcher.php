@@ -23,7 +23,6 @@ class Searcher
             $pos = 0;
             while ($row = pg_fetch_array($res)) {
                 $rank = $row['rank'];
-
                 if ($rank > 0.005 ) {
                     $title = $row['title'];
                     $content = $row['content'];

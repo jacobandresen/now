@@ -13,7 +13,6 @@ class Account
 
     public static function create($data) {
         $SQL = "INSERT INTO account(user_name, password, first_name, last_name) VALUES('" . $data->userName . "','" . $data->password . "','" . $data->firstName . "','" . $data->lastName . "') returning account_id";
- 
         $res          = pg_query($SQL) or die("create failed:" . $SQL);
         $row          = pg_fetch_row($res);
 
@@ -98,7 +97,6 @@ class Account
 
     public static function getToken($userName, $password) {
         $sql = "select a.account_id,a.token from account a  where a.user_name='$userName' and a.password='$password';";
-
         $res = pg_query($sql) or die (" failed getting token:");
         $row = pg_fetch_array($res);
 

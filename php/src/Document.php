@@ -16,7 +16,6 @@ class Document
     public function save($collectionId)
     {
 
-    print_r($this);
         if ($collectionId == "") {
             die ("coding error. trying to save to empty collection\r\n");
         }
