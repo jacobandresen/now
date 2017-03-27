@@ -1,0 +1,16 @@
+{
+    "name": "searchzen/now",
+    "description": "A Search engine",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jacob Andresen",
+            "email": "jacob.andresen@gmail.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^6.0"
+    }
+}
